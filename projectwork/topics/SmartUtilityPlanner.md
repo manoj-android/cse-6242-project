@@ -38,27 +38,32 @@ To ground the computational models in verified real-world data while addressing 
 ## 🔄 System Architecture & Analytical Workflow (Heilmeier Q3)
 
 ```mermaid
-flowchart LR
-    subgraph Inputs["1. Household Context & Constraints"]
-        I1["📍 Fuzzed Origin (Census Tract Centroid)"]
-        I2["📋 Required Errand Set E & Dwell Times"]
-        I3["⏰ Availability Mask A(d, h) (ATUS Grounded)"]
-        I4["⚖️ Objective Trade-off Weights w ∈ Δ³"]
-    end
-
-    subgraph Engine["2. Spatiotemporal Decision-Support Engine"]
-        M1["Two-Tier Congestion Regressor<br>Visit Propensity Index P_visit(v, t) ∈ [0, 100]"]
-        M2["Precomputed Hexagonal Traffic Matrix<br>Chicago Traffic Tracker / OSM Speeds"]
-        M3["Discrete Candidate Generator &<br>Fast 2D/3D Skyline Filter (<5ms)"]
-    end
-
-    subgraph Visual["3. Coordinated D3 Visual Analytics Dashboard"]
-        V1["📊 View 1: Multi-Category Congestion Heatmap Matrix<br>(Hour × Day Heatmaps with Quantile Bands)"]
-        V2["🗺️ View 2: Geospatial Accessibility & Corridor Explorer<br>(Traffic Speeds, Dynamic Isochrones, Trip Chains)"]
-        V3["📈 View 3: Multi-Objective Tradeoff & Pareto Explorer<br>(Parallel Coordinates & Interactive Frontier Brushing)"]
-    end
-
-    Inputs --> Engine --> Visual
+sequenceDiagram
+    actor User as Household User
+    participant Dash as D3.js Visual Dashboard
+    participant Engine as Spatiotemporal Engine (FastAPI)
+    participant Model as Congestion & Traffic Models
+    
+    User->>Dash: Inputs Context (Fuzzed Origin, Errands, Availability)
+    Dash->>Engine: POST /generate_candidates {errands, constraints}
+    
+    activate Engine
+    Engine->>Model: Fetch Precomputed Visit Propensity P_visit(v, t)
+    Model-->>Engine: Return Category Propensity Curves
+    Engine->>Model: Lookup H3 Hexagonal Traffic Matrix
+    Model-->>Engine: Return Arterial Travel Times
+    
+    Note over Engine: Discrete Skyline Filter computes <br> Pareto Optimal schedules in <5ms
+    Engine-->>Dash: Return Pareto Non-Dominated Schedules
+    deactivate Engine
+    
+    Dash-->>User: Render Multi-Category Heatmap & Accessibility Map
+    
+    User->>Dash: Adjust Trade-off Weights (Time vs. Crowd exposure)
+    activate Dash
+    Dash->>Dash: Update Pareto Explorer & Highlight Optimal Plan
+    Dash-->>User: Active Schedule Overlays Updated (<50ms)
+    deactivate Dash
 ```
 
 ### Analytical Scenario
