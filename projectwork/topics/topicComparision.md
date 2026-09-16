@@ -1,34 +1,34 @@
 # ⚖️ CSE 6242 Project Topic Comparison & Decision Matrix
 
-> **Purpose:** Comprehensive comparative analysis of the four proposed CSE 6242 topics to guide team alignment, risk assessment, and final project selection.  
+> **Purpose:** Comprehensive comparative analysis of the proposed CSE 6242 topics to guide team alignment, risk assessment, and final project selection.  
 > **Course:** CSE 6242 (Data & Visual Analytics)
 
 ---
 
 ## 📊 Comprehensive Side-by-Side Evaluation
 
-| Evaluation Criteria | 📅 [SmartUtilityPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/SmartUtilityPlanner.md) | 🪙 [WealthMirror](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/WealthMirror.md) | 🛸 [ParanormalOdyssey](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParanormalTravelPlanner.md) | 🍼 [ParentsPlaybook](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Primary Domain** | Urban Mobility & Errand Analytics | Personal Finance & Wealth Analytics | Cultural Tourism & Spatiotemporal Itinerary Optimization | Early Childhood Development & Accessibility |
-| **Dataset Strength** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **ML / Analytics Depth** | High | Very High | High (Spatial Clustering + Routing Heuristic) | High |
-| **Visualization Strength** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ (Streamlined 3-View Dashboard) | ⭐⭐⭐⭐ |
-| **Geospatial Analytics** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Novelty** | High | Very High | ⭐⭐⭐⭐⭐ (Extreme) | High |
-| **Real-World Impact** | High | High | Moderate (Cultural Tourism & Folklore Analytics) | Very High |
-| **Ease of Explaining** | High | Medium | Very High | High |
-| **Implementation Risk** | Medium | High | Low (Focused Scope: 3 Views + Offline CSVs) | Medium-High |
-| **Validation Difficulty** | Medium | Medium-High | Low-Medium (Baseline Route Scoring) | High |
-| **Visual Analytics Focus** | Excellent | Excellent | Excellent (Coordinated Map, Tradeoffs, Schedule) | Good–Very Good |
-| **Feasibility (12 Weeks)**| High | Medium | High (Streamlined & Derisked) | Medium |
-| **Rubric Alignment** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Demo Appeal** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐+ (Showstopper) | ⭐⭐⭐⭐ |
-| **Academic Defensibility**| ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ (Clean Academic Framing) | ⭐⭐⭐⭐ |
-| **Biggest Strength** | Best balance of data, analytics, visualization, and feasibility | Most unique and intellectually ambitious | Unbeatable demo engagement, disciplined scope, and clear routing trade-offs | Strongest societal impact and practical relevance |
-| **Biggest Weakness** | Congestion is inferred from proxy signals | Very complex modeling and validation | Crowdsourced records require coordinate validation and population normalization | Weakest ground-truth linkage |
-| **Overall Score** | **`9.3 / 10`** | **`9.0 / 10`** | **`8.9 / 10`** | **`8.6 / 10`** |
-| **Approval Probability** | **Highest** | **High** | **High (Derisked & TA-Aligned)** | **Moderate-High** |
-| **Final Recommendation**| 🥇 **#1 Pick (Safest & Balanced)** | 🥈 **#2 Pick (Most Intellectual)** | 🥉 **#3 Pick (Most Entertaining & Feasible)** | 4th Pick (High Societal Value) |
+| Evaluation Criteria | 📅 [SmartUtilityPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/SmartUtilityPlanner.md) | 🪙 [WealthMirror](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/WealthMirror.md) | 🛸 [ParanormalOdyssey](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParanormalTravelPlanner.md) | 🪐 [InterstellarMissionPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md) | 🍼 [ParentsPlaybook](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Primary Domain** | Urban Mobility & Errand Analytics | Personal Finance & Wealth Analytics | Cultural Tourism & Spatiotemporal Itinerary Optimization | Aerospace Engineering & Orbital Optimization | Early Childhood Development & Accessibility |
+| **Dataset Strength** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **ML / Analytics Depth** | High | Very High | High (Spatial Clustering + Routing Heuristic) | Very High (Physics Simulation & Genetic Algorithms) | High |
+| **Visualization Strength** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ (Streamlined 3-View Dashboard) | ⭐⭐⭐⭐⭐ (3D Trajectory & Porkchop plots) | ⭐⭐⭐⭐ |
+| **Geospatial Analytics** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ (Astrometric, not terrestrial) | ⭐⭐⭐⭐⭐ |
+| **Novelty** | High | Very High | ⭐⭐⭐⭐⭐ (Extreme) | ⭐⭐⭐⭐⭐ | High |
+| **Real-World Impact** | High | High | Moderate (Cultural Tourism & Folklore Analytics) | Moderate (Educational/Simulation) | Very High |
+| **Ease of Explaining** | High | Medium | Very High | Medium-High | High |
+| **Implementation Risk** | Medium | High | Low (Focused Scope: 3 Views + Offline CSVs) | High (Orbital math complexity) | Medium-High |
+| **Validation Difficulty** | Medium | Medium-High | Low-Medium (Baseline Route Scoring) | High (Requires aerospace ground truth) | High |
+| **Visual Analytics Focus** | Excellent | Excellent | Excellent (Coordinated Map, Tradeoffs, Schedule) | Excellent (Parametric sliders + 3D) | Good–Very Good |
+| **Feasibility (12 Weeks)**| High | Medium | High (Streamlined & Derisked) | Medium | Medium |
+| **Rubric Alignment** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Demo Appeal** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐+ (Showstopper) | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Academic Defensibility**| ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ (Clean Academic Framing) | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Biggest Strength** | Best balance of data, analytics, visualization, and feasibility | Most unique and intellectually ambitious | Unbeatable demo engagement, disciplined scope, and clear routing trade-offs | Solves complex combinatorial trajectory optimization with high demo appeal | Strongest societal impact and practical relevance |
+| **Biggest Weakness** | Congestion is inferred from proxy signals | Very complex modeling and validation | Crowdsourced records require coordinate validation and population normalization | High mathematical complexity for web-based UI latency | Weakest ground-truth linkage |
+| **Overall Score** | **`9.3 / 10`** | **`9.0 / 10`** | **`8.9 / 10`** | **`8.8 / 10`** | **`8.6 / 10`** |
+| **Approval Probability** | **Highest** | **High** | **High (Derisked & TA-Aligned)** | **High** | **Moderate-High** |
+| **Final Recommendation**| 🥇 **#1 Pick (Safest & Balanced)** | 🥈 **#2 Pick (Most Intellectual)** | 🥉 **#3 Pick (Most Entertaining & Feasible)** | **4th Pick (Strong aerospace alternative)** | 5th Pick (High Societal Value) |
 
 ---
 
@@ -70,7 +70,19 @@
 
 ---
 
-### 4. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
+### 4. 🪐 [InterstellarMissionPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md)
+
+| # | Critical Drawback / Vulnerability | Mitigation Strategy |
+| :-: | :--- | :--- |
+| **1** | **Mathematical & Physics Complexity:** Solving multi-body N-body problems or Lambert's problem for gravity assists dynamically in the browser is computationally intense. | Limit the scope to 2D/3D simplified patched-conic approximations or pre-compute a massive heuristic grid for the sliders to query. |
+| **2** | **Dataset Size Compliance:** The core exoplanet dataset is only ~5,500 rows, which risks failing the "Large Data" requirement. | Augmenting the static catalog with gigabytes of raw Kepler/TESS time-series light curve data or high-resolution NASA JPL Horizons ephemerides. |
+| **3** | **Validation Challenges:** Validating optimal orbital paths requires a ground-truth aerospace engine (like STK or GMAT) which the team may not have access to. | Validate against known historical satellite trajectories (e.g., Voyager 2 or Cassini slingshots) before applying the model to fictional exoplanets. |
+
+> **Critical Reviewer Question:** *"How are you ensuring your gravitational slingshot algorithms are mathematically rigorous and not just producing arbitrary visual curves?"*
+
+---
+
+### 5. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 
 | # | Critical Drawback / Vulnerability | Mitigation Strategy |
 | :-: | :--- | :--- |
@@ -98,11 +110,15 @@ flowchart TD
         R3["• Highest demo appeal and standout entertainment value in the class<br>• Streamlined scope: Spatial clustering + Orienteering heuristic + 3-view D3 dashboard<br>• High feasibility with pre-downloaded CSVs and clean Report Detail scoring"]
     end
 
-    subgraph Rank4["4th Place: ParentsPlaybook (Score: 8.6 / 10)"]
-        R4["• Exceptional societal mission and compelling spatiotemporal shade analytics<br>• More challenging ground-truth linkage for developmental recommendations<br>• Viable with the Learning-to-Rank and NSCH benchmark"]
+    subgraph Rank4["4th Place: InterstellarMissionPlanner (Score: 8.8 / 10)"]
+        R4["• Extremely rigorous mathematical scope solving orbital trajectory optimization<br>• High visual appeal with 3D trajectories and parametric sliders<br>• Requires careful scope management for N-body gravity physics"]
     end
 
-    Rank1 --> Rank2 --> Rank3 --> Rank4
+    subgraph Rank5["5th Place: ParentsPlaybook (Score: 8.6 / 10)"]
+        R5["• Exceptional societal mission and compelling spatiotemporal shade analytics<br>• More challenging ground-truth linkage for developmental recommendations<br>• Viable with the Learning-to-Rank and NSCH benchmark"]
+    end
+
+    Rank1 --> Rank2 --> Rank3 --> Rank4 --> Rank5
 ```
 
 1. 🥇 **[SmartUtilityPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/SmartUtilityPlanner.md) — Score: 9.3 / 10 (Highest Approval Probability)**  
@@ -111,7 +127,9 @@ flowchart TD
    *Most innovative and intellectually ambitious topic; strongly defensible with Federal Reserve SCF microdata and zero synthetic data, though with higher modeling complexity.*
 3. 🥉 **[ParanormalOdyssey](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParanormalTravelPlanner.md) — Score: 8.9 / 10 (Highest Demo Appeal / Most Feasible)**  
    *The crowd-pleasing showstopper. Streamlined to 3 core pillars (Spatial clustering, selective route optimization heuristic, and 3 coordinated views) with offline bulk CSVs and objective Report Detail scoring.*
-4. 🍼 **[ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) — Score: 8.6 / 10 (Moderate-High Approval Probability)**  
+4. 🪐 **[InterstellarMissionPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md) — Score: 8.8 / 10 (High Approval Probability)**  
+   *An excellent aerospace alternative solving complex multi-body orbital trajectory optimization. High demo appeal but requires careful management of physics math complexity.*
+5. 🍼 **[ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) — Score: 8.6 / 10 (Moderate-High Approval Probability)**  
    *Highest societal and human impact; greatly strengthened by the CDC NSCH empirical ranking framework and tree canopy equity analytics.*
 
 ---
@@ -157,7 +175,19 @@ flowchart TD
 
 ---
 
-### 4. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
+### 4. 🪐 [InterstellarMissionPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md)
+- **Primary Proposal:** [InterstellarMissionPlanner.md](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md)
+- **Verified Public Datasets:**
+  - [Kaggle Planet Dataset (by Sourav Banerjee)](https://www.kaggle.com/datasets/iamsouravbanerjee/planet-dataset) — Kaggle-hosted exoplanet characteristics replacing raw NASA archive.
+  - [NASA JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) — High-precision solar system ephemerides and gravity-assist orbital parameters.
+  - [Kepler & TESS Light Curves](https://archive.stsci.edu/kepler/) — Gigabytes of time-series photometric data.
+- **Visual Interface Concepts:**
+  - Interactive 3D orbital trajectory simulation with user parametric sliders.
+  - Interactive Porkchop Plot for launch window optimization.
+
+---
+
+### 5. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 - **Primary Proposal:** [ParentsPlaybook.md](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 - **Verified Public Datasets:**
   - [CDC "Learn the Signs. Act Early." Milestones](https://www.cdc.gov/ncbddd/actearly/milestones/index.html) — 12 standardized age checklists across 4 pediatric domains.
