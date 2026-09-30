@@ -49,3 +49,9 @@ tmp/
 *.sqlite3
 *.db
 HW1/Q2/Q2
+
+# Web App prototype
+webapp/
+
+# Antigravity agents
+.agents/
