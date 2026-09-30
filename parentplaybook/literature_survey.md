@@ -1,104 +1,157 @@
-# Parent Playbook (ToddlerSprout): Literature Review
+# Literature Survey
 
-This document consolidates the team's literature survey, answering the three core questions for each peer-reviewed article:
-**(a)** The main idea, **(b)** Why it is useful for the project, and **(c)** Potential shortcomings that the project will try to improve upon.
+Instructions: Team – For each of your 3 identified articles below, please answer the 3 questions (a), (b) and (c) from the Project instructions:
+(a) the main idea,
+(b) why (or why not) it will be useful for your project, and
+(c) its potential shortcomings, that you will try to improve upon.
 
----
-
-## Katherine: Pediatric Development & Play
-
+## Katherine
 **[The Power of Play: A Pediatric Role in Enhancing Development in Young Children](https://watermark02.silverchair.com/peds_20182058.pdf)**
-*   **(a) Main Idea:** Children who engage in active play for 1 hour per day are better able to think creatively and multitask. Physical play reveals enhanced attentional inhibition, cognitive flexibility, and brain functioning indicative of executive control. Playing with children also rejuvenates adult caregivers. The current societal focus only on achievement and enrichment programs leads to stress, anxiety, and a lack of creativity.
-*   **(b) Useful for project:** Justifies the fundamental need for unstructured play for both child development and parent well-being.
-*   **(c) Shortcomings:** Focuses mostly on the general, abstract benefits of play. Our project will improve on this by providing a practical tool to find specific, actionable locations to actually facilitate this play.
+*   **(a) Main Idea:** This article highlights the benefits of active play for children, stating that children who participated in 1 hour of active play per day are “better able to think creatively and multitask.” It discusses the impact of play on brain development and function backed by studies including humans and animals.
+*   **(b) Usefulness:** It is useful for our project because it highlights the importance of active play time and different types of play, like physical, outdoor, object, social, pretend, or alone.
+*   **(c) Potential shortcomings:** A potential shortcoming is that the authors recognize the parental challenges of making time for play but do not have any suggestions for it. Our project will make suggestions on how playtime can be effectively fit into a child’s schedule and suggest specific locations/activities.
 
-**[A systematic review of the psychological and social benefits of participation in sport for children and adolescents](https://link.springer.com/content/pdf/10.1186/1479-5868-10-98)**
-*   **(a) Main Idea:** There is substantive evidence of psychological and social health benefits from participation in sports. Participation in team sports is associated with better health above and beyond other forms of leisure-time physical activity.
-*   **(b) Useful for project:** Reinforces the social and physical benefits of group and outdoor activities.
-*   **(c) Shortcomings:** Focuses primarily on structured sports and older adolescents. We will focus on younger children (ages 1-5) and unstructured recreational play.
+**[A systematic review of the psychological and social benefits of participation in sport for children and adolescents: informing development of a conceptual model of health through sport](https://link.springer.com/content/pdf/10.1186/1479-5868-10-98)**
+*   **(a) Main Idea:** This article conveys the psychological and social health benefits of participating in sports, particularly team sports, for children, using published data from studies between 1990 and 2012.
+*   **(b) Usefulness:** It is useful for our project because it provides context for the benefits of sports extracurriculars for children and why parents might want to have their children do sports.
+*   **(c) Potential shortcomings:** A potential shortcoming is that many of the studies used in this study are cross-sectional, so they are unable to directly draw causal relationships.
 
 **[Supporting personal and social development through child-led art projects in the early years settings](https://www.tandfonline.com/doi/pdf/10.1080/03004430.2017.1418739)**
-*   **(a) Main Idea:** Using Participatory Learning Action (PLA), specifically paintings, to design art projects based on children's desires had a measurable positive effect on their personal and social skills.
-*   **(b) Useful for project:** Highlights the cognitive and social benefits of specific activity types (like art and sensory exploration).
-*   **(c) Shortcomings:** Focuses narrowly on a specific art intervention. We will broaden the scope to balance all four CDC developmental domains (Motor, Cognitive, Language, Social).
+*   **(a) Main Idea:** "In this study, the participants used the PLA, and more specifically paintings, to design art projects based on their desires. Examining personal and social skills holistically with a pre-test and post-test there was a positive effect on children’s personal and social skills by the end of the art intervention." This article highlights the importance of art and specifically child-led art projects. 
+*   **(b) Usefulness:** It is useful for our project because it emphasizes the importance of variety in extracurriculars for children and the benefits for their overall developmental skills.
+*   **(c) Potential shortcomings:** The trial group size was relatively small (22 children total). In our project, we will try to use datasets with larger sample sizes.
 
----
-
-## Jay: Child-Friendly Urban Design
-
+## Jay
 **[Understanding child-friendly urban design: A framework to measure playful learning landscapes outcomes](https://www.brookings.edu/articles/understanding-child-friendly-urban-design/)**
-*   **(a) Main Idea:** Explains how "Playful Learning Landscapes" (PLL) incorporate opportunities for play and learning into everyday urban spaces, and proposes a framework for measuring these effects on communities.
-*   **(b) Useful for project:** Provides specific measures for evaluating how child-friendly urban design supports childhood development, social interaction, accessibility, and community engagement.
-*   **(c) Shortcomings:** The framework is relatively new and focused largely on individual sites rather than long-term effects. Our project will address this by examining outcomes and accessibility across a larger geographic metropolitan area.
+*   **(a) Main Idea:** The article explains how Playful Learning Landscapes (PLL) can incorporate opportunities for play and learning into everyday urban spaces while proposing a framework for measuring their effects on children, families, and communities.
+*   **(b) Usefulness:** This article will be useful for my project because it provides specific measures for evaluating how child-friendly urban design can support childhood development, social interaction, accessibility, and community engagement.
+*   **(c) Potential shortcomings:** A potential shortcoming is that the proposed framework was still relatively new and focused largely on individual sites rather than measuring long-term or neighborhood-wide effects, which my project can try to address by examining outcomes across larger geographic areas.
 
 **[Neighborhood playability and early childhood development](https://www.sciencedirect.com/science/article/pii/S0013935126004524)**
-*   **(a) Main Idea:** Examines how the "playability" of a child's neighborhood—including environmental features that support opportunities for play—is directly associated with early childhood development.
-*   **(b) Useful for project:** Provides population-level evidence connecting characteristics of the neighborhood environment with developmental outcomes in young children.
-*   **(c) Shortcomings:** The observational study design makes it difficult to prove that neighborhood playability *causes* better outcomes. We will improve upon this by incorporating specific, measurable variables (like canopy shade and travel time).
+*   **(a) Main Idea:** The article examines how the “playability” of a child’s neighborhood, including environmental features that support opportunities for play, is associated with early childhood development.
+*   **(b) Usefulness:** This article will be useful for my project because it provides population-level evidence connecting characteristics of the neighborhood environment with developmental outcomes in young children.
+*   **(c) Potential shortcomings:** A potential shortcoming is that the observational study design makes it difficult to prove that neighborhood playability directly causes better developmental outcomes, which my project can try to improve upon by examining additional variables and more specific measures of neighborhood conditions.
 
 **[Review of Neighborhood Effects and Early Child Development](https://www.sciencedirect.com/science/article/pii/S1353829216303525)**
-*   **(a) Main Idea:** Reviews research showing that neighborhood conditions—including socioeconomic resources, safety, services, and the physical/social environment—can heavily influence children's developmental outcomes.
-*   **(b) Useful for project:** Provides evidence and a structural framework for understanding how the characteristics of where children live affect their development.
-*   **(c) Shortcomings:** Relies on existing studies with varying methods, making clear causal relationships difficult to establish. We will improve upon this by using consistent, regional spatial datasets (OSM, USGS) for focused data analysis.
+*   **(a) Main Idea:** The article reviews research showing that neighborhood conditions, including socioeconomic resources, safety, services, and the physical and social environment, can influence children’s development and contribute to differences in developmental outcomes.
+*   **(b) Usefulness:** This article will be useful for my project because it provides evidence and a framework for understanding how characteristics of where children live can affect their development.
+*   **(c) Potential shortcomings:** A major shortcoming is that the article relies on existing studies with different methods and measures, making it difficult to establish clear causal relationships, which my project can try to improve upon by using more consistent measures and focused data analysis.
 
----
-
-## Manoj: Psychological Aspects (Parent & Child)
-
+## Manoj
 **[Parenting Stress and Its Impact on Decision-Making and Caregiver Burden](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6615936/)**
 *   **(a) Main Idea:** Chronic parental stress and caregiver burden impair a parent's capacity for effective, long-term decision-making, leading to "decision fatigue" and overly cautious or rigid parenting practices.
-*   **(b) Useful for project:** Justifies the need for a tool that reduces cognitive load. By automating complex trade-offs (weather, distance, developmental needs) into a visual dashboard, we alleviate decision fatigue for parents.
-*   **(c) Shortcomings:** Focuses primarily on clinical levels of stress. We will apply these concepts to the everyday micro-stressors parents face (like planning around sudden weather changes or strict nap schedules).
+*   **(b) Usefulness:** Justifies the need for a tool that reduces cognitive load. By automating complex trade-offs (weather, distance, developmental needs) into a visual dashboard, we alleviate decision fatigue for parents.
+*   **(c) Potential shortcomings:** Focuses primarily on clinical levels of stress. We will apply these concepts to the everyday micro-stressors parents face (like planning around sudden weather changes or strict nap schedules).
 
 **[The Mediating Role of Parent-Child Play in Reducing Familial Stress](https://www.mdpi.com/1660-4601/18/19/10040)**
 *   **(a) Main Idea:** Positive, interactive parent-child play acts as a buffer against familial stress, but when parents are highly stressed, the quality and frequency of these play interactions decline.
-*   **(b) Useful for project:** Highlights the psychological value of optimizing play opportunities. If our tool removes logistical friction, parents can engage in higher-quality, lower-stress play.
-*   **(c) Shortcomings:** Focuses on the quality of play rather than *where* it happens. Our tool links the physical environment (e.g., shaded parks) directly to the facilitation of high-quality play.
-
-**[The Impact of Parental Stress on Child Behavioral and Developmental Outcomes](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5534173/)**
-*   **(a) Main Idea:** Utilizing Family Systems Theory, the article shows that parental stress disrupts family balance, which acts as a strong predictor for negative behavioral outcomes (anxiety, aggression) and delayed socio-emotional development in young children.
-*   **(b) Useful for project:** Provides a strong psychological foundation for the "Who Cares?" section. Supporting a parent's ability to plan balanced routines directly impacts the child's developmental trajectory.
-*   **(c) Shortcomings:** Relies heavily on self-reported survey data, which can be biased. We will ground our tool's recommendations in objective, clinical CDC developmental milestones.
+*   **(b) Usefulness:** Highlights the psychological value of optimizing play opportunities. If our tool removes logistical friction, parents can engage in higher-quality, lower-stress play.
+*   **(c) Potential shortcomings:** Focuses on the quality of play rather than where it happens. Our tool links the physical environment (e.g., shaded parks) directly to the facilitation of high-quality play.
 
 **[Play as a Mechanism for Early Socio-Emotional and Cognitive Development](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6749913/)**
 *   **(a) Main Idea:** Synthesizes evidence showing that unstructured, outdoor play is a critical "window" for children to develop executive functioning, emotional resilience, and gross motor skills.
-*   **(b) Useful for project:** Validates our use of the CDC clinical domains and justifies why our algorithm must balance these domains (maximize Shannon entropy) rather than recommending the same activity repeatedly.
-*   **(c) Shortcomings:** Focuses on general "play" without differentiating between specific urban environments. Our project will specifically link developmental play to localized urban amenities.
+*   **(b) Usefulness:** Validates our use of the CDC clinical domains and justifies why our algorithm must balance these domains (maximize Shannon entropy) rather than recommending the same activity repeatedly.
+*   **(c) Potential shortcomings:** Focuses on general "play" without differentiating between specific urban environments. Our project will specifically link developmental play to localized urban amenities.
+
+## Shan
+**[OpenStreetMap history for intrinsic quality assessment](https://link.springer.com/article/10.1186/s40965-019-0067-x)**
+*   **(a) Main Idea:** OSM provides a crowdsourced geospatial database that can be used as a source of geographic information for location-based applications.
+*   **(b) Usefulness:** OSM could be useful for the Smart Personalized Activity Routes for Kids (SPARK) project because it provides an openly available source of geographic information that can be used to identify and locate points of interest related to children’s activities.
+*   **(c) Potential shortcomings:** OSM data can vary in completeness, accuracy, and up-to-date information across different locations. We will address these by validating the data where possible. We will also add child-specific attributes to improve the recommendations.
+
+**[Context aware Location Recommendation System](https://pdfs.semanticscholar.org/7228/bc43e07fd0946f5cc141c18e7d2e89961211.pdf)**
+*   **(a) Main Idea:** The article proposes a context-aware model that uses location, time, weather, distance, and other user preferences to rank and recommend suitable places of interest. The system uses a Hierarchical LSTM model to improve the relevance of the recommendations.
+*   **(b) Usefulness:** Our SPARK project needs to rank activities using similar factors. So, we can adapt the same general context-aware recommendation concept to children.
+*   **(c) Potential shortcomings:** The article discusses recommendations for suitable tourist locations. We would need to design for children specific needs. So, child specific factors like age, interest, and activity type would need to be looked at.
+
+**[A systematic analysis on the impact of contextual information on POI recommendation](https://arxiv.org/pdf/2201.08150)**
+*   **(a) Main Idea:** Contextual information can significantly improve the quality of Point-of-Interest recommendations. Recommendation system should use factors like user characteristics like child age, interests as well as time, category in addition to popularity rankings and distance.
+*   **(b) Usefulness:** The article provides research support for coming up with a ranking system using the many contextual factors that will be calculated to determine how suitable an activity is for a particular child.
+*   **(c) Potential shortcomings:** The article discusses general POI recommendations. We would need to design for children specific needs. So, child specific factors like age, interest, and activity type would need to be looked at. We also need to be able to provide a ranking that can explain why an activity is recommended.
+
+## Max
+**[The Calendar is Crucial](https://dl.acm.org/doi/epdf/10.1145/1502800.1502806)**
+*   **(a) Main Idea:** The study examines calendaring routes to inform how to best design technology to support family calendaring activities. It covers family participating in calendar planning, family types, content of family calendars, annotations and design implications.
+*   **(b) Usefulness:** Calendars are a crucial tool in family activity planning and would therefore be an effective and familiar element of the UI. The article discusses that family calendars tend to have a primary scheduler with varying degrees of participation by secondary schedulers (like spouses or children). This supports the idea of creating a single tool, accessed by the primary scheduler.
+*   **(c) Potential shortcomings:** The paper is 20 years old. Presumably families rely more on digital calendars now than they did 20 years ago. We’ll need to focus on general findings on the importance and prevalence of family calendars and consider which digital aspects of the paper may be outdated. Also, our project is centered around routes/maps as well as schedules, so our projects extends beyond calendars and is at the intersection of calendars and maps.
+
+**[The role of user context in the design of mobile map applications](https://pmc.ncbi.nlm.nih.gov/articles/PMC8459706/)**
+*   **(a) Main Idea:** The researchers explored the relationships between user context, user experience, and design elements of digital mobile maps. Their main finding is that the UI should be centered around the user’s task. It also highlights that a map should only display essential information when users are performing activities on the map.
+*   **(b) Usefulness:** The findings are relevant to our map design as we should take into account that our users will be parents looking for age-appropriate activities in their vicinity. This helps us think about: 1) what to display and highlight on the map? Digital maps may put emphasis on streets/traffic, sights, businesses, etc based on their target audience. Our map should place emphasis on what matters to our users: activities, local context and routes. 2) We could incorporate an “explore” mode allowing users to discover activities in their neighborhood. This helps parents/guardians understand what activities are generally available in their neighborhood in addition to seeing optimized routes and activities for a given time window.
+*   **(c) Potential shortcomings:** The study focuses specifically on digital mobile maps, while our project will be optimized for usage in a computer browser. We must assume that the findings generally apply to digital maps beyond mobile usage and consider differences between digital mobile maps vs larger format maps in computer browsers.
+
+**[Points of Interest (POI): a commentary on the state of the art, challenges, and prospects for the future](https://link.springer.com/article/10.1007/s43762-022-00047-w)**
+*   **(a) Main Idea:** High-quality POI data—particularly accurate location, category, and temporal information—is essential for reliable spatial analysis. Poor data quality or coverage can affect the accuracy of results across applications such as urban planning, mobility, public health, and community studies.
+*   **(b) Usefulness:** This translates directly into our requirements: For our model to work, we require, at a minimum, accurate data on location, hours, and POI classification (playground, library, park, etc). We will have to ensure that such information is available and accurate. We may also find that certain types of activities require further data points that may or may not be available. These findings dont apply well though to the other data we will need to find or create: Mappings from POI classifications (e.g. playground) to activities (free play, ball games, hide-and-seek) as well as scoring of activities based on child development factors (creativity, confidence, social, etc).
+*   **(c) Potential shortcomings:** For our purposes, a potential shortcoming of the study is its focus on how to improve open digital maps like OpenStreetMap, while we are more practically concerned with how to solve for missing or inaccurate data in our implementation of a platform like OpenStreetMap. We will need to focus on finding ways to work with the data that is available.
 
 ---
 
-## Shan: Spatial Data & Recommendation Models
+# Heilmeier Questions
 
-**[Quality Assessment of OpenStreetMap Data for Urban Planning and Spatial Analysis](https://www.mdpi.com/2220-9964/9/4/225)**
-*   **(a) Main Idea:** Evaluates the completeness, thematic accuracy, and spatial heterogeneity of OpenStreetMap (OSM) data, concluding that OSM is highly reliable in urban centers but varies regarding specific amenity tags.
-*   **(b) Useful for project:** OSM is our primary spatial dataset. Understanding its accuracy allows us to scientifically justify using it for urban planning and routing.
-*   **(c) Shortcomings:** OSM often lacks comprehensive environmental data (like tree canopy). We will improve upon this limitation by overlaying USGS 30m Tree Canopy rasters onto OSM polygons.
+| Number | Heilmeier Question | Article(s) to Integrate Into Answer |
+| :--- | :--- | :--- |
+| 1 | What are you trying to do? | N/A |
+| 2 | How is it done today; what are the limits? | Jay: Review of Neighborhood Effects...<br>Manoj: Parenting Stress and Its Impact...<br>Manoj: The Mediating Role of Parent-Child Play... |
+| 3 | What's new in your approach? Why will it be successful? | Shan: Context-Aware Location Recommendation System<br>Jay: Understanding Child-Friendly Urban Design<br>Shan: Recommendation / Model Article #2 |
+| 4 | Who cares? | Katherine: The Power of Play<br>Katherine: A Systematic Review...<br>Katherine: Supporting Personal and Social Development... |
+| 5 | What difference and impact will it make, and how will you measure it? | Jay: Neighborhood Playability...<br>Manoj: Play as a Mechanism for Early Socio-Emotional... |
+| 6 | What are the risks and payoffs? | Shan: OpenStreetMap History...<br>Max: Data Quality Article |
+| 7 | How much will it cost? | N/A |
+| 8 | How long will it take? | N/A |
+| 9 | What are the midterm and final “exams”? | Max: UI Design Article #1<br>Max: UI Design Article #2 |
 
-**[Unbiased Learning to Rank for Location and Spatial Recommendation](https://pubsonline.informs.org/doi/abs/10.1287/isre.2022.1158)**
-*   **(a) Main Idea:** Details the application of Learning-to-Rank (LTR) algorithms to location recommendation, specifically focusing on removing "exposure bias" so less popular but highly suitable locations are recommended.
-*   **(b) Useful for project:** Provides the mathematical justification for using LTR to rank venues based on multiple features (distance, shade, CDC milestone affinity) rather than just geographic proximity.
-*   **(c) Shortcomings:** Focuses heavily on commercial Point-of-Interest (POI) data (like restaurants). We will adapt the LTR framework specifically for non-commercial, developmental activities.
+## Answers to the Heilmeier’s Questions
 
-**[Spatio-Temporal Intention Learning for Multi-Objective Point-of-Interest Recommendation](https://www.tandfonline.com/doi/full/10.1080/13658816.2023.2173177)**
-*   **(a) Main Idea:** Introduces models that capture sequential transition regularities to recommend the "next location" based on temporal context (time of day) and spatial proximity.
-*   **(b) Useful for project:** Highly useful for building our Spatiotemporal Skyline Filter. It provides a framework for how we can dynamically penalize outdoor parks during midday heat waves.
-*   **(c) Shortcomings:** These models are computationally heavy. We will improve upon this by implementing a fast Skyline filter to prune candidates in <50ms before running complex ranking algorithms.
+*@Team – We will tackle and discuss these questions live next week during our call. You can disregard for now.*
+
+**1. What are you trying to do? Articulate your objectives using absolutely no jargon.**
+We are aiming to create the Child Utility Playbook which is a tool that helps parents and guardians of children identify activities that fit their child’s age, interests, and development needs and also considers factors important to the parent such as distance, cost and time to organize their day. The tool will help parent compare activity options and create a set of experiences optimized for their child’s development while also structuring their day in an efficient way.
+
+**2. How is it done today; what are the limits of current practice?**
+Today, parents usually find activities through a series of search engines, maps, parent websites, social media, community calendars and through their relationships and communications with other parents. This requires them to manually and inefficiently determine which options are appropriate for their child and phase of development. Research reviewing neighborhood effects on early childhood development shows that in many cases, socioeconomic resources, services, and the physical and social environment can influence development opportunities (Jay - Review of Neighborhood Effects and Early Child Development). Currently, activity-search methods do not bring environmental considerations in combinations with the child’s age, development plan and interests into one tool for parents.
+
+**3. What's new in your approach? Why will it be successful?**
+The Child Utility Planner combines factors like age, and child interests with more activity related factors such as activity type, location, distance and cost. Existing context-aware location recommendation research demonstrates how factors such as location, time, weather, distance, and user preferences can be incorporated into recommendations (Shan – Context-Aware Location Recommendation System). Research also shows how everyday spaces can be designed for opportunities for play and learning (Jay – Understanding Child-Friendly Urban Design). The tool is built on these ideas by applying context-aware recommendations to children and also providing an easy to use UI for parents and guardians to use.
+
+**4. Who cares?**
+- Child Development (from parents perspective)
+- UI design for targets
+
+**5. If you're successful, what difference and impact will it make, and how do you measure them?**
+Research on neighborhood playability has identified associations between environmental features that provide opportunities for play and early childhood development (Jay – Neighborhood Playability and Early Childhood Development). This tool is meant to help make these opportunities easier for caregivers to identify by providing recommendations on activities instead of just relying on proximity or ease. We will measure success by comparing the two recommendations with more simpler baseline approaches like distance-only or popularity-based recommendations.
+
+**6. What are the risks and payoffs?**
+- Quality of the output, quality of the data
+- Models
+
+**7. How much will it cost?**
+(Not answered yet)
+
+**8. How long will it take?**
+(Not answered yet)
+
+**9. What are the midterm and final "exams" to check for success? How will progress be measured?**
+- Gantt chart and table
+- How good the product is
+- For Midterm – progress, quality of data set, accuracy of models
 
 ---
 
-## Max: UI Design & Data Quality
+# Gantt Chart / Activity Plan
 
-**[Visual Analytics for Multi-criteria Decision Making: Exploring Multidimensional Trade-offs](https://www.frontiersin.org/articles/10.3389/fcomp.2020.00018/full)**
-*   **(a) Main Idea:** Examines how interactive visual analytics tools (specifically parallel coordinates plots) help users navigate complex decisions by allowing them to visually trace trade-offs between competing variables.
-*   **(b) Useful for project:** Validates our choice to use parallel coordinates (View 3) to help parents balance travel time, shade percentage, and developmental domain entropy.
-*   **(c) Shortcomings:** Notes that parallel coordinates can cause high cognitive load for non-experts if too many axes are shown. We will improve upon this by limiting the axes to four highly intuitive metrics.
+| Activity | Owner(s) | Timeline |
+| :--- | :--- | :--- |
+| Literature review & project design | All | Sep 21 – Oct 4 |
+| Identification of data sets | Max, Manoj, Shan | Sep 28 – Oct 11 |
+| Data cleaning and model selection | Max, Manoj, Shan | Oct 5 – Oct 25 |
+| Develop initial models | Shan, Manoj | Oct 12 – Nov 8 |
+| Built the UI of the Tool | Max, Jay, Katerine | Oct 19 – Nov 15 |
+| Integrate the models into the UI | Shan, Manoj | Nov 9 – Nov 22 |
+| Model evaluation and testing | Jay, Katherine | Nov 16 – Nov 29 |
+| Final report and poster development | Jay, Max, Katherine | Nov 23 – Dec 3 |
 
-**[Action Design Research for Dashboards: Designing for Domain Experts Without Data Backgrounds](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8914611/)**
-*   **(a) Main Idea:** Dashboards built for non-technical users must move away from "designing for" to "designing with" the user, prioritizing reduced information density to speed up decision-making.
-*   **(b) Useful for project:** Guides the UI design of our tool. It proves that structuring information intuitively allows users to make quick decisions without data fatigue.
-*   **(c) Shortcomings:** Focuses on medical practitioners. We will translate these principles to exhausted parents, focusing on mobile-first, high-contrast usability tailored to a chaotic environment.
+*Effort Distribution: All team members are expected to contribute a similar amount of effort throughout the project.*
 
-**[The Impact of Data Heterogeneity and Quality on Spatial Recommender Systems](https://arxiv.org/abs/2007.12592)**
-*   **(a) Main Idea:** Reviews how "garbage in, garbage out" affects spatial algorithms, demonstrating that missing tags or inaccurate geospatial data severely degrade location recommendations.
-*   **(b) Useful for project:** Justifies our rigorous data engineering pipeline. Good data quality ensures our algorithm doesn't send a parent with an infant to an unshaded concrete area.
-*   **(c) Shortcomings:** Mostly diagnoses the problem without offering cross-domain solutions. We will improve upon this by fusing multiple datasets (OSM, USGS, NOAA) to artificially enhance data quality where single sources fail.
+**Data Set Links, Models and Descriptions:**
+(Max, Manoj, Shan, please paste links to data sets and their descriptions or any model work, below)
