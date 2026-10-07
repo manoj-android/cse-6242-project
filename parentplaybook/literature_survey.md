@@ -38,20 +38,42 @@ Instructions: Team – For each of your 3 identified articles below, please answ
 *   **(c) Potential shortcomings:** A major shortcoming is that the article relies on existing studies with different methods and measures, making it difficult to establish clear causal relationships, which my project can try to improve upon by using more consistent measures and focused data analysis.
 
 ## Manoj
-**[Parenting Stress and Its Impact on Decision-Making and Caregiver Burden](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6615936/)**
-*   **(a) Main Idea:** Chronic parental stress and caregiver burden impair a parent's capacity for effective, long-term decision-making, leading to "decision fatigue" and overly cautious or rigid parenting practices.
-*   **(b) Usefulness:** Justifies the need for a tool that reduces cognitive load. By automating complex trade-offs (weather, distance, developmental needs) into a visual dashboard, we alleviate decision fatigue for parents.
-*   **(c) Potential shortcomings:** Focuses primarily on clinical levels of stress. We will apply these concepts to the everyday micro-stressors parents face (like planning around sudden weather changes or strict nap schedules).
 
-**[The Mediating Role of Parent-Child Play in Reducing Familial Stress](https://www.mdpi.com/1660-4601/18/19/10040)**
-*   **(a) Main Idea:** Positive, interactive parent-child play acts as a buffer against familial stress, but when parents are highly stressed, the quality and frequency of these play interactions decline.
-*   **(b) Usefulness:** Highlights the psychological value of optimizing play opportunities. If our tool removes logistical friction, parents can engage in higher-quality, lower-stress play.
-*   **(c) Potential shortcomings:** Focuses on the quality of play rather than where it happens. Our tool links the physical environment (e.g., shaded parks) directly to the facilitation of high-quality play.
+### Play as a Mechanism for Development
 
-**[Play as a Mechanism for Early Socio-Emotional and Cognitive Development](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6749913/)**
-*   **(a) Main Idea:** Synthesizes evidence showing that unstructured, outdoor play is a critical "window" for children to develop executive functioning, emotional resilience, and gross motor skills.
-*   **(b) Usefulness:** Validates our use of the CDC clinical domains and justifies why our algorithm must balance these domains (maximize Shannon entropy) rather than recommending the same activity repeatedly.
-*   **(c) Potential shortcomings:** Focuses on general "play" without differentiating between specific urban environments. Our project will specifically link developmental play to localized urban amenities.
+**[Adventurous Play as a Mechanism for Reducing Risk for Childhood Anxiety: A Conceptual Model](https://pmc.ncbi.nlm.nih.gov/articles/PMC7880968/)**
+*   **(a) Main Idea:** This open-access model proposes that adventurous, child-led play provides a natural mechanism for children to experience and manage physiological arousal and uncertainty, thereby building resilience and reducing clinical anxiety.
+*   **(b) Usefulness:** Validates the necessity of providing children with diverse, unstructured play opportunities to foster emotional resilience. Our tool will optimize recommendations to ensure children have access to varied physical environments that support adventurous play.
+*   **(c) Potential shortcomings:** The model is theoretical and focuses heavily on anxiety prevention. Our project will apply these concepts practically by routing parents to physical locations where this specific type of play can safely occur.
+
+**[A Reciprocal and Dynamic Development Model for the Effects of Siblings on Children’s Theory of Mind](https://doi.org/10.3389/fpsyg.2020.554023)**
+*   **(a) Main Idea:** This open-access review proposes a dynamic model showing how sibling interactions provide critical "contextual opportunities" for children to practice and develop their Theory of Mind (understanding others' emotions, intentions, and mental states).
+*   **(b) Usefulness:** Highlights the developmental power of sibling play. By creating a tool that helps parents find environments conducive to multi-child or sibling play, we actively support the social-cognitive development (Theory of Mind) of the children involved.
+*   **(c) Potential shortcomings:** The article focuses on the psychological models rather than the physical environments where these interactions occur. Our project bridges this gap by identifying the optimal physical locations for these sibling dynamics to naturally unfold.
+
+### Parent-Child Play
+
+**[The relationship between maternal sensitivity and play during early childhood with the development of cognitive skills and socio‐emotional competencies](https://onlinelibrary.wiley.com/doi/full/10.1111/chso.12547)**
+*   **(a) Main Idea:** This longitudinal study examines how opportunities for play and maternal sensitivity during early childhood positively influence the long-term development of cognitive skills and socio-emotional competencies in children, with benefits persisting into adolescence.
+*   **(b) Usefulness:** Validates the long-term impact of play on both cognitive and socio-emotional domains. This justifies our tool's goal to recommend activities that balance different developmental domains, ensuring children get consistent opportunities for play.
+*   **(c) Potential shortcomings:** The study relies on a specific demographic sample from Peru. Our project will aim to apply these play concepts across broader, diverse urban environments and local amenities.
+
+**[Parent perceived barriers and facilitators of children's adventurous play in Britain: a framework analysis](https://doi.org/10.1186/s12889-022-13019-w)**
+*   **(a) Main Idea:** This open-access study explores the psychology of parents when deciding whether to let their children engage in outdoor adventurous play. It highlights how perceived safety, lack of time, and neighborhood design act as barriers, while the presence of siblings/friends and accessible green spaces act as facilitators.
+*   **(b) Usefulness:** Provides direct evidence for the features our app needs. By mapping safe, accessible green spaces and showing community presence (facilitators), our tool actively addresses the psychological barriers parents face when planning outdoor play.
+*   **(c) Potential shortcomings:** The study relies heavily on qualitative parent perceptions in Britain, which might reflect specific cultural norms around safety. Our tool will need to adapt to the specific geographic and cultural infrastructure of our target launch areas.
+
+### Parenting Stress
+
+**[Parent-Child Play and the Emergence of Externalizing and Internalizing Behavior Problems in Childhood: A Systematic Review](https://pmc.ncbi.nlm.nih.gov/articles/PMC9110017/)**
+*   **(a) Main Idea:** This open-access systematic review highlights that parenting stress negatively impacts the quality of parent-child play (reducing warmth and responsiveness), which directly contributes to the emergence of child behavior problems.
+*   **(b) Usefulness:** Emphasizes that reducing parental stress is crucial for high-quality play. By removing the logistical friction of planning and decision-making through our dashboard, we help lower parenting stress, enabling healthier parent-child play interactions.
+*   **(c) Potential shortcomings:** The review primarily analyzes Western demographics and focuses on the psychological qualities of play. Our tool will bridge this gap by linking the facilitation of high-quality, low-stress play directly to local, accessible urban amenities.
+
+**[Association between parents' perceived social support and children's psychological adjustment: a cross-sectional study](https://doi.org/10.1186/s12887-024-05235-7)**
+*   **(a) Main Idea:** This open-access study emphasizes that parenting stress—which is significantly magnified in single-parent households due to isolation and sole logistical responsibility—can be strongly mitigated by accessible community and social support networks.
+*   **(b) Usefulness:** Provides a clear avenue for how our project can help single parents. By mapping out community hubs, group play environments, and safe public spaces, our app can act as a catalyst for single parents to find and build local "social support" networks while their children play.
+*   **(c) Potential shortcomings:** The study measures perceived support broadly across different demographics rather than analyzing specific tools. Our project will need to prove that a digital app can successfully bridge the gap to actual physical community support.
 
 ## Shan
 **[OpenStreetMap history for intrinsic quality assessment](https://link.springer.com/article/10.1186/s40965-019-0067-x)**
