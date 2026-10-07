@@ -8,9 +8,9 @@ Here is the updated Markdown draft of your CSE 6242 project proposal, incorporat
 ---
 
 ## Abstract and Project Objective (Heilmeier Question #1)
-We are aiming to create the Child Utility Planner (CUP), a tool that helps parents and caregivers of children ages 1–8 identify activities that fit their schedule, distance constraints, and developmental needs while minimizing decision fatigue.
+This project proposes the development of the Child Utility Planner (CUP), an intelligent scheduling tool designed to assist parents and caregivers of children ages 1–8 in identifying developmentally appropriate activities that satisfy strict schedule and distance constraints. By integrating spatial queries from OpenStreetMap and Overture Maps with a multi-objective scheduling algorithm, CUP aims to automate the generation of time-optimized daily itineraries, thereby significantly reducing caregiver decision fatigue.
 
-Our proposed approach for the Child Utility Planner (CUP) is to build a context-aware recommendation engine that uses filtering and clustering algorithms to match a child's age and real-time family constraints (like schedules, distance, and weather) with suitable nearby activities. To power this, we will leverage rich Point of Interest (POI) data from OpenStreetMap (OSM) and Overture Maps. The primary risks are POI data sparsity for child-specific amenities and the recommendation "cold-start" problem. We will mitigate these by utilizing Overture’s highly structured, validated datasets to ensure data quality, alongside baseline recommendation fallbacks and text-matching heuristics. Because this is an academic project relying entirely on free, open-source data, the monetary cost is zero, requiring only our team time and computational effort over the semester.
+Our approach centers on building a context-aware recommendation engine utilizing spatial filtering and clustering algorithms to align real-time family constraints (e.g., temporal availability, geographic proximity, and meteorological conditions) with suitable Points of Interest (POIs). The primary technical risks include POI data sparsity regarding child-specific amenities and the recommendation "cold-start" problem. These risks will be mitigated by employing Overture’s highly structured datasets for data validation, coupled with text-matching heuristics and robust baseline recommendation fallbacks. As an academic endeavor utilizing exclusively open-source data, the project incurs zero monetary cost, requiring solely the research and computational effort of the project team over the course of the semester.
 
 ---
 
@@ -23,12 +23,12 @@ Prior research demonstrates the importance of varied activities in childhood. Ac
 Urban design and neighborhood playability play a foundational role in early childhood development. Research into neighborhood effects indicates that spatial accessibility to safe parks and recreational areas correlates strongly with increased physical activity and lower sedentary behavior in young children. Evaluating neighborhood playability requires analyzing not just physical distance, but traffic safety, sidewalk connectivity, and environmental quality. Child-friendly urban design frameworks emphasize integrating human-scaled amenities, which directly lowers the logistical friction caregivers face when planning daily outings.
 
 ### Theme #3: Recommendation Systems, Data, and Interface Design
-Shan's research establishes that contextual information such as location, time, distance, weather, and user characteristics can improve POI recommendations, but those systems aren't specifically designed around children. While Max's research then establishes relevant UI and data considerations: family calendars play an important role in planning; digital maps should emphasize information relevant to the user's task; and reliable POI applications depend on accurate location, category, and temporal data.
+Previous literature establishes that integrating contextual variables—such as location, time, distance, and weather—significantly enhances POI recommendation accuracy; however, existing systems are rarely optimized for pediatric applications. Furthermore, research underscores critical user interface (UI) and data considerations: digital mapping interfaces must prioritize task-relevant information, and reliable spatial applications demand high-fidelity temporal and categorical data. Ultimately, bridging the gap between the cognitive burden of parenting and the utility of geographic data requires an automated, multi-constraint routing algorithm capable of translating complex logistical parameters into actionable, stress-reducing itineraries.
 
 ---
 
 ## Proposed Approach, Innovations, and Risk Mitigation (Heilmeier Questions 3, 5, 6, and 7)
-Our core innovation is synthesizing open-source geographic data with pediatric development guidelines and real-time caregiver constraints into a single, automated planning tool. If successful, CUP will significantly reduce the cognitive load and decision fatigue experienced by parents trying to find age-appropriate, varied activities. 
+The core innovation of this project lies in the synthesis of open-source geographic data, pediatric developmental guidelines, and real-time user constraints into a unified, automated planning infrastructure. If successful, CUP will demonstrably reduce the cognitive load associated with sourcing age-appropriate, varied activities. To achieve this objective, the system will employ a rigorous algorithmic framework incorporating spatial joins and k-d trees for the efficient spatial indexing of POIs, alongside time-window optimization techniques to map these discrete locations against complex daily schedules.
 
 ### Data Sparsity & Mitigation Strategy
 While OpenStreetMap (OSM) and Overture Maps provide robust foundations for general geographic features, **child-specific amenity tags** (e.g., toddler-safe playgrounds, nursing rooms, soft-play areas) are notoriously sparse, unstructured, or missing across standard POI taxonomies. Relying solely on strict tag-matching risks degrading the user experience into generic park or commercial searches. 
@@ -55,8 +55,8 @@ To mitigate this, we will implement a multi-layered enrichment and fallback stra
 
 **Effort Distribution:** All team members are expected to contribute a similar amount of effort throughout the project.  
 
-* **Midterm Checkpoint (H9):** Cleaned dataset, selected model, baseline recommendation approach, and initial interactive visualization. 
-* **Final Checkpoint:** Integrated CUP application evaluated for recommendation quality, computational performance (latency under 500ms), and usability.
+* **Midterm Checkpoint (H9):** Complete Overture/OSM bounding-box data ingestion pipeline, establish baseline spatial indexing, and develop an initial interactive visualization. 
+* **Final Checkpoint:** Integrated CUP application evaluated for recommendation quality, computational performance (query latency under 2 seconds, spatial matching accuracy), and usability.
 
 ---
 
