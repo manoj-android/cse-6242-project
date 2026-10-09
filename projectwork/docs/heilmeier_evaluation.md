@@ -30,12 +30,11 @@ Today, parents usually find activities through a fragmented series of search eng
 ## 3. What's new in your approach? Why will it be successful?
 
 **Answer:**
-Unlike static search engines or maps that rely purely on proximity or popularity, our approach uses a context-aware Learning-to-Rank (LTR) model to computationally balance competing variables: developmental entropy, travel time, and weather/environment. It will be successful because we are surfacing this complex algorithmic optimization through an interactive visual interface (e.g., D3.js parallel coordinates). This allows parents to dynamically adjust their priorities in real-time without being overwhelmed by data.
+Unlike static search engines or maps that rely purely on proximity or popularity, our approach uses a context-aware Learning-to-Rank (LTR) model to computationally balance competing variables: developmental entropy, travel time, and weather/environment. It will be successful because we are surfacing this complex algorithmic optimization through an interactive visual interface (e.g., D3.js). This allows parents to dynamically adjust their priorities in real-time without being overwhelmed by data.
 
 **Article Mapping Review:**
-*   **Mapped:** Shan (Context-Aware Location Recommendation System), Jay (Understanding Child-Friendly Urban Design), Shan (Impact of Contextual Information on POI).
-*   **🚩 FLAG - Missing UI Context:** Shan's articles perfectly support the "new computational approach" (the ML/Recommendation side). However, the mapping is missing support for the *Interactive Visual UI* novelty. 
-*   **Correction:** You should move Max's articles on UI design (e.g., *Visual Analytics for Multi-criteria Decision Making*) here to support why the visual interface will be successful.
+*   **Mapped:** Shan (Context-Aware Location Recommendation System), Jay (Understanding Child-Friendly Urban Design), Shan (Impact of Contextual Information on POI), **Max (The Calendar is Crucial)**, **Max (The role of user context in the design of mobile map applications)**.
+*   **✅ Perfect Fit:** Shan and Jay's articles support the computational approach (ML/Recommendation side). By moving Max's articles here, we now have strong support for why the *Interactive Visual UI* will be successful: integrating familiar scheduling elements (calendars) and centering digital map applications strictly around task-relevant information for the parents.
 
 ---
 
@@ -105,6 +104,5 @@ The project will take approximately 10 weeks, culminating in early December. The
 *   **Final Exam:** The successful deployment of the web-based interactive visual dashboard, where a user can input a location, time, and child profile, and instantly dynamically explore algorithmically ranked activity itineraries.
 
 **Article Mapping Review:**
-*   **Mapped:** Max (UI Design Article #1 - The Calendar is Crucial), Max (UI Design Article #2 - Mobile Map Applications).
-*   **🚩 FLAG - Completely Irrelevant:** This question is strictly about project management milestones and deliverables. Literature review articles should **not** be mapped here. 
-*   **Correction:** Remove the mapped articles from this section entirely. (Move Max's UI articles to Question 3 to support why the interactive visualization approach is novel and useful).
+*   **Mapped:** N/A.
+*   **✅ Perfect Fit:** Literature is not needed for this question. (Max's UI articles were successfully migrated to Question 3 to support the visual UI approach).
