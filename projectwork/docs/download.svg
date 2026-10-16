@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1253.813 812.45" width="1253.813" height="812.45" style="--bg:#fcfcfc;--fg:#0a0a0a;--line:#808080;--accent:#2364e1;--muted:#5c5c5c;--surface:#f5f5f5;--border:#d6d6d6">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Google%20Sans:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Google Sans', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 85%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="seq-arrow" markerWidth="8" markerHeight="5" refX="8" refY="2.5" orient="auto-start-reverse">
+    <polygon points="0 0, 8 2.5, 0 5" fill="var(--_arrow)" />
+  </marker>
+  <marker id="seq-arrow-open" markerWidth="8" markerHeight="5" refX="8" refY="2.5" orient="auto-start-reverse">
+    <polyline points="0 0, 8 2.5, 0 5" fill="none" stroke="var(--_arrow)" stroke-width="1" />
+  </marker>
+</defs>
+<line class="lifeline" data-actor="Parent" x1="93.88099999999997" y1="92.45" x2="93.88099999999997" y2="782.45" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line class="lifeline" data-actor="UI" x1="233.88099999999997" y1="70" x2="233.88099999999997" y2="782.45" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line class="lifeline" data-actor="Coord" x1="400.45599999999996" y1="70" x2="400.45599999999996" y2="782.45" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line class="lifeline" data-actor="DataSyn" x1="652.246" y1="70" x2="652.246" y2="782.45" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line class="lifeline" data-actor="RecEng" x1="940.3449999999999" y1="70" x2="940.3449999999999" y2="782.45" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<g class="message" data-from="Parent" data-to="UI" data-label="Sets developmental goals, time constraints, &amp; location." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="93.88099999999997" y1="112.45" x2="233.88099999999997" y2="112.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="163.88099999999997" y="102.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Sets developmental goals, time constraints, &amp; location.</text>
+</g>
+<g class="message" data-from="UI" data-to="Coord" data-label="Submits Planning Request." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="233.88099999999997" y1="152.45" x2="400.45599999999996" y2="152.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="317.1685" y="142.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Submits Planning Request.</text>
+</g>
+<g class="message" data-from="Coord" data-to="DataSyn" data-label="Request localized &amp; filtered Points of Interest (POIs)." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="400.45599999999996" y1="207.45" x2="652.246" y2="207.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="526.351" y="197.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Request localized &amp; filtered Points of Interest (POIs).</text>
+</g>
+<g class="message" data-from="DataSyn" data-to="DataSyn" data-label="Aggregates OSM &amp; Overture Maps data." data-line-style="solid" data-arrow-head="filled" data-self="true">
+  <polyline points="652.246,247.45 682.246,247.45 682.246,267.45 652.246,267.45" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="690.246" y="257.45" font-size="11" text-anchor="start" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Aggregates OSM &amp; Overture Maps data.</text>
+</g>
+<g class="message" data-from="DataSyn" data-to="DataSyn" data-label="Cleans, deduplicates, and spatially indexes data." data-line-style="solid" data-arrow-head="filled" data-self="true">
+  <polyline points="652.246,317.45 682.246,317.45 682.246,337.45 652.246,337.45" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="690.246" y="327.45" font-size="11" text-anchor="start" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Cleans, deduplicates, and spatially indexes data.</text>
+</g>
+<g class="message" data-from="DataSyn" data-to="Coord" data-label="Returns validated POI dataset." data-line-style="dashed" data-arrow-head="filled" data-self="false">
+  <line x1="652.246" y1="387.45" x2="400.45599999999996" y2="387.45" stroke="var(--_line)" stroke-width="1" stroke-dasharray="6 4" marker-end="url(#seq-arrow)" />
+  <text x="526.351" y="377.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Returns validated POI dataset.</text>
+</g>
+<g class="message" data-from="Coord" data-to="RecEng" data-label="Sends POI dataset + Parent constraints/goals." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="400.45599999999996" y1="427.45" x2="940.3449999999999" y2="427.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="670.4005" y="417.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Sends POI dataset + Parent constraints/goals.</text>
+</g>
+<g class="message" data-from="RecEng" data-to="RecEng" data-label="Scores POIs against child development framework." data-line-style="solid" data-arrow-head="filled" data-self="true">
+  <polyline points="940.3449999999999,467.45 970.3449999999999,467.45 970.3449999999999,487.45 940.3449999999999,487.45" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="978.3449999999999" y="477.45" font-size="11" text-anchor="start" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Scores POIs against child development framework.</text>
+</g>
+<g class="message" data-from="RecEng" data-to="RecEng" data-label="Applies heuristic routing to sequence activities." data-line-style="solid" data-arrow-head="filled" data-self="true">
+  <polyline points="940.3449999999999,537.45 970.3449999999999,537.45 970.3449999999999,557.45 940.3449999999999,557.45" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="978.3449999999999" y="547.45" font-size="11" text-anchor="start" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Applies heuristic routing to sequence activities.</text>
+</g>
+<g class="message" data-from="RecEng" data-to="Coord" data-label="Returns optimized, time-sensitive itinerary." data-line-style="dashed" data-arrow-head="filled" data-self="false">
+  <line x1="940.3449999999999" y1="607.45" x2="400.45599999999996" y2="607.45" stroke="var(--_line)" stroke-width="1" stroke-dasharray="6 4" marker-end="url(#seq-arrow)" />
+  <text x="670.4005" y="597.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Returns optimized, time-sensitive itinerary.</text>
+</g>
+<g class="message" data-from="Coord" data-to="UI" data-label="Displays final Route &amp; Schedule." data-line-style="dashed" data-arrow-head="filled" data-self="false">
+  <line x1="400.45599999999996" y1="662.45" x2="233.88099999999997" y2="662.45" stroke="var(--_line)" stroke-width="1" stroke-dasharray="6 4" marker-end="url(#seq-arrow)" />
+  <text x="317.1685" y="652.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Displays final Route &amp; Schedule.</text>
+</g>
+<g class="message" data-from="Parent" data-to="UI" data-label="Views agenda and provides usage/preference feedback." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="93.88099999999997" y1="702.45" x2="233.88099999999997" y2="702.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="163.88099999999997" y="692.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Views agenda and provides usage/preference feedback.</text>
+</g>
+<g class="message" data-from="UI" data-to="Coord" data-label="Logs interaction data for system evaluation." data-line-style="solid" data-arrow-head="filled" data-self="false">
+  <line x1="233.88099999999997" y1="742.45" x2="400.45599999999996" y2="742.45" stroke="var(--_line)" stroke-width="1" marker-end="url(#seq-arrow)" />
+  <text x="317.1685" y="732.45" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Logs interaction data for system evaluation.</text>
+</g>
+<g class="note" data-position="over" data-actors="Coord,RecEng">
+  <polygon points="575.6034999999999,160.45 759.1974999999999,160.45 765.1974999999999,166.45 765.1974999999999,183.45 575.6034999999999,183.45" fill="var(--bg)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <polygon points="759.1974999999999,160.45 765.1974999999999,166.45 759.1974999999999,166.45" fill="var(--_inner-stroke)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="670.4005" y="171.95" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Phase 2: Processing &amp; Optimization</text>
+</g>
+<g class="note" data-position="over" data-actors="Parent,UI">
+  <polygon points="85.71599999999997,615.45 236.046,615.45 242.046,621.45 242.046,638.45 85.71599999999997,638.45" fill="var(--bg)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <polygon points="236.046,615.45 242.046,621.45 236.046,621.45" fill="var(--_inner-stroke)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="163.88099999999997" y="626.95" font-size="11" text-anchor="middle" font-weight="400" fill="var(--_text-muted)" dy="3.8499999999999996">Phase 3: Output &amp; Feedback</text>
+</g>
+<g class="actor" data-id="Parent" data-label="Parent" data-type="actor">
+  <g transform="translate(75.88099999999997,32) scale(1.5)">
+    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" fill="none" stroke="var(--_line)" stroke-width="0.6666666666666666" />
+    <path d="M15 10C15 11.6569 13.6569 13 12 13C10.3431 13 9 11.6569 9 10C9 8.34315 10.3431 7 12 7C13.6569 7 15 8.34315 15 10Z" fill="none" stroke="var(--_line)" stroke-width="0.6666666666666666" />
+    <path d="M5.62842 18.3563C7.08963 17.0398 9.39997 16 12 16C14.6 16 16.9104 17.0398 18.3716 18.3563" fill="none" stroke="var(--_line)" stroke-width="0.6666666666666666" />
+  </g>
+  <text x="93.88099999999997" y="84" font-size="13" text-anchor="middle" font-weight="500" fill="var(--_text)" dy="4.55">Parent</text>
+</g>
+<g class="actor" data-id="UI" data-label="SPARK UI" data-type="participant">
+  <rect x="187.63649999999996" y="30" width="92.489" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="233.88099999999997" y="50" font-size="13" text-anchor="middle" font-weight="500" fill="var(--_text)" dy="4.55">SPARK UI</text>
+</g>
+<g class="actor" data-id="Coord" data-label="Backend Coordinator" data-type="participant">
+  <rect x="320.1255" y="30" width="160.661" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="400.45599999999996" y="50" font-size="13" text-anchor="middle" font-weight="500" fill="var(--_text)" dy="4.55">Backend Coordinator</text>
+</g>
+<g class="actor" data-id="DataSyn" data-label="Data Synthesis &amp; Reconciliation Module" data-type="participant">
+  <rect x="520.7865" y="30" width="262.9189999999999" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="652.246" y="50" font-size="13" text-anchor="middle" font-weight="500" fill="var(--_text)" dy="4.55">Data Synthesis &amp; Reconciliation Module</text>
+</g>
+<g class="actor" data-id="RecEng" data-label="Recommendation &amp; Routing Engine" data-type="participant">
+  <rect x="823.7054999999999" y="30" width="233.27899999999997" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="940.3449999999999" y="50" font-size="13" text-anchor="middle" font-weight="500" fill="var(--_text)" dy="4.55">Recommendation &amp; Routing Engine</text>
+</g>
+</svg>
