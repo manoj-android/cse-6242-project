@@ -27,7 +27,11 @@ $$\max_{\mathcal{R} \subseteq \mathcal{V}} \quad J(\mathcal{R}) = \sum_{v \in \m
 
 $$\text{subject to:} \quad T_{\text{total}}(\mathcal{R}) \le T_{\text{budget}}, \quad \text{Arrival}(v) \in [\text{Open}_v, \text{Close}_v], \quad |\mathcal{R}| \le K$$
 
-Where $\mathbf{s}_v = [C_v, P_v, S_v, E_v]^\top \in [0, 5]^4$ represents the venue's developmental score vector across **Cognitive, Physical, Social, and Emotional Restoration** dimensions, and $\mathbf{w}_{\text{user}}$ is interactively steered via visual UI controls.
+Where the venue developmental score vector is defined as:
+
+$$\mathbf{s}_v = [C_v, P_v, S_v, E_v]^\top \in [0, 5]^4$$
+
+representing developmental benefits across **Cognitive ($C_v$), Physical ($P_v$), Social ($S_v$), and Emotional Restoration ($E_v$)** dimensions, while user preference weights $\mathbf{w}_{\text{user}}$ are interactively steered via visual UI controls.
 
 ### 2.2 User Analytical Tasks (InfoVis Task Abstraction)
 Grounded in Ben Shneiderman’s Information-Seeking Mantra [18] and Tamara Munzner’s visualization task typology [19], SPARK is structured around four primary analytical user tasks:
@@ -105,7 +109,11 @@ The SPARK interface is designed as an interactive **Human-in-the-Loop decision s
 * **Embedded Spatial Indexing with SQLite 3 (Week 2):** To ensure zero-daemon portability during academic grading, data is indexed in an embedded **SQLite 3** database (`spark.db`) utilizing SQLite’s native **2D R\*Tree Virtual Table module** (`rtree`), executing spatial range queries across 18,000+ points in **$<10\text{ms}$**.
 
 ### 4.3 Algorithmic Modeling: Scoring, Clustering & Graph Routing (Weeks 8–10)
-* **Pediatric Vector-Space Scoring Model:** Every venue $v$ receives an explainable 4D score vector $\mathbf{s}_v = [C_v, P_v, S_v, E_v]^\top \in [0.0, 5.0]^4$ formulated as $s_v(d) = \min(5.0, \mathcal{B}(c_v, d) + \sum_{k \in \mathcal{A}_v} w_{k, d})$, combining an **Archetype Baseline** $\mathcal{B}(c_v, d)$ with additive micro-feature tag modifiers $w_{k, d}$ (e.g., standard playground $[1.5, 4.0, 3.5, 2.0]$ modified by `climbing=yes` ($+0.5 P$) and `shade=canopy` ($+0.8 E$)).
+* **Pediatric Vector-Space Scoring Model:** Every venue $v$ receives an explainable 4D score vector:
+  $$\mathbf{s}_v = [C_v, P_v, S_v, E_v]^\top \in [0.0, 5.0]^4$$
+  formulated across dimension $d$ as:
+  $$s_v(d) = \min\left(5.0, \; \mathcal{B}(c_v, d) + \sum_{k \in \mathcal{A}_v} w_{k, d}\right)$$
+  combining an **Archetype Baseline** $\mathcal{B}(c_v, d)$ with additive micro-feature tag modifiers $w_{k, d}$ (e.g., standard playground $[1.5, 4.0, 3.5, 2.0]$ modified by `climbing=yes` ($+0.5 P$) and `shade=canopy` ($+0.8 E$)).
   * *Methodological Validation:* Evaluated on a 100-venue ground-truth benchmark, demonstrating high clinical inter-rater reliability (**Cohen's Kappa $\kappa = 0.84$**, Intra-Class Correlation **$\text{ICC} = 0.88$**) and automated pipeline accuracy (**$\text{MAE} = 0.38$**, **Spearman $\rho = 0.86, p < 0.001$**).
 * **Spatial Candidate Clustering ($k$-Means):** Candidate venues within the family's geographic envelope are clustered into micro-neighborhood play zones using **$k$-Means clustering** on Haversine coordinates, pruning the routing search space to the top $M \le 30$ reachable POIs.
 * **Constrained Graph Routing Optimization:** Modeled as a **Time-Windowed Orienteering Problem (TW-OP)** on a weighted directed graph $G = (V, E)$ using an empirical road circuity model ($\tau = 1.35, v = 35\text{ mph}$). Solved via Google OR-Tools Guided Local Search and a pure-Python **2-Opt heuristic solver** fallback, generating optimal multi-stop schedules in **$<300\text{ms}$** to maintain fluid visual interaction.
