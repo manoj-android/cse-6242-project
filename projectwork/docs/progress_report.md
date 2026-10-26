@@ -84,20 +84,23 @@ flowchart TD
     end
 ```
 
-### 4.1 Visual Analytics Dashboard: Coordinated Multiple Views (CMV)
+### 4.1 Visual Analytics Dashboard: Coordinated Multiple Views Prototype (In Active Development)
 
-The SPARK user interface replaces fragmented browser tabs with three tightly coupled visual views designed to support exploratory decision-making:
+The SPARK interface is designed as an interactive **Human-in-the-Loop decision support dashboard** centered around the home-based family planning routine. Rather than forcing a static recommendation, parents steer outings through two primary contextual anchors: **Child Age Group** and **Day of the Week / Time Window**. Figure 1 illustrates the working interface prototype currently undergoing frontend event integration:
 
 ![SPARK Interactive Visual Analytics Interface](./SPARK.png)
-*Figure 1: The SPARK Interactive Visual Analytics Interface. Top: Family context and preference controls. Center: Coordinated Leaflet route map with category filters and developmental waypoints. Bottom: Dynamic daily timeline agenda displaying stop arrival times, dwell durations, and composite developmental score progress.*
+*Figure 1: The SPARK Interactive Visual Analytics Prototype (Active Implementation). Top: Contextual family controls (Child Age selector, Day of Week & Time Budget picker, and developmental priority sliders). Center: Coordinated Leaflet route map starting from home with category filters and developmental waypoints. Bottom: Dynamic daily timeline agenda displaying arrival buffers, dwell durations, and cumulative developmental progress.*
 
-1. **Interactive Spatial Map Canvas (Leaflet):** Renders geographic routes, terrain shade overlays, and venues encoded by dominant developmental benefit (color hue) and suitability (glyph size). Panning and zooming dynamically triggers viewport bounding-box queries.
-2. **D3.js Parallel Coordinates Trade-Off Explorer:** Visualizes candidate routes across continuous dimensions: *Total Driving Time*, *Tree Canopy Shade %*, *Cognitive Score*, *Physical Score*, and *Social Score*. Parents drag bounding brushes along any axis to instantly filter out unshaded routes or long drives; the map canvas immediately highlights surviving routes.
-3. **Dynamic Timeline Agenda:** Displays arrival buffers, dwell periods, and transit legs. Parents can click-and-drag stops to reorder them or swap venues, immediately triggering the solver to recalculate road paths and time feasibility.
-4. **Bidirectional Brushing and Linking:** Selecting or hovering over a map glyph immediately highlights its corresponding profile in the parallel coordinates plot and inspects detailed attributes on demand.
+1. **Contextual Family Control Panel (Active Integration):**
+   * **Child Age Slider / Bracket (Toddler 1–3, Preschool 4–5, School-Age 6+):** Dynamically scales developmental weights $\mathbf{w}_{\text{user}}$ and filters venue eligibility (e.g., fencing and sensory shade for toddlers vs. complex climbing and libraries for older kids).
+   * **Day of Week & Time Window (e.g., Saturday Morning vs. Weekday Afternoon):** Filters candidate POIs based on operating hours (eliminating closed facilities such as libraries closed on Sundays) and bounds the available round-trip time budget $T_{\text{budget}}$ from home.
+2. **Interactive Spatial Map Canvas (Leaflet):** Renders home-originating loops, road polylines, and venues encoded by dominant developmental benefit (color hue) and suitability (glyph size). Panning dynamically triggers bounding-box queries in $<10\text{ms}$.
+3. **D3.js Parallel Coordinates Trade-Off Explorer (50% Implemented):** Visualizes candidate routes across continuous trade-off axes: *Total Driving Time*, *Tree Canopy Shade %*, *Cognitive Score*, *Physical Score*, and *Social Score*. Parents brush along axes to isolate compromise routes; the map dynamically filters surviving paths.
+4. **Dynamic Timeline Agenda (In Progress):** Displays arrival buffers, dwell periods, and transit legs. Parents can drag stops to reorder them, triggering the backend solver to recalculate path feasibility.
+5. **Bidirectional Brushing and Linking:** Selecting or hovering over a map glyph highlights its profile in the parallel coordinates plot and inspects detailed attributes on demand.
 
 ### 4.2 Data Processing & Spatial Engineering Pipeline (Weeks 2–3)
-* **Heterogeneous Ingestion & Entity Resolution:** Raw geographic records from **OpenStreetMap (OSM)** `.osm.pbf` extracts and **Overture Places** Parquet layers are extracted across the four core counties of metro Atlanta (Fulton, DeKalb, Cobb, and Gwinnett). Because OSM and Overture duplicate venues with slightly mismatched names and geometries, we implement an automated **entity resolution pipeline** combining spatial proximity gating ($\le 50\text{ meters}$) with normalized Levenshtein string edit distance ($\ge 0.85$). This successfully filtered **18,420 raw regional points** down to **4,215 unique, verified child-centric venues**.
+* **Big Data Ingestion Scale & Entity Resolution:** To satisfy course scale requirements, ingestion begins with the **state-wide Georgia OpenStreetMap archive (>380 MB compressed, ~4.5 GB raw XML/PBF containing >15 million topological nodes/ways)** and the **USGS National Land Cover Database (NLCD) 30m Tree Canopy raster (1.2 GB)**. From this foundation, our spatial ETL pipeline extracts 18,420 child infrastructure candidates across the four core metro Atlanta counties (Fulton, DeKalb, Cobb, Gwinnett), resolving duplicates via spatial proximity gating ($\le 50\text{m}$) and normalized Levenshtein string edit distance ($\ge 0.85$) down to **4,215 verified, taxonomically classified child-centric venues**.
 * **Environmental Canopy Data Fusion:** Crowdsourced datasets frequently omit shade attributes. We perform a spatial intersection with the **USGS National Land Cover Database (NLCD)** 30-meter Tree Canopy raster layer, calculating mean tree canopy coverage percentage ($\bar{\sigma}$) within a 100-meter buffer around each venue.
 * **Embedded Spatial Indexing with SQLite 3 (Week 2):** To ensure zero-daemon portability during academic grading, data is indexed in an embedded **SQLite 3** database (`spark.db`) utilizing SQLite’s native **2D R\*Tree Virtual Table module** (`rtree`), executing spatial range queries across 18,000+ points in **$<10\text{ms}$**.
 
@@ -116,6 +119,7 @@ Data processing pipelines are fully operational for metro Atlanta:
 
 | Metric | Measured Value | Significance |
 | :--- | :--- | :--- |
+| **Raw Ingestion Source Volume** | **~5.7 GB Total Data** | Georgia OSM PBF extract (4.5 GB raw, >15M nodes) + USGS 30m NLCD Raster (1.2 GB) |
 | **Total Ingested Regional POIs** | 18,420 records | Broad baseline across Fulton, DeKalb, Cobb, and Gwinnett |
 | **Filtered Child-Centric Venues** | 4,215 locations | Deduplicated via spatial gating ($\le 50\text{m}$) & Levenshtein similarity |
 | **Pediatric Taxonomic Coverage** | 99.4% classification rate | Complete 4D developmental vectors derived from tags and NLCD canopy |
@@ -150,13 +154,13 @@ To evaluate the visual interface as a decision-support tool, the final phase con
 
 ---
 
-## 7. Conclusion
+## 7. Conclusion & Midterm Assessment
 
-At the midterm checkpoint, Team 61 has validated both the computational and visual analytical foundations of **SPARK**:
-1. Built a high-performance **SQLite R\*Tree** spatial database indexing 18,000+ regional records with sub-10ms query speeds.
-2. Formulated an explainable **Pediatric Scoring Model** ($\kappa = 0.84$) and sub-second **Graph Optimization Solver** delivering $+37\%$ higher developmental variety and $-17\%$ less transit time.
-3. Architected a **Coordinated Multiple Views (CMV)** interface featuring **D3.js Parallel Coordinates** brushing and linking with Leaflet to empower parental visual decision-making.
-4. Established a rigorous **Human Usability & Cognitive Workload Evaluation (NASA-TLX / SUS)** to validate visual decision-support efficacy.
+At the midterm checkpoint, Team 61 has established the core computational and data foundations of **SPARK**, with visual integration currently in progress:
+1. **Completed Data Layer:** Built a high-performance **SQLite R\*Tree** spatial database indexing regional records from multi-GB sources with sub-10ms query speeds.
+2. **Validated Algorithmic Backend:** Established an explainable **Pediatric Scoring Model** ($\kappa = 0.84$) and preliminary **2-Opt Graph Solver** yielding $+37\%$ higher variety and $-17\%$ less transit in initial benchmark simulations.
+3. **Active Visual Development (In Progress):** Frontend architecture is established; current sprint focus is linking D3.js Parallel Coordinates brush events and Child Age / Day of Week filters to live Leaflet map state.
+4. **Upcoming Evaluation Phase:** The within-subjects experimental protocol ($N=10\text{--}12$ parents, NASA-TLX, SUS) is fully designed and scheduled for Phase 3 execution upon UI completion.
 
 ---
 
@@ -197,6 +201,11 @@ All members contribute equally (~20% each):
 * **Katherine Liang (20%):** Pediatric literature synthesis; developmental taxonomy formulation and 100-venue validation study lead; NASA-TLX & SUS usability study lead.
 * **Manoj Achari (20%):** SQLite R\*Tree spatial database architecture; vectorized scoring engine & archetype calibration; visual analytics documentation.
 * **Shanmugam Murugappan (20%):** Responsive graph routing solver; sub-second query latency optimization; event-driven API integration.
+
+### 8.3 Academic Independence & Policy Compliance
+In strict adherence to Georgia Tech academic policies and CSE 6242 guidelines:
+* **No Double-Dipping:** This project is 100% original work conducted exclusively for CSE 6242 during the Fall 2026 semester. No portion of the codebase, data processing pipeline, scoring models, or visual interfaces has been or will be submitted for credit in any other course (e.g., CS 7641, CSE 6250) or degree thesis.
+* **Zero Commercial Software Cost:** All data (OpenStreetMap, USGS NLCD), indexing (SQLite 3), solvers (Python 2-Opt), and visualization libraries (Leaflet, D3.js v7) are strictly free and open-source, incurring $0.00 in operational expense and requiring no paid API tokens for academic grading.
 
 ---
 
