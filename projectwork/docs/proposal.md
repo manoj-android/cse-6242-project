@@ -11,8 +11,11 @@
 We are building an interactive, web-based visual analytics dashboard called the Child Utility Playbook (SPARK / ToddlerSprout). It is a tool that helps parents and guardians identify activities that fit their child’s age, interests, and developmental needs while simultaneously considering logistical factors important to the parent, such as travel distance, cost, and time constraints. The tool allows parents to visually compare activity options and automatically generates an efficient itinerary optimized for both child development and parent convenience.
 
 ### 2. The Problem Today & Current Limits (Heilmeier Q2)
-- Today, parents usually find activities through a fragmented series of search engines, digital maps, parent blogs, social media groups, and community calendars. This requires them to manually cross-reference logistical constraints (like location and hours) with what is actually developmentally appropriate for their child.
-- Currently, activity-search methods like Google Maps do not bring developmental milestones and environmental considerations (like shade or crowd levels) into a single optimized tool. An integrated, data-driven approach is needed to reduce this cognitive load and "decision fatigue".
+- Today, parents usually find activities through a fragmented series of search engines, digital maps, parent blogs, social media groups, and community calendars. This requires them to manually cross-reference logistical constraints (like location and hours) with what is actually developmentally appropriate for their child — a process documented to significantly increase parental cognitive load [1, 2].
+- The closest prior technical systems are **Aurigo** (Yahi et al., IUI 2015) [A] — a human-in-the-loop tour planner combining route optimization with interactive POI visualization — and **PASSAGE** (Dasigi et al., IUI 2016) [B], a bi-objective route system with visual safety vs. distance trade-off exploration. While these establish the interactive itinerary paradigm, they share three fundamental limitations for family use:
+  1. **No developmental objective:** Venues are scored by Yelp popularity and category filters, not by what they do for a child's cognitive, physical, social, or emotional growth. A playground and a coffee shop are treated identically if rated equally.
+  2. **No multi-domain balance constraint:** Both systems optimize for the best individual stops independently [12, 13]. A parent's real need — a morning that balances physical play, a cognitively stimulating stop, and a shaded rest — requires joint schedule optimization, not item ranking.
+  3. **No environmental health signal:** Neither system incorporates shade canopy, heat index, or UV coverage as a routing dimension. For young children in Southern climates, midday shade is a safety constraint [4], not a preference — yet no existing tool operationalizes this.
 
 ---
 
@@ -108,8 +111,8 @@ flowchart LR
 | # | Question | Project Answer |
 | :- | :--- | :--- |
 | **Q1** | **What are you trying to do?** | Build the Child Utility Playbook to help parents identify activities fitting child developmental needs and parent logistical constraints. |
-| **Q2** | **How is it done today & limits?** | Parents manually cross-reference maps and blogs; tools like Google Maps lack developmental and microclimate (shade) context. |
-| **Q3** | **What's new in your approach?** | Fusing LTR models with D3.js visual analytics so parents can dynamically balance complex variables like travel, weather, and development. |
+| **Q2** | **How is it done today & limits?** | Parents manually cross-reference fragmented tools (Google Maps, Yelp, calendars). The closest prior systems — Aurigo [A] (IUI 2015) and PASSAGE [B] (IUI 2016) — offer interactive itinerary planning but share three critical limits: (1) no developmental scoring objective — venues are rated by crowd popularity, not child development value; (2) no multi-domain balance constraint — they rank stops independently, not as a developmentally balanced schedule; (3) no environmental health signal — neither incorporates shade canopy or heat as a safety routing dimension. |
+| **Q3** | **What's new in your approach?** | Three specific contributions beyond Aurigo [A] and prior POI recommendation systems [12, 13]: (1) **Pediatric CPSE Scoring Model** — every venue receives a 4D developmental score vector [C, P, S, E] derived from OSM tags and mapped to CDC milestone criteria, replacing popularity signals with developmental science; (2) **Age-aware weight scaling** — the optimization objective function itself changes by child age bracket (Toddler/Preschool/School-Age), not just filters; (3) **USGS NLCD canopy as a hard routing constraint** — tree canopy coverage is embedded in the routing objective, elevating shade from a preference to a spatial safety guarantee. |
 | **Q4** | **Who cares?** | Exhausted parents and caregivers suffering from decision fatigue. |
 | **Q5** | **How do you measure impact?** | Ranking metrics like NDCG vs. distance/popularity baselines, and user testing for reduced "time-to-decision". |
 | **Q6** | **Risks and payoffs?** | Risk: Spatial data sparsity (missing OSM tags). Mitigation: Fusing multiple datasets (OSM + USGS). Payoff: A scalable, personalized developmental routing engine. |
@@ -124,3 +127,10 @@ flowchart LR
 1. **Data Completeness:** How will we handle regions where OpenStreetMap lacks detailed tagging for playground amenities or shade?
 2. **UI Simplification:** Are parallel coordinates too complex for the average parent? Should we offer a simplified "wizard" view as an alternative?
 3. **Evaluation Strategy:** Besides NDCG, what other metrics could capture the "developmental entropy" or variety of the recommendations?
+
+---
+
+## 📚 Key Prior Art References
+
+- [A] A. Yahi, A. Chassang, L. Raynaud, H. Duthil, and D. H. Chau, "Aurigo: An Interactive Tour Planning Tool for Targeted Touristic Trip Recommendation," in *Proc. ACM International Conference on Intelligent User Interfaces (IUI)*, 2015.
+- [B] P. Dasigi et al., "PASSAGE: A Travel Safety Assistant with Safe Path Recommendations for Pedestrians," in *Proc. ACM International Conference on Intelligent User Interfaces (IUI)*, 2016.

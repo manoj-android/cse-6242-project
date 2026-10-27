@@ -9,10 +9,10 @@
 
 Daily parenting involves a taxing "invisible mental load": orchestrating enriching, developmentally balanced outings for children under rigid real-world constraints [1, 2]. Pediatric science proves that varied physical play, sensory outdoor exploration, and social interaction are vital biological prerequisites for early neurodevelopment and anxiety resilience [3, 6, 9].
 
-However, existing navigation tools fail families because they treat outings transactionally:
-* **Commercial Map Apps** reduce destinations to commercial dots; a playground is categorized identically to a gas station, offering zero visual insight into developmental quality, tree canopy shade, or age appropriateness [15].
-* **Digital Calendars** manage rigid hours but lack spatial context and travel fatigue awareness [16].
-* **Black-Box Recommendation Engines** fail parents because family priorities are fluid and subjective; a rigid, automated itinerary cannot accommodate a cranky toddler or shifting weather.
+However, existing navigation tools and prior planning systems fail families in three specific ways:
+* **Commercial Map Apps** (Google Maps, Apple Maps) reduce destinations to commercial categories; a playground is indexed identically to a gas station, with zero representation of developmental quality, tree canopy shade, or age appropriateness [15].
+* **Digital Calendars** manage rigid hours but provide no spatial context, travel fatigue awareness, or activity sequencing guidance [16].
+* **Prior Interactive Itinerary Systems** come closest to SPARK's paradigm. Aurigo (Yahi et al., IUI 2015) [20] pairs route optimization with interactive POI visualization; PASSAGE (Dasigi et al., IUI 2016) [21] demonstrates bi-objective route trade-off exploration. Both represent genuine advances over static maps, but share three fundamental limits for family use: (1) **no developmental scoring objective** — venues are scored by Yelp popularity, treating a playground identically to a café if rated equally; (2) **no multi-domain balance constraint** — they recommend the best individual stops independently [12, 13], not a schedule balanced across Cognitive, Physical, Social, and Emotional domains; and (3) **no environmental health signal** — neither incorporates tree canopy, UV, or heat index as a routing constraint, which is a safety requirement — not a preference — for young children [4].
 
 **The Visual Analytics Paradigm:** Rather than building a closed "black-box route generator," **SPARK (Smart Personalized Activity Routes for Kids)** is designed from the ground up as a **Human-in-the-Loop Visual Analytics System** [18, 19]. Algorithmic optimization serves as a fast, responsive computational backend, while an interactive frontend featuring **Coordinated Multiple Views (CMV)** empowers parents to visually explore, steer, and resolve multi-criteria trade-offs (driving time vs. tree canopy shade vs. developmental balance) in real time [16, 17].
 
@@ -39,6 +39,16 @@ Grounded in Ben Shneiderman’s Information-Seeking Mantra [18] and Tamara Munzn
 * **Task 2: Multi-Attribute Trade-off Steering (Brushing & Linking):** Interactively evaluate competing continuous dimensions (travel duration, tree canopy shade, developmental variety) using multi-axis brushing to isolate optimal compromise routes.
 * **Task 3: Interactive Itinerary Reordering (Manipulate & Steer):** Interactively reorder, substitute, or pin venues on a dynamic timeline agenda, triggering sub-second algorithmic route recalculations.
 * **Task 4: Micro-Feature Inspection (Details-on-Demand):** Interrogate venue-specific attributes (shade structures, play surfaces, operating hours) via coordinated map glyphs and contextual cards.
+
+### 2.3 Technical Differentiation from Prior Art
+
+SPARK's novelty is not a new optimization algorithm — the Time-Windowed Orienteering Problem (TW-OP) and 2-Opt heuristics are well-established methods. Instead, SPARK makes three specific contributions beyond the closest prior systems, Aurigo [20] and general POI recommendation approaches [12, 13]:
+
+1. **Pediatric CPSE Scoring Model grounded in developmental science.** Prior itinerary systems score venues using crowd-sourced popularity signals (star ratings, check-in counts) [12, 13, 20]. SPARK replaces these with a 4D developmental score vector $\mathbf{s}_v = [C_v, P_v, S_v, E_v]^\top$ derived from OpenStreetMap feature tags mapped to Cognitive, Physical, Social, and Emotional Restoration domains via CDC developmental milestone criteria [6]. No prior POI recommendation system encodes *what a venue contributes to child development* as the scoring objective.
+
+2. **Age-aware objective function scaling.** Aurigo [20] offers static category filters; SPARK dynamically rescales the user preference weights $\mathbf{w}_{\text{user}}$ based on child age bracket (Toddler 1–3, Preschool 4–5, School-Age 6+), reflecting Yogman et al.'s [6] finding that developmental domain priorities shift substantially by age. This changes the *optimization objective itself* for each family profile, not merely the filter set.
+
+3. **Environmental canopy as a hard routing constraint.** By fusing the USGS NLCD 30m tree canopy raster into the routing objective via $\lambda_{\text{shade}} \cdot \bar{\sigma}(\mathcal{R})$, SPARK elevates heat-safety from a preference slider to a spatial planning dimension. This directly addresses the environmental equity gap documented by Jarvis et al. [4] — that children in low-canopy neighborhoods face compounded developmental disadvantages — an objective entirely absent from Aurigo [20] and PASSAGE [21].
 
 ---
 
@@ -239,4 +249,6 @@ In strict adherence to Georgia Tech academic policies and CSE 6242 guidelines:
 [17] M. Bartling et al., “The role of user context in the design of mobile map applications,” Cartogr. Geogr. Inf. Sci., 2021.
 [18] B. Shneiderman, “The eyes have it: A task by data type taxonomy for information visualizations,” in Proc. IEEE Symposium on Visual Languages, 1996, pp. 336–343.
 [19] T. Munzner, Visualization Analysis and Design. CRC Press / A K Peters Visualization Series, 2014.
+[20] A. Yahi, A. Chassang, L. Raynaud, H. Duthil, and D. H. Chau, "Aurigo: An Interactive Tour Planning Tool for Targeted Touristic Trip Recommendation," in Proc. ACM International Conference on Intelligent User Interfaces (IUI), 2015.
+[21] P. Dasigi et al., "PASSAGE: A Travel Safety Assistant with Safe Path Recommendations for Pedestrians," in Proc. ACM International Conference on Intelligent User Interfaces (IUI), 2016.
 ```
