@@ -12,10 +12,10 @@ We are building an interactive, web-based visual analytics dashboard called the 
 
 ### 2. The Problem Today & Current Limits (Heilmeier Q2)
 - Today, parents usually find activities through a fragmented series of search engines, digital maps, parent blogs, social media groups, and community calendars. This requires them to manually cross-reference logistical constraints (like location and hours) with what is actually developmentally appropriate for their child — a process documented to significantly increase parental cognitive load [1, 2].
-- The closest prior technical systems are **Aurigo** (Yahi et al., IUI 2015) [A] — a human-in-the-loop tour planner combining route optimization with interactive POI visualization — and **PASSAGE** (Dasigi et al., IUI 2016) [B], a bi-objective route system with visual safety vs. distance trade-off exploration. While these establish the interactive itinerary paradigm, they share three fundamental limitations for family use:
-  1. **No developmental objective:** Venues are scored by Yelp popularity and category filters, not by what they do for a child's cognitive, physical, social, or emotional growth. A playground and a coffee shop are treated identically if rated equally.
-  2. **No multi-domain balance constraint:** Both systems optimize for the best individual stops independently [12, 13]. A parent's real need — a morning that balances physical play, a cognitively stimulating stop, and a shaded rest — requires joint schedule optimization, not item ranking.
-  3. **No environmental health signal:** Neither system incorporates shade canopy, heat index, or UV coverage as a routing dimension. For young children in Southern climates, midday shade is a safety constraint [4], not a preference — yet no existing tool operationalizes this.
+- State-of-the-art POI recommendation systems [12, 13] rank venues independently using historical visit patterns and contextual signals — they score a playground identically to a café if both are equally popular. Commercial map tools (Google Maps, Yelp) reduce destinations to undifferentiated category dots with no developmental representation [15]. Three fundamental limits are shared across these approaches:
+  1. **No developmental objective:** No current system encodes what a venue contributes to a child's cognitive, physical, social, or emotional growth.
+  2. **No multi-domain balance constraint:** Systems recommend the best individual stops independently — not a schedule balanced across developmental domains.
+  3. **No environmental health signal:** Tree canopy, UV index, and heat are entirely absent from routing logic, despite being safety requirements for young children [4].
 
 ---
 
@@ -111,8 +111,8 @@ flowchart LR
 | # | Question | Project Answer |
 | :- | :--- | :--- |
 | **Q1** | **What are you trying to do?** | Build the Child Utility Playbook to help parents identify activities fitting child developmental needs and parent logistical constraints. |
-| **Q2** | **How is it done today & limits?** | Parents manually cross-reference fragmented tools (Google Maps, Yelp, calendars). The closest prior systems — Aurigo [A] (IUI 2015) and PASSAGE [B] (IUI 2016) — offer interactive itinerary planning but share three critical limits: (1) no developmental scoring objective — venues are rated by crowd popularity, not child development value; (2) no multi-domain balance constraint — they rank stops independently, not as a developmentally balanced schedule; (3) no environmental health signal — neither incorporates shade canopy or heat as a safety routing dimension. |
-| **Q3** | **What's new in your approach?** | Three specific contributions beyond Aurigo [A] and prior POI recommendation systems [12, 13]: (1) **Pediatric CPSE Scoring Model** — every venue receives a 4D developmental score vector [C, P, S, E] derived from OSM tags and mapped to CDC milestone criteria, replacing popularity signals with developmental science; (2) **Age-aware weight scaling** — the optimization objective function itself changes by child age bracket (Toddler/Preschool/School-Age), not just filters; (3) **USGS NLCD canopy as a hard routing constraint** — tree canopy coverage is embedded in the routing objective, elevating shade from a preference to a spatial safety guarantee. |
+| **Q2** | **How is it done today & limits?** | Parents manually cross-reference fragmented tools (Google Maps, Yelp, calendars). Context-aware POI recommenders [12, 13] rank venues by popularity and visit history — no system scores venues by child developmental value. Three critical limits: (1) no developmental scoring objective; (2) no multi-domain balance constraint — stops ranked independently, not as a developmentally balanced schedule; (3) no environmental health signal — shade canopy and heat absent from routing despite being child safety requirements [4]. |
+| **Q3** | **What's new in your approach?** | Three specific contributions beyond current POI recommendation systems [12, 13]: (1) **Pediatric CPSE Scoring Model** — every venue receives a 4D developmental score vector [C, P, S, E] derived from OSM tags and mapped to CDC milestone criteria, replacing popularity signals with developmental science; (2) **Age-aware weight scaling** — the optimization objective function itself changes by child age bracket (Toddler/Preschool/School-Age), not just filters; (3) **USGS NLCD canopy as a hard routing constraint** — tree canopy coverage embedded in the routing objective, elevating shade from a preference to a spatial safety guarantee. |
 | **Q4** | **Who cares?** | Exhausted parents and caregivers suffering from decision fatigue. |
 | **Q5** | **How do you measure impact?** | Ranking metrics like NDCG vs. distance/popularity baselines, and user testing for reduced "time-to-decision". |
 | **Q6** | **Risks and payoffs?** | Risk: Spatial data sparsity (missing OSM tags). Mitigation: Fusing multiple datasets (OSM + USGS). Payoff: A scalable, personalized developmental routing engine. |
@@ -128,9 +128,3 @@ flowchart LR
 2. **UI Simplification:** Are parallel coordinates too complex for the average parent? Should we offer a simplified "wizard" view as an alternative?
 3. **Evaluation Strategy:** Besides NDCG, what other metrics could capture the "developmental entropy" or variety of the recommendations?
 
----
-
-## 📚 Key Prior Art References
-
-- [A] A. Yahi, A. Chassang, L. Raynaud, H. Duthil, and D. H. Chau, "Aurigo: An Interactive Tour Planning Tool for Targeted Touristic Trip Recommendation," in *Proc. ACM International Conference on Intelligent User Interfaces (IUI)*, 2015.
-- [B] P. Dasigi et al., "PASSAGE: A Travel Safety Assistant with Safe Path Recommendations for Pedestrians," in *Proc. ACM International Conference on Intelligent User Interfaces (IUI)*, 2016.
