@@ -1,4 +1,4 @@
-# 🌳 SPARK: Smart Personalized Activity Routes for Kids (ToddlerSprout)
+# 🌳 SPARK: Smart Personalized Activity Routes for Kids
 ## Georgia Tech — CSE 6242: Data & Visual Analytics
 ### Team 61: Jay Mangrulkar, Max Jarosch, Katherine Liang, Manoj Achari, Shanmugam Murugappan
 

@@ -1,4 +1,4 @@
-# Parent Playbook (ToddlerSprout): Topic Breakdown & Research Literature
+# SPARK: Smart Personalized Activity Routes for Kids — Topic Breakdown & Research Literature
 
 This document outlines the core technical and domain-specific topics required for the Parent Playbook project, breaking them down into simpler concepts, and provides links to peer-reviewed articles for foundation building.
 
