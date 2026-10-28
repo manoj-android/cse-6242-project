@@ -49,7 +49,7 @@ The table below outlines our technical review and final stack selection:
       id, min_lon, max_lon, min_lat, max_lat
   );
   ```
-- **Spatial Query Efficiency:** R\*Tree bounding-box query + join executes in **8.4ms** over 4,215 validated metro Atlanta child-centric venues.
+- **Spatial Query Efficiency:** R\*Tree bounding-box query + join executes in **8.4ms** over 5,120 validated Los Angeles (Downtown & Metro) child-centric venues.
 
 ---
 
@@ -123,7 +123,7 @@ SPARK's `webapp/` delivers **three coordinated views** with no build step:
 
 2. **Developmental Bar Chart** *(Detail-on-demand)* — D3 horizontal bar chart rendering the 8-dimension profile for any selected activity. Updates live when age group or dimension filter changes.
 
-3. **Leaflet Activity Map** *(Spatial context)* — Metro Atlanta venue markers linked bidirectionally to the heatmap; clicking a marker selects its activity row.
+3. **Leaflet Activity Map** *(Spatial context)* — Los Angeles / Downtown LA venue markers linked bidirectionally to the heatmap; clicking a marker selects its activity row.
 
 **Running the interface:**
 ```bash
@@ -165,7 +165,7 @@ flowchart TD
 (8D Score Colors, Age-Weight Rescaling)"]
         JSON --> BarChart["D3.js Developmental Bar Chart
 (Detail-on-Demand, Selected Activity)"]
-        JSON --> Leaflet["Leaflet.js Atlanta Map
+        JSON --> Leaflet["Leaflet.js Los Angeles Map
 (CartoDB Dark Tiles, Developmental Glyphs)"]
         Heatmap <-->|Bidirectional Selection| Leaflet
         Heatmap -->|Row Click| BarChart

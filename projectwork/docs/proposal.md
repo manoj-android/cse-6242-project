@@ -317,7 +317,7 @@ gantt
 | **Q6** | **What are the risks and payoffs?** | **Risk:** Spatial data sparsity in rural/suburban OSM tags. **Mitigation:** Fusing Overture Places and USGS NLCD canopy data with category fallback heuristics. **Payoff:** An open, reproducible pediatric planning tool that reduces parental decision fatigue. |
 | **Q7** | **How much will it cost?** | **$0.00**. 100% built on open datasets (OSM, USGS) and free open-source software (Python, SQLite 3, D3.js v7, Leaflet, CartoDB). Zero proprietary API subscriptions. |
 | **Q8** | **How long will it take?** | Exactly 10 weeks across 4 defined development phases (Sep 21 – Dec 3, 2026). |
-| **Q9** | **What are the midterm and final "exams"?** | **Midterm Exam:** Functional SQLite R\*Tree spatial database with indexed metro Atlanta venues, validated 8D scoring matrix, and baseline nearest-neighbor model. **Final Exam:** Fully integrated D3/Leaflet web dashboard featuring interactive trade-off sliders, route comparison cards, and complete comparative evaluation report. |
+| **Q9** | **What are the midterm and final "exams"?** | **Midterm Exam:** Functional SQLite R\*Tree spatial database with indexed Los Angeles (Downtown & Metro) venues, validated 8D scoring matrix, and baseline nearest-neighbor model. **Final Exam:** Fully integrated D3/Leaflet web dashboard featuring interactive trade-off sliders, route comparison cards, and complete comparative evaluation report. |
 
 ---
 

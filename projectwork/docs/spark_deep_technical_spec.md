@@ -73,7 +73,7 @@ def insert_poi(conn, osm_id, name, category, lat, lon, scores, tags):
 
 # Example usage
 conn = sqlite3.connect("spark.db")
-insert_poi(conn, 101, "Piedmont Park Playground", "playground", 33.787, -84.372, 
+insert_poi(conn, 101, "Gloria Molina Grand Park Playground", "playground", 34.0560, -118.2458, 
            (0.2, 0.95, 0.85, 0.7), {"surface": "rubber", "shade": "yes"})
 conn.commit()
 ```
@@ -86,8 +86,8 @@ SELECT p.poi_id, p.name, p.category, p.longitude, p.latitude,
        p.cog_score, p.phy_score, p.soc_score, p.emo_score, p.dwell_time_mins
 FROM spark_pois p
 JOIN poi_spatial_idx idx ON p.poi_id = idx.id
-WHERE idx.min_lon >= -84.45 AND idx.max_lon <= -84.30
-  AND idx.min_lat >= 33.70 AND idx.max_lat <= 33.85
+WHERE idx.min_lon >= -118.35 AND idx.max_lon <= -118.15
+  AND idx.min_lat >= 33.95 AND idx.max_lat <= 34.15
 LIMIT 100;
 ```
 *Performance Benchmark:* In-memory or SSD disk lookup executes in **$8.4\text{ms}$** over 20,000 records, completely avoiding full table scans.
@@ -273,10 +273,10 @@ def index():
 
 @app.route("/api/pois", methods=["GET"])
 def get_pois():
-    min_lon = float(request.args.get("min_lon", -84.5))
-    max_lon = float(request.args.get("max_lon", -84.1))
-    min_lat = float(request.args.get("min_lat", 33.7))
-    max_lat = float(request.args.get("max_lat", 34.3))
+    min_lon = float(request.args.get("min_lon", -118.35))
+    max_lon = float(request.args.get("max_lon", -118.15))
+    min_lat = float(request.args.get("min_lat", 33.95))
+    max_lat = float(request.args.get("max_lat", 34.15))
     
     conn = sqlite3.connect("spark.db")
     cursor = conn.cursor()
