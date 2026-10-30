@@ -82,7 +82,7 @@
 
 ---
 
-### 5. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
+### 5. ⚡ [SPARK (Smart Personalized Activity Routes for Kids)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 
 | # | Critical Drawback / Vulnerability | Mitigation Strategy |
 | :-: | :--- | :--- |
@@ -129,7 +129,7 @@ flowchart TD
    *The crowd-pleasing showstopper. Streamlined to 3 core pillars (Spatial clustering, selective route optimization heuristic, and 3 coordinated views) with offline bulk CSVs and objective Report Detail scoring.*
 4. 🪐 **[InterstellarMissionPlanner](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/InterstellarMissionPlanner.md) — Score: 8.8 / 10 (High Approval Probability)**  
    *An excellent aerospace alternative solving complex multi-body orbital trajectory optimization. High demo appeal but requires careful management of physics math complexity.*
-5. 🍼 **[ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) — Score: 8.6 / 10 (Moderate-High Approval Probability)**  
+5. ⚡ **[SPARK (Smart Personalized Activity Routes for Kids)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md) — Score: 8.6 / 10 (Moderate-High Approval Probability)**  
    *Highest societal and human impact; greatly strengthened by the CDC NSCH empirical ranking framework and tree canopy equity analytics.*
 
 ---
@@ -187,7 +187,7 @@ flowchart TD
 
 ---
 
-### 5. 🍼 [ParentsPlaybook (ToddlerSprout)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
+### 5. ⚡ [SPARK (Smart Personalized Activity Routes for Kids)](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 - **Primary Proposal:** [ParentsPlaybook.md](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse6242/projectwork/topics/ParentsPlaybook.md)
 - **Verified Public Datasets:**
   - [CDC "Learn the Signs. Act Early." Milestones](https://www.cdc.gov/ncbddd/actearly/milestones/index.html) — 12 standardized age checklists across 4 pediatric domains.

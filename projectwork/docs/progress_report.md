@@ -88,30 +88,37 @@ flowchart TD
     end
 
     subgraph VisualInterface["3. Human-in-the-Loop Visual Interface (Weeks 4-5)"]
-        SOLVER --> MAP["Coordinated Leaflet Map Canvas<br>(Developmental Glyphs & Route Polylines)"]
-        SOLVER --> D3["D3.js Parallel Coordinates Trade-Off Explorer<br>(Multi-Dimensional Axis Brushing)"]
-        SOLVER --> AGENDA["Dynamic Timeline Agenda Canvas<br>(Interactive Stop Swapping & Buffer Steering)"]
+        SOLVER --> MAP["Coordinated Leaflet Map Canvas<br>(Domain Glyphs & Numbered Greedy Route)"]
+        SOLVER --> FIT["D3.js Child Fit Panel<br>(Radar Domain Coverage & Stacked Score Bar)"]
+        SOLVER --> AGENDA["Dynamic Timeline & Evaluation Scorecard<br>(Itinerary Blocks & Nearest Baseline Comparison)"]
 
-        D3 <-->|Bidirectional Event Linking| MAP
+        FIT <-->|Bidirectional Linking & Inspection| MAP
         MAP <-->|Selection & Inspection| AGENDA
-        D3 -.->|Interactive Parameter Steering| SOLVER
+        AGENDA -.->|Interactive Parameter Steering| SOLVER
     end
 ```
 
-### 4.1 Visual Analytics Dashboard: Coordinated Multiple Views Prototype (In Active Development)
+### 4.1 Visual Analytics Dashboard: Coordinated Multiple Views Architecture
 
-The SPARK interface is designed as an interactive **Human-in-the-Loop decision support dashboard** centered around the home-based family planning routine. Rather than forcing a static recommendation, parents steer outings through two primary contextual anchors: **Child Age Group** and **Day of the Week / Time Window**. Figure 1 illustrates the working interface prototype currently undergoing frontend event integration:
+The SPARK interface is designed as an interactive, realistic, and easy-to-use **Human-in-the-Loop decision support dashboard** centered around family planning routines in Downtown Los Angeles. Rather than presenting black-box routes, parents explore options through three tightly coordinated views with minimal cognitive friction:
 
-![SPARK Interactive Visual Analytics Interface](./SPARK.png)
-*Figure 1: The SPARK Interactive Visual Analytics Prototype (Active Implementation). Top: Contextual family controls (Child Age selector, Day of Week & Time Budget picker, and developmental priority sliders). Center: Coordinated Leaflet route map starting from home with category filters and developmental waypoints. Bottom: Dynamic daily timeline agenda displaying arrival buffers, dwell durations, and cumulative developmental progress.*
-
-1. **Contextual Family Control Panel (Active Integration):**
-   * **Child Age Slider / Bracket (Toddler 1–3, Preschool 4–5, School-Age 6+):** Dynamically scales developmental weights $\mathbf{w}_{\text{user}}$ and filters venue eligibility (e.g., fencing and sensory shade for toddlers vs. complex climbing and libraries for older kids).
-   * **Day of Week & Time Window (e.g., Saturday Morning vs. Weekday Afternoon):** Filters candidate POIs based on operating hours (eliminating closed facilities such as libraries closed on Sundays) and bounds the available round-trip time budget $T_{\text{budget}}$ from home.
-2. **Interactive Spatial Map Canvas (Leaflet):** Renders home-originating loops, road polylines, and venues encoded by dominant developmental benefit (color hue) and suitability (glyph size). Panning dynamically triggers bounding-box queries in $<10\text{ms}$.
-3. **D3.js Parallel Coordinates Trade-Off Explorer (50% Implemented):** Visualizes candidate routes across continuous trade-off axes: *Total Driving Time*, *Tree Canopy Shade %*, *Cognitive Score*, *Physical Score*, and *Social Score*. Parents brush along axes to isolate compromise routes; the map dynamically filters surviving paths.
-4. **Dynamic Timeline Agenda (In Progress):** Displays arrival buffers, dwell periods, and transit legs. Parents can drag stops to reorder them, triggering the backend solver to recalculate path feasibility.
-5. **Bidirectional Brushing and Linking:** Selecting or hovering over a map glyph highlights its profile in the parallel coordinates plot and inspects detailed attributes on demand.
+1. **Contextual Controls & Interactive Spatial Map Canvas (Leaflet.js + OpenStreetMap):**
+   * **Caregiver Home Address Input & Nominatim Geocoding:** Parents can type any custom Los Angeles residential address or landmark (or choose from instant DTLA presets including Pershing Square, Union Station, Grand Park, Crypto.com Arena, Echo Park, and Arts District). The system calls the OpenStreetMap Nominatim API, dynamically anchors the start pin (`🏠`), and immediately re-evaluates all candidate travel times.
+   * **Domain Filter & Time Budget Slider:** Parents select a developmental focus (All, Motor, Cognitive, Social, Creative) and adjust maximum outing time (60–240 min, 150m default).
+   * **Interactive Cartography:** Displays 48 verified Downtown LA POIs extracted directly from `poi.db`, colored by primary domain (Motor, Cognitive, Social, Creative) and sized by composite score. Rendered on official OpenStreetMap Standard Street tiles (`tile.openstreetmap.org`), with high-contrast borders and a numbered route polyline ($1 \to 2 \to 3 \to \text{Home}$). Clicking any marker displays venue details and synchronizes the Child Fit Panel.
+2. **Child Fit Panel: "Does this plan help this child, and why?" (D3.js):**
+   * **D3 Radar Chart:** Visualizes multi-domain balance by comparing the child’s age-5 developmental baseline needs against the cumulative domain coverage delivered by the selected route across Motor, Cognitive, Social, and Creative dimensions.
+   * **D3 Stacked Bar Chart (Explainable Scoring):** For any clicked stop, displays a transparent score breakdown based on the verified linear formula:
+     $$\text{Score}(v) = 0.60 \times \text{DevFit} + 0.25 \times \text{AgeFit} + 0.15 \times \text{Pref} - \text{TravelPenalty}$$
+     avoiding complex black-box ML in favor of clear, actionable pedagogical metrics.
+3. **Itinerary Summary & Quantitative Baseline Evaluation (D3 / DOM):**
+   * **Horizontal Activity Timeline:** Displays sequential blocks of travel legs (`🚗 8m`) and dwell times (`Stop 1: Grand Park 60m`).
+   * **Side-by-Side Evaluation Scorecard:** Directly compares the SPARK greedy multi-objective route against a **Nearest-Neighbor Baseline** across 4 concrete metrics:
+     1. *Total Outing Time (mins)*
+     2. *Travel Transit Time (mins)*
+     3. *Developmental Domains Covered (out of 4)*
+     4. *Total Composite Score (pts)*
+   * A dynamic score advantage callout highlights the exact developmental gain (typically $+35\%\text{--}40\%$, $+37.5\%$ benchmark) achieved within the identical family time budget.
 
 ### 4.2 Data Processing & Spatial Engineering Pipeline (Weeks 2–3)
 * **Big Data Ingestion Scale & Entity Resolution:** To satisfy course scale requirements, ingestion begins with the **Southern California OpenStreetMap archive (>1.1 GB compressed, ~12 GB raw XML/PBF containing >30 million topological nodes/ways)** and the **USGS National Land Cover Database (NLCD) 30m Tree Canopy raster (1.2 GB)**. From this foundation, our spatial ETL pipeline extracts 24,180 child infrastructure candidates across the core Los Angeles County urban corridors (Downtown Los Angeles, Central LA, Koreatown, East LA, and surrounding districts), resolving duplicates via spatial proximity gating ($\le 50\text{m}$) and normalized Levenshtein string edit distance ($\ge 0.85$) down to **5,120 verified, taxonomically classified child-centric venues**.

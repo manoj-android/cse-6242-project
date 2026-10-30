@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARK — Smart Personalized Activity Routes for Kids</title>
+    <meta name="description"
+        content="SPARK optimizes child development activity routes in Downtown Los Angeles using interactive visual analytics.">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app-shell">
+
+        <!-- ── TOPBAR ── -->
+        <header id="topbar">
+            <div id="brand">
+                <span id="brand-icon">⚡</span>
+                <span id="brand-name">SPARK</span>
+                <span id="brand-sub">Smart Personalized Activity Routes for Kids · Downtown Los Angeles</span>
+            </div>
+
+            <div id="controls">
+                <div class="control-group home-input-group">
+                    <label for="home-address-input">Caregiver Home Address</label>
+                    <div class="input-with-btn">
+                        <span class="home-icon-inline">🏠</span>
+                        <input type="text" id="home-address-input" list="home-presets" placeholder="e.g. Pershing Square, DTLA" value="Pershing Square, Los Angeles, CA">
+                        <button type="button" id="set-home-btn" title="Update start location">Update</button>
+                    </div>
+                    <datalist id="home-presets">
+                        <option value="Pershing Square, Los Angeles, CA">
+                        <option value="Union Station, Los Angeles, CA">
+                        <option value="Grand Park, Los Angeles, CA">
+                        <option value="Crypto.com Arena, Los Angeles, CA">
+                        <option value="Echo Park Lake, Los Angeles, CA">
+                        <option value="Arts District, Los Angeles, CA">
+                    </datalist>
+                </div>
+
+                <div class="control-group">
+                    <label for="domain-select">Domain Filter</label>
+                    <select id="domain-select">
+                        <option value="all">All Domains</option>
+                        <option value="Motor">Motor & Physical</option>
+                        <option value="Cognitive">Cognitive & Learning</option>
+                        <option value="Social">Social & Emotional</option>
+                        <option value="Creative">Creative & Sensory</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label for="time-budget-slider">Max Outing Time</label>
+                        <span id="time-budget-val">150 mins (2.5 hrs)</span>
+                    </div>
+                    <input type="range" id="time-budget-slider" min="60" max="240" step="30" value="150">
+                </div>
+
+                <div class="profile-badge">
+                    <span class="badge-dot"></span>
+                    <span>Child: <strong>Age 5</strong> · Start: <strong id="profile-start-label">Pershing Sq</strong></span>
+                </div>
+
+                <div class="eval-tracker" id="eval-tracker">
+                    <span class="badge-dot" style="background:#10b981"></span>
+                    <span id="eval-stats-label">Model Eval: <strong>0 votes</strong></span>
+                    <button type="button" id="export-eval-btn" class="eval-export-btn" title="Export Model Evaluation Log (.json)">Export</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── MAIN CONTENT AREA ── -->
+        <main id="main-content">
+
+            <!-- UPPER SECTION: Map + Fit Panel -->
+            <section id="upper-section">
+
+                <!-- 1. Interactive Map -->
+                <div id="map-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>🗺 Downtown LA Activity Map & Optimized Route</span>
+                        </div>
+                        <div class="map-legend">
+                            <span class="legend-item"><span class="dot dot-motor"></span>Motor</span>
+                            <span class="legend-item"><span class="dot dot-cognitive"></span>Cognitive</span>
+                            <span class="legend-item"><span class="dot dot-social"></span>Social</span>
+                            <span class="legend-item"><span class="dot dot-creative"></span>Creative</span>
+                            <span class="legend-item"><span class="start-icon">🏠</span>Start</span>
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+                <!-- 2. Fit Panel -->
+                <aside id="fit-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>🎯 Child Fit Panel: Does This Plan Help?</span>
+                        </div>
+                        <span class="card-subtitle">Real-time pedagogical alignment</span>
+                    </div>
+
+                    <div id="fit-charts">
+                        <!-- Chart A: Radar Chart (Child Needs vs. Route Coverage) -->
+                        <div class="chart-block">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Route vs. Child Need by Domain</span>
+                                <div class="radar-legend">
+                                    <span class="legend-line line-need"></span>Child Need
+                                    <span class="legend-line line-route" style="margin-left: 8px;"></span>Route Coverage
+                                </div>
+                            </div>
+                            <div id="radar-chart"></div>
+                        </div>
+
+                        <!-- Chart B: Stacked Bar for Selected POI -->
+                        <div class="chart-block">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Score Breakdown for Selected Stop</span>
+                                <span id="selected-poi-name" class="poi-highlight-name">Click a stop to inspect</span>
+                            </div>
+                            <div id="stacked-bar-chart"></div>
+                            <div class="score-formula-caption">
+                                <span class="formula-chip chip-dev">Dev Fit (60%)</span> +
+                                <span class="formula-chip chip-age">Age Fit (25%)</span> +
+                                <span class="formula-chip chip-pref">Pref (15%)</span> −
+                                <span class="formula-chip chip-penalty">Travel Penalty</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+            </section>
+
+            <!-- LOWER SECTION: 3. Itinerary Summary & Baseline to Beat -->
+            <section id="itinerary-section" class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>⏱ Route Itinerary & Quantitative Evaluation</span>
+                    </div>
+                    <span class="card-subtitle">Greedy multi-objective route vs. Nearest-Neighbor baseline</span>
+                </div>
+
+                <div id="itinerary-body">
+                    <!-- Horizontal Timeline -->
+                    <div id="timeline-container">
+                        <div class="timeline-header-label">Selected Route Timeline</div>
+                        <div id="timeline-track"></div>
+                    </div>
+
+                    <!-- Evaluation Comparison Scorecard -->
+                    <div id="scorecard-container">
+                        <!-- Card 1: SPARK Optimized Route -->
+                        <div class="score-card card-spark">
+                            <div class="score-card-badge">⚡ SPARK Route</div>
+                            <div class="metric-grid">
+                                <div class="metric-item">
+                                    <span class="metric-label">Total Time</span>
+                                    <span id="spark-total-time" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Travel Time</span>
+                                    <span id="spark-travel-time" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Domains Covered</span>
+                                    <span id="spark-domains" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Total Score</span>
+                                    <span id="spark-total-score" class="metric-val highlight-metric">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Baseline (Nearest POIs) -->
+                        <div class="score-card card-baseline">
+                            <div class="score-card-badge baseline-badge">📍 Nearest Baseline</div>
+                            <div class="metric-grid">
+                                <div class="metric-item">
+                                    <span class="metric-label">Total Time</span>
+                                    <span id="base-total-time" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Travel Time</span>
+                                    <span id="base-travel-time" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Domains Covered</span>
+                                    <span id="base-domains" class="metric-val">--</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Total Score</span>
+                                    <span id="base-total-score" class="metric-val">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advantage Gain Callout -->
+                        <div id="gain-callout" class="gain-banner">
+                            <span class="gain-icon">🏆</span>
+                            <div class="gain-text">
+                                <div id="gain-title">SPARK Score Advantage: +0%</div>
+                                <div id="gain-sub">Comparing developmental value within identical budget</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ── FOOTER ── -->
+        <footer id="footer">
+            CSE 6242 · Team 61 · Georgia Tech · SPARK (Downtown Los Angeles Prototype)
+        </footer>
+    </div>
+
+    <!-- Leaflet & D3.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

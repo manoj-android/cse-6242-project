@@ -10,40 +10,44 @@ This document provides a technical implementation blueprint for the three core p
 To achieve sub-10ms response times without requiring external database servers (e.g., PostgreSQL/PostGIS), SPARK uses **SQLite 3** with its native **R\*Tree virtual table module** (`rtree`). This module is compiled directly into Python's built-in `sqlite3` library.
 
 ### 1.1 Database Schema Definition
-The database is stored in a single, portable file: `spark.db`.
+The system supports both pre-indexed spatial R\*Tree querying (`spark.db`) and normalized relational pediatric activity scoring (`poi.db`):
 
 ```sql
--- Core Table: Stores all validated POIs and pediatric milestone scores
-CREATE TABLE IF NOT EXISTS spark_pois (
-    poi_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    osm_id INTEGER UNIQUE,
-    source_dataset TEXT NOT NULL,       -- 'osm' or 'overture'
-    name TEXT NOT NULL,
-    category TEXT NOT NULL,             -- 'playground', 'library', 'park', etc.
-    latitude REAL NOT NULL,             -- WGS84 Decimal Degrees
-    longitude REAL NOT NULL,
-    cog_score REAL NOT NULL,            -- Cognitive score [0.0, 1.0]
-    phy_score REAL NOT NULL,            -- Physical motor score [0.0, 1.0]
-    soc_score REAL NOT NULL,            -- Social score [0.0, 1.0]
-    emo_score REAL NOT NULL,            -- Emotional regulation score [0.0, 1.0]
-    dwell_time_mins INTEGER DEFAULT 60, -- Estimated visit duration
-    attributes TEXT NOT NULL,           -- JSON string containing raw tags
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Operational Pediatric Schema (poi.db)
+CREATE TABLE pois (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    type TEXT,
+    latitude REAL,           -- Note: Swapped in raw OSM extraction (stores longitude)
+    longitude REAL          -- Note: Swapped in raw OSM extraction (stores latitude)
 );
 
--- Fast 2D Spatial Index using SQLite Native R*Tree Module
-CREATE VIRTUAL TABLE IF NOT EXISTS poi_spatial_idx USING rtree(
-    id,          -- Matches spark_pois.poi_id 1-to-1
-    min_lon, max_lon,
-    min_lat, max_lat
+CREATE TABLE poi_activities (
+    poi_type TEXT,
+    activity TEXT
 );
 
--- B-Tree Index for coordinate-based sorting
-CREATE INDEX IF NOT EXISTS idx_pois_coords ON spark_pois(latitude, longitude);
+CREATE TABLE activity_points (
+    activity TEXT,
+    phys_motor REAL, cog_exec REAL, soc_emot REAL, lang_comm REAL,
+    expl_creat REAL, health REAL, ind_lifeskills REAL, found_knowl REAL
+);
+
+CREATE TABLE age_points (
+    min_age INTEGER, max_age INTEGER,
+    phys_motor REAL, cog_exec REAL, soc_emot REAL, lang_comm REAL,
+    expl_creat REAL, health REAL, ind_lifeskills REAL, found_knowl REAL
+);
 ```
 
-### 1.2 Data Ingestion & Index Population (Python)
-An automated Python ETL script ingests normalized records into both tables inside an atomic transaction:
+### 1.2 Data Ingestion & Coordinate Correction (`export_poidb.py`)
+Because OpenStreetMap bulk node dumps can invert coordinate pairs, the ingestion pipeline explicitly corrects the projection:
+```python
+# export_poidb.py excerpt
+real_lat = float(row['longitude'])
+real_lon = float(row['latitude'])
+```
+It joins each venue's type with `poi_activities`, looks up 8-dimensional scores in `activity_points`, scales them via `age_points` for age 5, aggregates into 4 domains (Motor, Cognitive, Social, Creative), and outputs enriched records to `webapp/data/dtla_pois.json`.
 
 ```python
 import sqlite3
@@ -304,8 +308,17 @@ if __name__ == "__main__":
     app.run(port=5000, debug=True)
 ```
 
-Running the entire stack requires just:
+### 3.2 Launching the Prototype
+
+SPARK can be run in two modes:
+
 ```bash
+# Option A: Zero-dependency static server (Recommended for CSE 6242 grading reproduction)
+cd webapp
+python3 -m http.server 8080
+
+# Option B: In-process Flask backend (when live SQLite spatial filtering is active)
 python3 app.py
 ```
-This guarantees that any teammate or TA can clone the repository, run one Python command, and immediately interact with the full SPARK dashboard.
+
+Both modes render the full Leaflet OpenStreetMap canvas, the OpenStreetMap Nominatim geocoding address bar, the D3 Child Fit Panel, and the Itinerary Timeline with zero API key configuration.

@@ -1,4 +1,4 @@
-# 🍼 ToddlerSprout: Spatiotemporal Visual Analytics & Milestone-Adaptive Decision Support for Early Childhood Enrichment
+# ⚡ SPARK: Spatiotemporal Visual Analytics & Milestone-Adaptive Decision Support for Early Childhood Enrichment
 
 > **Purpose:** Discussion proposal for team alignment and project selection.  
 > **Course:** CSE 6242 (Data & Visual Analytics)  
@@ -15,7 +15,7 @@ Rather than acting as a simple digital calendar or passive routine scheduler, th
 
 ### 2. The Problem Today & Current Limits (Heilmeier Q2)
 - **Developmental Ambiguity & Generic Advice:** Caregivers and researchers seeking age-appropriate activities face uncurated, static online blogs that lack age-in-months precision and clinical developmental grounding (e.g., sensory grass exploration for a 12-month-old vs. parallel playground play for an 18-month-old vs. cooperative gross-motor problem solving for a 3-year-old).
-- **Passive Logging & Generic Calendar Apps:** Popular parenting apps (e.g., Huckleberry, BabyCenter, Sprout) function primarily as *retrospective diaper and sleep loggers* or static text wikis. Meanwhile, calendar apps (Google Calendar, Apple Calendar) are passive chronological repositories requiring manual entry with zero contextual awareness of venue amenities, weather conditions, or child developmental stages.
+- **Passive Logging & Generic Calendar Apps:** Popular parenting apps (e.g., Huckleberry, BabyCenter, WhatToExpect) function primarily as *retrospective diaper and sleep loggers* or static text wikis. Meanwhile, calendar apps (Google Calendar, Apple Calendar) are passive chronological repositories requiring manual entry with zero contextual awareness of venue amenities, weather conditions, or child developmental stages.
 - **Unmodeled Environmental Frictions & Microclimates:** Toddler outings frequently break down due to unmodeled environmental and logistical frictions: unexpected midday thermal heat with zero playground shade canopy, missing diaper/restroom facilities, lack of stroller-paved pathways, or outings scheduled directly over rigid nap windows.
 - **The "Black-Box" Planner Trap:** Existing commercial family planners do not expose *why* a particular outing was suggested, nor do they allow users to visually explore the spatial trade-offs: *Does traveling 10 minutes farther provide 4× more tree canopy shade? How does a midday heat wave shift recreational viability from outdoor parks to public libraries?*
 
