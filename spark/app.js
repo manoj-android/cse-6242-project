@@ -1990,7 +1990,11 @@ function initMap() {
     map = L.map('map', {
         center: [34.0505, -118.2520],
         zoom: 13,
-        zoomControl: true
+        zoomControl: true,
+        scrollWheelZoom: false, // Disable mouse scroll wheel / trackpad zooming
+        doubleClickZoom: false, // Disable double-click mouse zooming
+        boxZoom: false,         // Disable shift-drag box zoom
+        dragging: true          // Panning/moving the map with mouse drag remains fully enabled
     });
 
     // Standard OpenStreetMap Street Tiles
