@@ -22,7 +22,7 @@ Parents face relentless cognitive fatigue when attempting to balance early child
   * `poi_activities`: Relational mapping of 29 venue categories to activity types.
   * `activity_points`: 11 foundational activity archetypes evaluated across 8 developmental categories.
   * `age_points`: Calibration weights across 6 childhood age brackets (toddler to school-age).
-* **Data Ingestion Pipeline (`export_poidb.py`):** Resolves raw coordinate projections, joins relational activity scores, maps categories to 4 pedagogical domains, and exports 48 verified venues to `webapp/data/dtla_pois.json`.
+* **Data Ingestion Pipeline (`export_poidb.py`):** Resolves raw coordinate projections, joins relational activity scores, maps categories to 4 pedagogical domains, and exports 48 verified venues to `spark/data/dtla_pois.json`.
 
 ### 2. Non-Trivial Algorithm & Multi-Objective Optimization
 * **Pediatric Scoring Function:** Evaluates venue suitability using an explainable linear combination:
@@ -59,24 +59,28 @@ cd cse-6242-project
 ```
 
 ### 2. Launch the Web Application
-Start a local static HTTP server using Python's built-in module:
+Start a local static HTTP server using Python's built-in module from the repository root:
 ```bash
-cd webapp
 python3 -m http.server 8080
 ```
 
 Open your browser and navigate to:
 ```text
-http://localhost:8080
+http://localhost:8080/
 ```
+The root `index.html` automatically redirects to `http://localhost:8080/spark/`.
 
-*(Alternatively, you can open `webapp/index.html` directly in any modern browser, as all venue and model fallback data is pre-embedded).*
+*(Alternatively, you can open `spark/index.html` directly in any modern browser, as all venue and model fallback data is pre-embedded).*
 
-### 3. (Optional) Re-run Data Ingestion from SQLite
-To re-process and export `poi.db` into `webapp/data/dtla_pois.json`:
-```bash
-python3 export_poidb.py
-```
+### 3. Pipeline & Evaluation Utilities
+* **Re-run Data Ingestion from SQLite (`data/poi.db` → `spark/data/dtla_pois.json`):**
+  ```bash
+  python3 scripts/export_poidb.py
+  ```
+* **Process User Feedback & Evaluation Logs (CSE 6242 Final Report Analytics):**
+  ```bash
+  python3 scripts/eval_summary.py
+  ```
 
 ---
 
@@ -84,24 +88,28 @@ python3 export_poidb.py
 
 ```text
 cse-6242-project/
+├── index.html                          # Root entry-point & instant redirect to /spark/
 ├── README.md                           # Master project documentation
+├── LICENSE                             # Open-source license
 ├── .gitignore                          # Git tracking configuration
-├── export_poidb.py                     # SQLite ETL, coordinate fix & domain mapping script
-├── poi.db                              # Relational SQLite database (pois, activities, age weights)
-├── webapp/                             # Interactive Visual Analytics Dashboard
+├── data/                               # Project databases & evaluation datasets
+│   ├── poi.db                          # Relational SQLite database (pois, activities, age weights)
+│   └── spark_model_evaluation_sample.json # Sample evaluation feedback dataset
+├── scripts/                            # Pipeline and evaluation automation scripts
+│   ├── export_poidb.py                 # SQLite ETL, coordinate fix & domain mapping script
+│   └── eval_summary.py                 # User feedback & model evaluation statistical analyzer
+├── spark/                              # Official Interactive Visual Analytics Dashboard
 │   ├── index.html                      # HTML5 interface with controls & coordinated view layout
 │   ├── style.css                       # Modern dark-mode UI stylesheet with custom Leaflet styling
 │   ├── app.js                          # Routing engine, Leaflet OSM map, D3 charts & eval handler
 │   └── data/
 │       └── dtla_pois.json              # 48 verified Downtown LA venues enriched from poi.db
-└── projectwork/
-    ├── docs/                           # Official course deliverables & technical specifications
-    │   ├── SPARK_proposal.md           # Master Project Proposal (Heilmeier Q1–Q9 aligned)
-    │   ├── progress_report.md          # Comprehensive Midterm Progress Report
-    │   ├── spark_technical_analysis.md # Technology evaluation & academic stack selection
-    │   ├── spark_deep_technical_spec.md# Deep technical implementation guide & schema definitions
-    │   └── literature_survey.md        # Pedagogical & geospatial literature review
-    └── topics/                         # Initial semester project ideation archives
+├── projectwork/                        # Course deliverables, technical specs & archives
+│   ├── docs/                           # Official reports, proposals, and API contracts
+│   ├── mockups/                        # UI wireframes & dashboard mockups
+│   ├── sample/                         # Academic reference papers
+│   └── topics/                         # Initial semester project ideation archives
+└── project_muse/                       # Auxiliary prototype reference sandbox (Not main project)
 ```
 
 ---

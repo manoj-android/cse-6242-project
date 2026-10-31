@@ -1,38 +1,49 @@
-# SPARK: Deep Technical Specification & Implementation Guide
-## Academic & Reproducible Stack Edition (SQLite 3, Python, OR-Tools, D3.js)
+# SPARK: Technical Architecture & Implementation Blueprint
 
-This document provides a technical implementation blueprint for the three core pillars of the **SPARK (Smart Personalized Activity Routes for Kids)** platform, specifically tailored for academic rigor, zero external configuration, and seamless local reproduction.
+SPARK runs entirely in Python with zero external database servers or paid API keys. It pairs a lightweight SQLite database (`poi.db`) with a fast multi-objective optimizer and an interactive D3.js/Leaflet dashboard.
 
 ---
 
-## 1. Spatial Indexing & Geospatial Database Architecture (SQLite 3 + R\*Tree)
+## 1. How the System Fits Together
 
-To achieve sub-10ms response times without requiring external database servers (e.g., PostgreSQL/PostGIS), SPARK uses **SQLite 3** with its native **R\*Tree virtual table module** (`rtree`). This module is compiled directly into Python's built-in `sqlite3` library.
+```mermaid
+flowchart LR
+    A["Caregiver Choices<br/>(Start, Age, Radius, Stops)"] --> B["Spatial Filter<br/>(poi.db + Haversine)"]
+    B --> C["Optimizer<br/>(Milestones + Variety Penalty)"]
+    C --> D["Route Sequencer<br/>(2-Opt TSP)"]
+    D --> E["Interactive Dashboard<br/>(Map, Radar & Cards)"]
+```
 
-### 1.1 Database Schema Definition
-The system supports both pre-indexed spatial R\*Tree querying (`spark.db`) and normalized relational pediatric activity scoring (`poi.db`):
+---
+
+## 2. The Data: What Lives in `poi.db`
+
+All venue and pediatric data is stored locally in SQLite (`poi.db`):
 
 ```sql
--- Operational Pediatric Schema (poi.db)
+-- 1. Places in Downtown LA
 CREATE TABLE pois (
     id INTEGER PRIMARY KEY,
     name TEXT,
-    type TEXT,
-    latitude REAL,           -- Note: Swapped in raw OSM extraction (stores longitude)
-    longitude REAL          -- Note: Swapped in raw OSM extraction (stores latitude)
+    type TEXT,               -- 'park', 'playground', 'garden', 'library'
+    latitude REAL,           -- Note: OpenStreetMap inverted these (holds longitude)
+    longitude REAL           -- Note: OpenStreetMap inverted these (holds latitude)
 );
 
+-- 2. What kids can do at each place type
 CREATE TABLE poi_activities (
     poi_type TEXT,
     activity TEXT
 );
 
+-- 3. Scores for 11 activity types across 8 childhood developmental skills (1-10)
 CREATE TABLE activity_points (
     activity TEXT,
     phys_motor REAL, cog_exec REAL, soc_emot REAL, lang_comm REAL,
     expl_creat REAL, health REAL, ind_lifeskills REAL, found_knowl REAL
 );
 
+-- 4. Target milestone weights for each age group (toddler to school-age)
 CREATE TABLE age_points (
     min_age INTEGER, max_age INTEGER,
     phys_motor REAL, cog_exec REAL, soc_emot REAL, lang_comm REAL,
@@ -40,285 +51,52 @@ CREATE TABLE age_points (
 );
 ```
 
-### 1.2 Data Ingestion & Coordinate Correction (`export_poidb.py`)
-Because OpenStreetMap bulk node dumps can invert coordinate pairs, the ingestion pipeline explicitly corrects the projection:
+### The Coordinate Flip
+When raw OpenStreetMap data was extracted, latitude and longitude columns were accidentally swapped. Our loader corrects this in memory:
 ```python
-# export_poidb.py excerpt
-real_lat = float(row['longitude'])
-real_lon = float(row['latitude'])
-```
-It joins each venue's type with `poi_activities`, looks up 8-dimensional scores in `activity_points`, scales them via `age_points` for age 5, aggregates into 4 domains (Motor, Cognitive, Social, Creative), and outputs enriched records to `webapp/data/dtla_pois.json`.
-
-```python
-import sqlite3
-import json
-
-def insert_poi(conn, osm_id, name, category, lat, lon, scores, tags):
-    """
-    Inserts a POI and synchronizes the native SQLite R*Tree spatial index.
-    scores: tuple (cog, phy, soc, emo)
-    """
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT OR REPLACE INTO spark_pois 
-        (osm_id, source_dataset, name, category, latitude, longitude,
-         cog_score, phy_score, soc_score, emo_score, dwell_time_mins, attributes)
-        VALUES (?, 'osm', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (osm_id, name, category, lat, lon, 
-          scores[0], scores[1], scores[2], scores[3], 60, json.dumps(tags)))
-    
-    poi_id = cursor.lastrowid
-    
-    # Insert point bounds into R*Tree index (min = max for points)
-    cursor.execute("""
-        INSERT OR REPLACE INTO poi_spatial_idx (id, min_lon, max_lon, min_lat, max_lat)
-        VALUES (?, ?, ?, ?, ?)
-    """, (poi_id, lon, lon, lat, lat))
-
-# Example usage
-conn = sqlite3.connect("spark.db")
-insert_poi(conn, 101, "Gloria Molina Grand Park Playground", "playground", 34.0560, -118.2458, 
-           (0.2, 0.95, 0.85, 0.7), {"surface": "rubber", "shade": "yes"})
-conn.commit()
-```
-
-### 1.3 High-Performance Bounding Box Query
-When the frontend Leaflet map pans or zooms, the backend executes an envelope intersection query:
-
-```sql
-SELECT p.poi_id, p.name, p.category, p.longitude, p.latitude,
-       p.cog_score, p.phy_score, p.soc_score, p.emo_score, p.dwell_time_mins
-FROM spark_pois p
-JOIN poi_spatial_idx idx ON p.poi_id = idx.id
-WHERE idx.min_lon >= -118.35 AND idx.max_lon <= -118.15
-  AND idx.min_lat >= 33.95 AND idx.max_lat <= 34.15
-LIMIT 100;
-```
-*Performance Benchmark:* In-memory or SSD disk lookup executes in **$8.4\text{ms}$** over 20,000 records, completely avoiding full table scans.
-
----
-
-## 2. Content-Based Pediatric Recommendation Engine
-
-SPARK relies on content-based filtering using **Cosine Similarity** between the caregiver profile vector and each POI's developmental milestone vector.
-
-### 2.1 Vector Space Definition
-Let the developmental domains be defined as a 4-dimensional vector space:
-$$\mathbf{V} = [v_{\text{cognitive}}, v_{\text{physical}}, v_{\text{social}}, v_{\text{emotional}}] \in [0, 1]^4$$
-
-- **Caregiver Profile Vector ($\mathbf{u}$):** Set via UI sliders. E.g., a parent emphasizing physical exercise and social play: $\mathbf{u} = [0.2, 0.9, 0.8, 0.1]^\top$.
-- **POI Vector ($\mathbf{p}_i$):** Pre-calculated at ingestion based on crowdsourced metadata. E.g., a community playground: $\mathbf{p} = [0.15, 0.95, 0.85, 0.70]^\top$.
-
-### 2.2 Vectorized Scoring Implementation (Python / NumPy)
-```python
-import numpy as np
-
-def rank_pois(user_vector: np.ndarray, poi_matrix: np.ndarray) -> np.ndarray:
-    """
-    Vectorized cosine similarity calculation across N candidate POIs.
-    user_vector: Shape (4,)
-    poi_matrix: Shape (N, 4)
-    """
-    # L2-normalize user profile
-    u_norm = user_vector / np.linalg.norm(user_vector)
-    
-    # L2-normalize candidate POI matrix row-wise
-    p_norms = np.linalg.norm(poi_matrix, axis=1, keepdims=True)
-    p_norms[p_norms == 0] = 1.0  # Prevent zero-division
-    p_normalized = poi_matrix / p_norms
-    
-    # Calculate cosine similarity via batch dot product
-    scores = np.dot(p_normalized, u_norm)
-    return scores
-
-# Example Verification
-user_pref = np.array([0.2, 0.9, 0.8, 0.1])
-poi_features = np.array([
-    [0.15, 0.95, 0.85, 0.70],  # Playground
-    [0.95, 0.10, 0.40, 0.60]   # Library
-])
-
-similarity = rank_pois(user_pref, poi_features)
-print(similarity)  # Output: [0.952, 0.384] -> Playground wins
+real_lat = pois["longitude"].astype(float)
+real_lon = pois["latitude"].astype(float)
 ```
 
 ---
 
-## 3. Heuristic Routing Algorithms (TSPTW via Google OR-Tools)
+## 3. How the Optimizer Thinks
 
-To sequence selected activities into a time-sensitive daily loop, SPARK formulates the problem as an **Orienteering Problem with Time Windows (OPTW / TSPTW)**.
+The optimizer picks $n$ stops that balance three common-sense goals:
 
-### 3.1 Self-Contained Travel Time Matrix Generation (In-Process Python)
-Rather than requiring an external Dockerized OSRM server, transit durations are computed in-process using road-network circuity adjusted Haversine distances:
+$$\max J = \text{Child Development Value} - \alpha \cdot \text{Travel Burden} - \beta \cdot \text{Activity Redundancy}$$
 
-```python
-import numpy as np
+### Goal 1: Developmental Value (With Diminishing Returns)
+Each activity contributes points across 8 childhood skills (social, motor, creativity, etc.), weighted by what the child's age group needs.
+- **Why diminishing returns ($1 - e^{-T/2.0}$)?**  
+  Because doing three consecutive gross-motor activities exhausts a child rather than providing $3\times$ the benefit. The curve gently plateaus, encouraging the optimizer to pick complementary domains (like pairing a park with a story hour).
 
-def compute_travel_matrix(coords: list, avg_speed_mph: float = 35.0, circuity: float = 1.35) -> np.ndarray:
-    """
-    Generates an NxN transit duration matrix (in minutes) entirely in Python.
-    coords: List of (lat, lon) tuples.
-    """
-    n = len(coords)
-    matrix = np.zeros((n, n), dtype=float)
-    
-    # Earth radius in miles
-    R = 3958.8
-    
-    for i in range(n):
-        lat1, lon1 = np.radians(coords[i])
-        for j in range(i + 1, n):
-            lat2, lon2 = np.radians(coords[j])
-            
-            # Haversine distance formula
-            dlat = lat2 - lat1
-            dlon = lon2 - lon1
-            a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
-            c = 2 * np.arcsin(np.sqrt(a))
-            dist_miles = R * c
-            
-            # Road network circuity adjustment and transit duration in minutes
-            road_dist = dist_miles * circuity
-            transit_time_mins = (road_dist / avg_speed_mph) * 60.0 + 2.0  # +2 min turn/traffic buffer
-            
-            matrix[i][j] = transit_time_mins
-            matrix[j][i] = transit_time_mins
-            
-    return matrix
-```
+### Goal 2: Travel Burden (Keep it Close)
+- Measures average distance from home relative to the chosen radius.
+- **Why?** Parents want meaningful outings without spending an hour trapped in city traffic.
 
-### 3.2 Optimization Solver (Google OR-Tools Guided Local Search)
-```python
-from ortools.constraint_solver import routing_enums_pb2
-from ortools.constraint_solver import pywrapcp
-
-def solve_daily_agenda(time_matrix, service_times, scores, start_time_mins, end_time_mins):
-    """
-    time_matrix: NxN transit duration matrix (minutes)
-    service_times: Array of dwell times spent at each POI
-    scores: Array of recommendation similarity scores [0.0 - 1.0]
-    start_time_mins / end_time_mins: Total available budget window
-    """
-    num_nodes = len(time_matrix)
-    max_duration = end_time_mins - start_time_mins
-    
-    # Single vehicle, starting and ending at Node 0 (Home)
-    manager = pywrapcp.RoutingIndexManager(num_nodes, 1, 0)
-    routing = pywrapcp.RoutingModel(manager)
-
-    # 1. Transit Callback
-    def time_callback(from_index, to_index):
-        from_node = manager.IndexToNode(from_index)
-        to_node = manager.IndexToNode(to_index)
-        return int(round(time_matrix[from_node][to_node] + service_times[from_node]))
-
-    transit_callback_index = routing.RegisterTransitCallback(time_callback)
-    routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
-
-    # 2. Add Schedule Time Window Dimension
-    routing.AddDimension(
-        transit_callback_index,
-        30,            # 30 minutes slack / waiting time
-        max_duration,  # Total daily budget
-        False,         # Don't force start cumul to zero
-        "Time"
-    )
-    time_dimension = routing.GetDimensionOrDie("Time")
-
-    # 3. Allow Dropping Nodes with Penalty Proportional to Developmental Score
-    for node in range(1, num_nodes):
-        drop_penalty = int(scores[node] * 10000)
-        routing.AddDisjunction([manager.NodeToIndex(node)], drop_penalty)
-
-    # 4. Search Parameters: Guided Local Search with 1.0s timeout
-    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-    search_parameters.local_search_metaheuristic = (
-        routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
-    )
-    search_parameters.time_limit.seconds = 1
-
-    solution = routing.SolveWithParameters(search_parameters)
-    
-    if not solution:
-        return None
-
-    # Extract ordered tour
-    route = []
-    index = routing.Start(0)
-    while not routing.IsEnd(index):
-        node = manager.IndexToNode(index)
-        time_var = time_dimension.CumulVar(index)
-        route.append({
-            "node": node,
-            "est_arrival": solution.Min(time_var) + start_time_mins
-        })
-        index = solution.Value(routing.NextVar(index))
-        
-    route.append({"node": 0, "est_arrival": solution.Min(time_dimension.CumulVar(index)) + start_time_mins})
-    return route
-```
+### Goal 3: Variety (Avoid Duplicates)
+- Compares the "fingerprint" of activities using centered cosine similarity.
+- **Why?** Even if two venues have high scores, we don't want to recommend two nearly identical climbing playgrounds on the same afternoon.
 
 ---
 
-## 4. Web Integration & Minimal Flask API
+## 4. Sequencing the Route (2-Opt TSP)
 
-A lightweight `app.py` serves the static web assets (`index.html`, `style.css`, `app.js`) and handles route requests:
+Once the best $n$ stops are selected, a simple 2-Opt TSP solver sequences them to minimize total driving time from home and back:
 
-```python
-from flask import Flask, jsonify, request, send_from_directory
-import sqlite3
-import numpy as np
+$$\text{Home} \longrightarrow \text{Stop 1} \longrightarrow \text{Stop 2} \longrightarrow \text{Home}$$
 
-app = Flask(__name__, static_folder="../webapp", static_url_path="")
+---
 
-@app.route("/")
-def index():
-    return send_from_directory("../webapp", "index.html")
+## 5. How to Run It
 
-@app.route("/api/pois", methods=["GET"])
-def get_pois():
-    min_lon = float(request.args.get("min_lon", -118.35))
-    max_lon = float(request.args.get("max_lon", -118.15))
-    min_lat = float(request.args.get("min_lat", 33.95))
-    max_lat = float(request.args.get("max_lat", 34.15))
-    
-    conn = sqlite3.connect("spark.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT p.poi_id, p.name, p.category, p.latitude, p.longitude,
-               p.cog_score, p.phy_score, p.soc_score, p.emo_score, p.dwell_time_mins
-        FROM spark_pois p
-        JOIN poi_spatial_idx idx ON p.poi_id = idx.id
-        WHERE idx.min_lon >= ? AND idx.max_lon <= ?
-          AND idx.min_lat >= ? AND idx.max_lat <= ?
-        LIMIT 100
-    """, (min_lon, max_lon, min_lat, max_lat))
-    
-    rows = cursor.fetchall()
-    conn.close()
-    
-    pois = [{
-        "id": r[0], "name": r[1], "category": r[2], "lat": r[3], "lon": r[4],
-        "cog": r[5], "phy": r[6], "soc": r[7], "emo": r[8], "dwell": r[9]
-    } for r in rows]
-    
-    return jsonify(pois)
-
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)
-```
-
-### 3.2 Launching the Prototype
-
-SPARK can be run in two modes:
+From your project folder:
 
 ```bash
-# Option A: Zero-dependency static server (Recommended for CSE 6242 grading reproduction)
-cd webapp
+# 1. Start the local server
 python3 -m http.server 8080
 
-# Option B: In-process Flask backend (when live SQLite spatial filtering is active)
-python3 app.py
+# 2. Open in your browser
+http://localhost:8080/spark/
 ```
-
-Both modes render the full Leaflet OpenStreetMap canvas, the OpenStreetMap Nominatim geocoding address bar, the D3 Child Fit Panel, and the Itinerary Timeline with zero API key configuration.

@@ -1,0 +1,120 @@
+{
+  "title": "SPARK Model Evaluation Feedback Dataset (Sample Benchmark)",
+  "exported_at": "2026-10-30T11:50:55.048506Z",
+  "target_child_age": 5,
+  "summary": {
+    "total": 14,
+    "up": 12,
+    "down": 2,
+    "ratio": 85.7,
+    "activityVotes": {
+      "up": 26,
+      "down": 4
+    }
+  },
+  "data": [
+    {
+      "poi_id": "poi_1",
+      "poi_name": "Grand Park Playground & Splash Pad",
+      "domain": "Motor",
+      "composite_score": 9.4,
+      "venue_evaluation": "upvote",
+      "activity_evaluations": [
+        {
+          "activity": "Climbing rope pyramids",
+          "vote": "upvote"
+        },
+        {
+          "activity": "Interactive splash jet navigation",
+          "vote": "upvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_2",
+      "poi_name": "Los Angeles Central Library (Children's Literature)",
+      "domain": "Cognitive",
+      "composite_score": 9.2,
+      "venue_evaluation": "upvote",
+      "activity_evaluations": [
+        {
+          "activity": "Interactive storybook reading corner",
+          "vote": "upvote"
+        },
+        {
+          "activity": "STEM puzzle tables",
+          "vote": "upvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_3",
+      "poi_name": "The Broad Contemporary Art Museum",
+      "domain": "Creative",
+      "composite_score": 8.7,
+      "venue_evaluation": "upvote",
+      "activity_evaluations": [
+        {
+          "activity": "Color & sculpture scavenger hunt",
+          "vote": "upvote"
+        },
+        {
+          "activity": "Infinity Mirrored Room sensory gazing",
+          "vote": "upvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_4",
+      "poi_name": "Gloria Molina Grand Park Olive Court",
+      "domain": "Social",
+      "composite_score": 8.5,
+      "venue_evaluation": "upvote",
+      "activity_evaluations": [
+        {
+          "activity": "Community lawn picnic & social games",
+          "vote": "upvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_5",
+      "poi_name": "Japanese American National Museum",
+      "domain": "Cognitive",
+      "composite_score": 7.8,
+      "venue_evaluation": "upvote",
+      "activity_evaluations": [
+        {
+          "activity": "Origami folding & craft workshop",
+          "vote": "upvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_6",
+      "poi_name": "Pershing Square Community Plaza",
+      "domain": "Motor",
+      "composite_score": 6.8,
+      "venue_evaluation": "downvote",
+      "activity_evaluations": [
+        {
+          "activity": "Open concrete plaza scootering",
+          "vote": "downvote"
+        }
+      ]
+    },
+    {
+      "poi_id": "poi_7",
+      "poi_name": "MOCA Grand Avenue",
+      "domain": "Creative",
+      "composite_score": 7.4,
+      "venue_evaluation": "downvote",
+      "activity_evaluations": [
+        {
+          "activity": "Abstract art contemplation",
+          "vote": "downvote"
+        }
+      ]
+    }
+  ]
+}

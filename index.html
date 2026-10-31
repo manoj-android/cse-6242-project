@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARK — Smart Personalized Activity Routes for Kids</title>
+    <!-- Instant client-side redirect to spark presentation dashboard -->
+    <meta http-equiv="refresh" content="0; url=spark/">
+    <script>
+        window.location.replace("spark/" + window.location.search + window.location.hash);
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0b1120;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        .redirect-box {
+            background: #141d2e;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 24px 32px;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 1.25rem; margin-bottom: 8px; color: #38bdf8; }
+        p { font-size: 0.95rem; color: #94a3b8; line-height: 1.5; }
+        a {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 18px;
+            background: #0284c7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        a:hover { background: #0369a1; }
+    </style>
+</head>
+<body>
+    <div class="redirect-box">
+        <h1>⚡ Launching SPARK...</h1>
+        <p>Redirecting to the interactive presentation dashboard. If not redirected automatically within 3 seconds, click below:</p>
+        <a href="spark/">Open SPARK Dashboard</a>
+    </div>
+</body>
+</html>

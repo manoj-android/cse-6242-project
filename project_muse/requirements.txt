@@ -1,0 +1,3 @@
+Flask>=3.0
+# Core scoring, geo, routing, import and export use only the Python
+# standard library. NumPy and OR-Tools are not required.

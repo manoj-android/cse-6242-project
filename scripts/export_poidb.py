@@ -3,7 +3,7 @@
 export_poidb.py
 Consumes poi.db, resolves coordinate axis swap, computes 8D developmental
 milestone match against Age 5 weights, maps to the 4 UI domains, and exports
-webapp/data/dtla_pois.json.
+spark/data/dtla_pois.json.
 """
 
 import sqlite3
@@ -11,8 +11,12 @@ import json
 import math
 import os
 
-DB_PATH = 'poi.db'
-OUTPUT_JSON = 'webapp/data/dtla_pois.json'
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR) if os.path.basename(SCRIPT_DIR) == 'scripts' else SCRIPT_DIR
+
+DB_CANDIDATE = os.path.join(PROJECT_ROOT, 'data', 'poi.db')
+DB_PATH = DB_CANDIDATE if os.path.exists(DB_CANDIDATE) else os.path.join(PROJECT_ROOT, 'poi.db')
+OUTPUT_JSON = os.path.join(PROJECT_ROOT, 'spark', 'data', 'dtla_pois.json')
 
 CATEGORIES = [
     'soc_emot', 'cog_exec', 'lang_comm', 'phys_motor', 
@@ -206,8 +210,8 @@ def main():
     # Sort final list by distance from DTLA center
     final_pois.sort(key=lambda x: x['dist_km'])
 
-    # Write to webapp/data/dtla_pois.json
-    os.makedirs('webapp/data', exist_ok=True)
+    # Write to spark/data/dtla_pois.json
+    os.makedirs(os.path.dirname(OUTPUT_JSON), exist_ok=True)
     with open(OUTPUT_JSON, 'w', encoding='utf-8') as f:
         json.dump(final_pois, f, indent=2)
 

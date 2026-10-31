@@ -1,0 +1,19 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #111827; background: #f9fafb; }
+header, main { max-width: 1180px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.5rem; margin-bottom: 4px; }
+h2 { font-size: 1.15rem; margin: 18px 0 8px; }
+h3 { font-size: 1rem; margin: 14px 0 6px; }
+.controls { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
+.sliders, .selects { display: flex; flex-wrap: wrap; gap: 14px; }
+.sliders label, .selects label { font-size: 0.9rem; }
+#map { height: 460px; border-radius: 8px; z-index: 0; }
+.grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+.rank-row { display: flex; justify-content: space-between; width: 100%; padding: 6px 8px; margin: 3px 0; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; text-align: left; }
+.rank-row.selected { border-color: #2563eb; background: #eff6ff; }
+.bar { height: 18px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.timeline { display: flex; gap: 3px; margin-top: 8px; }
+.tl-travel { background: #d1d5db; color: #374151; font-size: 0.75rem; padding: 8px 4px; overflow: hidden; white-space: nowrap; }
+.tl-stop { color: #fff; font-size: 0.8rem; padding: 8px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.note, .legend, .count { color: #4b5563; font-size: 0.85rem; }
+.notes { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 4px 16px 12px; margin-top: 18px; }

@@ -49,6 +49,8 @@ tmp/
 *.sqlite3
 *.db
 !poi.db
+!data/poi.db
+!data/*.db
 HW1/Q2/Q2
 
 # Antigravity agents

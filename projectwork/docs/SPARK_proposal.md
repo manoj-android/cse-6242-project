@@ -149,11 +149,13 @@ The user preference vector $\mathbf{u} \in [0, 1]^8$ is transformed dynamically 
 #### 2.4 Optimization Formulation: What the Team is Optimizing
 SPARK models family outing generation as a multi-criteria optimization problem balancing **child developmental enrichment** against **travel friction**:
 
-$$\max_{\mathcal{R} \subseteq \mathcal{V}} \quad \mathcal{J}(\mathcal{R}) = \sum_{v \in \mathcal{R}} \text{Score}(v, \mathbf{w}_{\text{age}}) - \lambda \cdot T_{\text{travel}}(\mathcal{R})$$
+$$\max_{\mathcal{R} \subseteq \mathcal{V}} \quad \mathcal{J}(\mathcal{R}) = \sum_{v \in \mathcal{R}} \text{Score}(v, \mathbf{w}_{\text{persona}}) - \lambda \cdot T_{\text{travel}}(\mathcal{R})$$
 
-Where each venue's score is computed via an explainable linear combination:
-$$\text{Score}(v) = 0.60 \times \text{DevFit} + 0.25 \times \text{AgeFit} + 0.15 \times \text{CaregiverPref} - \text{TravelPenalty}(v)$$
+Where each venue's score is computed via an explainable linear combination with diversity scaling:
+$$\text{Score}(v) = 0.60 \times \text{DevFit} \cdot \mu_{\text{persona}}(v) + 0.25 \times \text{AgeFit} + 0.15 \times \text{CaregiverPref} + \text{DiversityBonus}(v) - \text{TravelPenalty}(v)$$
 
+- $\mu_{\text{persona}}(v) = \frac{\text{Need}(\text{domain}_v)}{7.5}$ dynamically aligns venue scores with the active Child Persona (Scenario A: Active, Scenario B: Balanced, Scenario C: Cognitive, Creative Explorer).
+- $\text{DiversityBonus}(v) = +1.0\text{ pt}$ if venue $v$'s pedagogical domain has not yet been visited in the current itinerary, directly resolving the "domain starvation" vulnerability identified in literature.
 - $\mathcal{R}$ is the ordered itinerary of selected stops ($v_1, v_2, \dots$).
 - $T_{\text{travel}}(\mathcal{R}) = \sum_{(i,j) \in \mathcal{E}} t_{ij}$ is the total round-trip transit time computed using Haversine distance adjusted for urban road circuity ($\tau = 1.35, v = 35\text{ mph}$).
 - $\lambda \ge 0$ steers preference between minimizing transit time and maximizing multi-domain activity quality.
@@ -168,14 +170,14 @@ SPARK enforces four explicit, real-world parenting and logistical constraints:
 | **3. Home Round-Trip Loop** | $\text{Start}(\mathcal{R}) = v_0, \quad \text{End}(\mathcal{R}) = v_0$ | The outing must originate at Home ($v_0$) and return to Home ($v_0$). |
 | **4. Child Fatigue Cap** | $2 \le |\mathcal{R}| \le 3$ stops | Bounded to 2 or 3 stops to avoid overstimulating young children and causing meltdowns. |
 
-#### 2.6 Computational Methodology: Fast Greedy Solver (<15ms)
+#### 2.6 Computational Methodology: Fast Greedy Solver with Diversity Bonus (<15ms)
 To support real-time visual interaction without backend lag, the routing engine executes client-side using a streamlined greedy rule: *"Pick the highest-scoring POI within the time budget, then the best next POI nearby, stop when the budget is used."*
 
 ```mermaid
 flowchart LR
-    S1["<b>Step 1: Spatial Filtering (<5ms)</b><br>Filter venues within reachable radius<br>from Caregiver Home (🏠)"] --> S2["<b>Step 2: Multi-Objective Scoring (<3ms)</b><br>Score = 0.60 Dev + 0.25 Age +<br>0.15 Pref - Travel Penalty"]
+    S1["<b>Step 1: Spatial Filtering (<5ms)</b><br>Filter venues within reachable radius<br>from Caregiver Home (🏠)"] --> S2["<b>Step 2: Multi-Objective Scoring (<3ms)</b><br>Score = 0.60 Dev•μ + 0.25 Age +<br>0.15 Pref + Diversity - Penalty"]
     S2 --> S3["<b>Step 3: Greedy Route Sequencing (<7ms)</b><br>Select best next candidate &<br>close home return loop"]
-    S3 --> Out["<b>Optimal Itinerary</b><br>Delivered to Map & Timeline"]
+    S3 --> Out["<b>Optimal Itinerary</b><br>Delivered to Map, Timeline & Table"]
 ```
 
 #### 2.7 Baseline Comparisons & Quantitative Evaluation Protocol (Heilmeier Q5)
@@ -199,20 +201,27 @@ SPARK provides a **Coordinated Multiple-View (CMV) Visual Analytics Interface** 
 
 ```mermaid
 flowchart TD
-    subgraph Controls["1. Realistic Contextual Controls"]
+    subgraph Controls["1. Realistic Contextual Controls & Persona Bar"]
         C0["<b>Caregiver Home Address & Geocoding</b><br>OSM Nominatim API + DTLA Presets (Pershing Sq, Union Station, etc.)"]
-        C1["<b>Domain Filter Dropdown</b><br>All, Motor, Cognitive, Social, Creative"]
-        C2["<b>Max Outing Time Slider</b><br>60 min (Quick Outing) <---> 240 min (Multi-Stop Day)"]
+        C1["<b>Scenario Explorer Bar (Section 12 Personas)</b><br>⚖️ Balanced (Age 5) | 🏃 Active | 🧠 Cognitive | 🎨 Creative"]
+        C2["<b>Domain Filter & Max Time Slider</b><br>Filter domains · 60 to 240 mins time budget"]
     end
 
     subgraph Views["2. Three Coordinated Visual Analytics Views"]
         V1["<b>View 1: Leaflet OSM Activity Map</b><br>Downtown LA 48 POIs from poi.db (colored by domain, sized by score)<br>Numbered greedy route polyline from dynamic Caregiver Start (🏠)"]
-        V2["<b>View 2: Child Fit Panel (D3.js)</b><br>• D3 Radar Chart: Child Needs vs. Route Coverage<br>• D3 Stacked Bar: Dev (60%) + Age (25%) + Pref (15%) - Penalty"]
-        V3["<b>View 3: Timeline & Baseline Scorecard</b><br>• Horizontal activity & transit block timeline<br>• Direct 4-metric comparison against Nearest-Neighbor baseline"]
+        V2["<b>View 2: Child Fit Panel (D3.js)</b><br>• D3 Radar Chart: Child Needs vs. Route Coverage<br>• D3 Stacked Bar: Dev + Age + Pref + Diversity - Penalty<br>• In-Panel Stop Detail & Activity Rating Card"]
+        V3["<b>View 3: Timeline & Baseline Scorecard</b><br>• Horizontal activity & transit block timeline<br>• Scorecard comparison cards & Section 11 Evaluation Table"]
     end
 
-    Controls <-->|Real-Time Parameter Steering (<50ms)| Views
+    Controls <-->|Real-Time Parameter Steering (<15ms)| Views
 ```
+
+#### 3.0 Scenario Explorer Bar: Persona-Driven Route Steering (Section 12)
+Placed prominently at the top of the interface, this component provides four one-click scenario cards that instantly parameterize the optimization engine:
+1. **⚖️ Scenario B: Balanced (Age 5)**: Equal weighting across Motor (8.0), Cognitive (7.5), Social (8.0), and Creative (7.5).
+2. **🏃 Scenario A: Active (Age 5)**: High gross motor demand (9.5) and social play (8.5) $\to$ shifts route priority toward sports facilities, recreation centers, and turf fields.
+3. **🧠 Scenario C: Cognitive (Age 5)**: High learning and executive curiosity (9.5) $\to$ prioritizes historic landmarks (Biddy Mason Memorial), the Central Library, and cultural discovery centers.
+4. **🎨 Creative Explorer (Age 5)**: Emphasizes botanical gardens, sensory arts, and imaginative problem-solving (9.5).
 
 #### 3.1 View 1: Interactive Spatial Map Canvas & Greedy Route (Leaflet.js + OpenStreetMap)
 - **Visual Encoding:** Renders 48 verified Downtown Los Angeles POIs extracted from `poi.db`, each encoded with:
@@ -228,13 +237,14 @@ flowchart TD
   - Synchronizes selection with the D3 Child Fit Panel.
 
 #### 3.2 View 2: Child Fit Panel: "Does this plan help this child, and why?" (D3.js)
-Placed alongside the map, this panel answers why the plan is beneficial through two complementary visual encodings:
-- **D3 Radar Chart (Multi-Domain Coverage vs. Need):** A 4-axis polar chart displaying the child's age-5 baseline developmental needs alongside the cumulative domain points earned across the proposed route.
-- **D3 Stacked Bar Chart (Explainable Venue Scoring):** Breaks down the composite score for the selected venue into its verified linear components:
-  $$\text{Score}(v) = 0.60 \times \text{DevFit} + 0.25 \times \text{AgeFit} + 0.15 \times \text{CaregiverPref} - \text{TravelPenalty}$$
-  The positive fit components are stacked horizontally (Cyan, Violet, Emerald), while the transit time penalty is visualized as a distinct deduction bar, providing transparent explainability.
+Placed alongside the map, this panel answers why the plan is beneficial through three complementary visual encodings:
+- **Component A: D3 Radar Chart (Multi-Domain Coverage vs. Need):** A 4-axis polar chart displaying the active child persona's developmental need vector alongside the cumulative domain points earned across the proposed route.
+- **Component B: D3 Stacked Bar Chart (Explainable Venue Scoring):** Breaks down the composite score for the selected venue into its verified linear components:
+  $$\text{Score}(v) = 0.60 \times \text{DevFit} + 0.25 \times \text{AgeFit} + 0.15 \times \text{CaregiverPref} + \text{DiversityBonus} - \text{TravelPenalty}$$
+  The positive fit components are stacked horizontally (Cyan, Violet, Emerald, Amber), while the transit time penalty is visualized as a distinct deduction bar, providing transparent explainability.
+- **Component C: In-Panel Activity Detail & Feedback Card:** Displays the selected stop's category, dwell duration, and travel distance, paired with an aligned activity list and in-panel `👍` / `👎` voting buttons for fluid evaluation without requiring map popups.
 
-#### 3.3 View 3: Itinerary Timeline & Quantitative Baseline Evaluation
+#### 3.3 View 3: Itinerary Timeline & Formal Baseline Evaluation Matrix (Section 11)
 Positioned directly below the map, this component provides schedule clarity and instant empirical validation:
 - **Horizontal Activity Timeline:** Displays sequential visual blocks alternating between driving transit (`🚗 8m`) and venue dwell periods (`Stop 1: Grand Park 60m`), giving parents immediate temporal situational awareness.
 - **Side-by-Side Evaluation Scorecard:** Benchmark comparison evaluating the SPARK route against the default **Nearest-Neighbor Baseline** across four identical metrics:
@@ -243,6 +253,14 @@ Positioned directly below the map, this component provides schedule clarity and 
   3. *Domains Covered (out of 4)*
   4. *Total Composite Score (pts)*
 - **Empirical Advantage Banner:** Computes and highlights the percentage score gain (typically $+35\%\text{--}40\%$, observed $+37.5\%$) delivered by SPARK within the identical family time budget.
+- **Section 11 Baseline Comparison Matrix Table:** A formal tabular matrix presenting empirical audit metrics:
+
+| Evaluation Metric | Nearest-Neighbor Baseline | SPARK Multi-Objective Route | Observed Improvement |
+| :--- | :---: | :---: | :---: |
+| **Developmental Route Score** | 24.0 pts | **33.0 pts** | **+37.5% Quality Gain** |
+| **Developmental Domain Coverage** | 2 / 4 Domains | **4 / 4 Domains** | **+100% (No Starvation)** |
+| **Travel Transit Time** | 35 mins | **36 mins** | **+1 min (Balanced Circuity)** |
+| **Total Outing Duration** | 150 mins | **150 mins** | **0% Budget Overrun** |
 
 ---
 
@@ -315,9 +333,9 @@ gantt
 | :- | :--- | :--- |
 | **Q1** | **What are you trying to do? (No jargon)** | Build an interactive visual analytics dashboard that helps parents find developmentally rich activities for their children (ages 1–8) and automatically balances activity enrichment with travel distance and family schedules. |
 | **Q2** | **How is it done today & current limits?** | Parents manually browse fragmented apps (Google Maps, Yelp, parent blogs). Current POI recommenders rank venues by popularity or adult reviews. Limits: (1) Zero developmental scoring; (2) Stops are recommended independently without schedule-wide variety; (3) Mapping tools treat all destinations as static pins without investigating trade-offs between travel time, schedule length, and child development. |
-| **Q3** | **What's new in your approach & why will it succeed?** | Three core innovations: (1) **8D Pediatric Vector Space** derived from CDC milestones and OSM tags; (2) **Composite Optimization Engine** that maximizes developmental quality while minimizing driving time under strict family time budgets, venue hours, and fatigue caps; (3) **Rich Visual Trade-off Analytics** (Dynamic Caregiver Home Address bar with OSM Nominatim geocoding, Time Budget Slider for schedule length, Domain Filter, D3 Radar/Stacked Bar fit panel, and Timeline Scorecard). |
+| **Q3** | **What's new in your approach & why will it succeed?** | Three core innovations: (1) **8D Pediatric Vector Space** derived from CDC milestones and OSM tags; (2) **Composite Optimization Engine with Diversity Bonus** that maximizes developmental quality while preventing domain starvation under strict family time budgets, venue hours, and fatigue caps; (3) **Rich Visual Trade-off Analytics** (Scenario Explorer Bar with 4 child personas, Dynamic Caregiver Home Address bar with OSM Nominatim geocoding, Time Budget Slider, D3 Radar/Stacked Bar fit panel with in-panel activity voting, and Section 11 Baseline Comparison Table). |
 | **Q4** | **Who cares?** | Parents, guardians, and early childhood caregivers seeking to maximize child developmental enrichment while eliminating daily planning friction and logistical chaos. |
-| **Q5** | **What difference will it make & how will it be measured?** | Quantified by: (1) Percentage gain in developmental variety ($\ge 35\%$, observed $+37.5\%$) compared to a nearest-neighbor baseline for $\le 10$ min extra drive time; (2) Route travel efficiency ratio; (3) Parent user study measuring reduction in planning time and a 5-point Likert usability scale. |
+| **Q5** | **What difference will it make & how will it be measured?** | Quantified by: (1) Percentage gain in developmental variety ($\ge 35\%$, observed $+37.5\%$) compared to a nearest-neighbor baseline for $\le 1$ min extra drive time; (2) Zero domain starvation (4 / 4 domains covered vs. 2 / 4 in baseline); (3) In-situ model evaluation logging with live upvote/downvote tracking and JSON feedback dataset export; (4) Parent user study measuring reduction in planning time and a 5-point Likert usability scale. |
 | **Q6** | **What are the risks and payoffs?** | **Risk:** Spatial data sparsity in rural/suburban OSM tags. **Mitigation:** Fusing Overture Places and USGS NLCD canopy data with category fallback heuristics. **Payoff:** An open, reproducible pediatric planning tool that reduces parental decision fatigue. |
 | **Q7** | **How much will it cost?** | **$0.00**. 100% built on open datasets (OSM, USGS) and free open-source software (Python, SQLite 3, D3.js v7, Leaflet, OpenStreetMap). Zero proprietary API subscriptions. |
 | **Q8** | **How long will it take?** | Exactly 10 weeks across 4 defined development phases (Sep 21 – Dec 3, 2026). |

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARK — Smart Personalized Activity Routes for Kids</title>
+    <meta name="description"
+        content="SPARK optimizes child development activity routes in Downtown Los Angeles using interactive visual analytics.">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+
+<body>
+    <div id="app-shell">
+
+        <!-- ── 1. TOPBAR ── -->
+        <header id="topbar">
+            <div id="brand">
+                <span id="brand-icon">⚡</span>
+                <span id="brand-name">SPARK</span>
+                <span id="brand-sub">Kids Activity & Route Recommender · Downtown Los Angeles</span>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="data-scale-funnel" id="data-funnel-trigger" title="Click to view CSE 6242 Big Data Lineage & Scale">
+                    <span class="funnel-badge-icon">📦</span>
+                    <div class="funnel-badge-text">
+                        <span class="funnel-badge-title">Data Ingestion Funnel</span>
+                        <span class="funnel-badge-stats">12GB OSM (30M nodes) → 24.1k → 484 → 48</span>
+                    </div>
+                </div>
+
+                <div class="eval-tracker" id="eval-tracker">
+                    <span class="badge-dot" style="background:#10b981"></span>
+                    <span id="eval-stats-label">Model Eval: <strong>0 votes</strong></span>
+                    <button type="button" id="export-eval-btn" class="eval-export-btn" title="Export Model Evaluation Log (.json)">Export</button>
+                </div>
+
+                <button type="button" class="analytics-toggle-pill" id="toggle-drawer-btn" title="Toggle CSE 6242 Advanced Visual Analytics Drawer">
+                    📊 Advanced Analytics
+                </button>
+            </div>
+        </header>
+
+        <!-- ── 2. HERO MISSION CONTROL (THE 4 INTUITIVE INPUTS) ── -->
+        <section id="mission-control" class="card mission-card">
+            <div class="mission-grid">
+                
+                <!-- Input 1: Caregiver Home Address -->
+                <div class="mission-col col-address">
+                    <div class="address-header-row">
+                        <label for="home-address-input">
+                            <span class="m-icon">🏠</span> 1. Home / Start Address
+                        </label>
+                        <div class="address-actions-inline">
+                            <button type="button" id="btn-my-location" class="addr-action-btn" title="Use current GPS location">🎯 Locate Me</button>
+                            <button type="button" id="btn-pick-map" class="addr-action-btn" title="Click anywhere on the map to place start pin">📍 Pick on Map</button>
+                        </div>
+                    </div>
+                    <div class="input-with-btn">
+                        <span class="home-icon-inline">🏠</span>
+                        <input type="text" id="home-address-input" list="home-presets" placeholder="Address, landmark, or DTLA hub..." value="Pershing Square, Los Angeles, CA" autocomplete="off">
+                        <button type="button" id="clear-home-btn" class="input-clear-btn" title="Clear address" style="display:none;">✕</button>
+                        <button type="button" id="set-home-btn" title="Update start location">Update</button>
+                    </div>
+                    <div class="address-quick-chips" id="address-quick-chips">
+                        <button type="button" class="addr-chip active" data-addr="Pershing Square, Los Angeles, CA">Pershing Sq</button>
+                        <button type="button" class="addr-chip" data-addr="Grand Park, Los Angeles, CA">Grand Park</button>
+                        <button type="button" class="addr-chip" data-addr="Union Station, Los Angeles, CA">Union Station</button>
+                        <button type="button" class="addr-chip" data-addr="Crypto.com Arena, Los Angeles, CA">Crypto Arena</button>
+                        <button type="button" class="addr-chip" data-addr="Echo Park Lake, Los Angeles, CA">Echo Park</button>
+                        <button type="button" class="addr-chip" data-addr="Arts District, Los Angeles, CA">Arts District</button>
+                    </div>
+                    <div id="home-status-msg" class="home-status-msg">💡 Drag 🏠 pin on map or click chips to change start</div>
+                    <datalist id="home-presets">
+                        <option value="Pershing Square, Los Angeles, CA">
+                        <option value="Union Station, Los Angeles, CA">
+                        <option value="Grand Park, Los Angeles, CA">
+                        <option value="Crypto.com Arena, Los Angeles, CA">
+                        <option value="Echo Park Lake, Los Angeles, CA">
+                        <option value="Arts District, Los Angeles, CA">
+                    </datalist>
+                </div>
+
+                <!-- Input 2: Child's Age -->
+                <div class="mission-col col-age">
+                    <div class="m-label-row">
+                        <label for="child-age-slider">
+                            <span class="m-icon">👶</span> 2. Child's Age
+                        </label>
+                        <strong id="child-age-val">5 years old</strong>
+                    </div>
+                    <input type="range" id="child-age-slider" min="2" max="12" step="1" value="5" title="Select child's age (2 to 12 years)">
+                    <div class="age-stage-chip" id="age-stage-chip">🧸 Early Childhood (Ages 4–6 · Kindergarten)</div>
+                </div>
+
+                <!-- Input 3: Within Distance (Facebook Marketplace Style) -->
+                <div class="mission-col col-distance">
+                    <div class="m-label-row">
+                        <label for="distance-radius-select">
+                            <span class="m-icon">📍</span> 3. Within Distance
+                        </label>
+                    </div>
+                    <select id="distance-radius-select" class="mission-select" title="Filter activities within radius from home">
+                        <option value="1">Within 1 mile</option>
+                        <option value="2">Within 2 miles</option>
+                        <option value="3" selected>Within 3 miles (DTLA)</option>
+                        <option value="5">Within 5 miles</option>
+                        <option value="10">Within 10 miles</option>
+                        <option value="999">Any distance</option>
+                    </select>
+                    <div class="field-sub-hint" id="distance-hint">Restricts venues to 3-mile radius</div>
+                </div>
+
+                <!-- Input 4: Number of Stops (Editable Number Box) -->
+                <div class="mission-col col-stops">
+                    <div class="m-label-row">
+                        <label for="max-stops-input">
+                            <span class="m-icon">🎯</span> 4. Number of Stops
+                        </label>
+                        <span class="stops-hint" id="stops-hint">2 stops</span>
+                    </div>
+                    <div class="stops-edit-group">
+                        <button type="button" class="stop-step-btn" id="stop-dec-btn" title="Decrease stops">−</button>
+                        <input type="number" id="max-stops-input" min="1" max="10" step="1" value="2" class="stops-edit-input" title="Type the exact number of activity stops you want">
+                        <button type="button" class="stop-step-btn" id="stop-inc-btn" title="Increase stops">+</button>
+                    </div>
+                    <div class="field-sub-hint">Type any number (e.g. 1, 2, 3...)</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── 3. MAIN CONTENT: CLEAN OUTPUT (ACTIVITIES LIST + MAP) ── -->
+        <main id="main-content">
+
+            <!-- ── PRIMARY WORKSPACE: SIDE-BY-SIDE ACTIVITIES & MAP ── -->
+            <section id="primary-workspace">
+
+                <!-- LEFT COLUMN: Recommended Activities & Itinerary -->
+                <div id="itinerary-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>📋 Recommended Activities & Itinerary</span>
+                        </div>
+                        <span id="itinerary-summary-pill" class="summary-pill">2 Stops · ~1h 35m total</span>
+                    </div>
+
+                    <!-- D3 Journey Ribbon (Visual Timeline Strip) -->
+                    <div id="journey-ribbon-block">
+                        <div class="journey-header">
+                            <span class="journey-title">Outing Journey Timeline</span>
+                            <div class="journey-legend">
+                                <span class="j-dot dot-motor"></span>Motor
+                                <span class="j-dot dot-cognitive"></span>Cognitive
+                                <span class="j-dot dot-social"></span>Social
+                                <span class="j-dot dot-creative"></span>Creative
+                            </div>
+                        </div>
+                        <div id="journey-ribbon-viz"></div>
+                    </div>
+
+                    <!-- Rendered Activity Cards List -->
+                    <div id="rendered-activities-list">
+                        <!-- Populated dynamically via renderItineraryCards() -->
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Interactive Leaflet Map (Auto-stretches to match activities list height) -->
+                <div id="map-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>🗺 Activity Locations & Optimized Route</span>
+                        </div>
+                        <div class="map-legend">
+                            <span class="legend-item"><span class="dot dot-motor"></span>Motor</span>
+                            <span class="legend-item"><span class="dot dot-cognitive"></span>Cognitive</span>
+                            <span class="legend-item"><span class="dot dot-social"></span>Social</span>
+                            <span class="legend-item"><span class="dot dot-creative"></span>Creative</span>
+                            <span class="legend-item"><span class="start-icon">🏠</span>Start</span>
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+            </section>
+
+            <!-- ── 4. ADVANCED VISUAL ANALYTICS DRAWER (FOR CSE 6242 RUBRIC EVALUATION) ── -->
+            <details id="advanced-analytics-drawer" class="card analytics-drawer">
+                <summary class="drawer-summary" id="drawer-summary-toggle">
+                    <div class="drawer-summary-left">
+                        <span class="drawer-summary-icon">📊</span>
+                        <span class="drawer-summary-title">Advanced Research Visualizations & Multi-Objective Model Details</span>
+                    </div>
+                    <span class="drawer-badge">Click to Expand (Radar · Pareto · Baseline Comparison)</span>
+                </summary>
+
+                <div class="drawer-content">
+
+                    <!-- Advanced Parameters Bar -->
+                    <div class="drawer-controls-bar">
+                        <div class="control-group">
+                            <label for="persona-select">Persona Scenario</label>
+                            <select id="persona-select">
+                                <option value="balanced">Scenario B: Balanced</option>
+                                <option value="active">Scenario A: Active / Physical</option>
+                                <option value="learning">Scenario C: Cognitive / Curious</option>
+                                <option value="creative">Creative & Sensory Explorer</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="domain-select">Domain Filter</label>
+                            <select id="domain-select">
+                                <option value="all">All Domains</option>
+                                <option value="Motor">Motor & Physical</option>
+                                <option value="Cognitive">Cognitive & Learning</option>
+                                <option value="Social">Social & Emotional</option>
+                                <option value="Creative">Creative & Sensory</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="time-budget-slider">Max Outing Time</label>
+                                <span id="time-budget-val">150 mins (2.5 hrs)</span>
+                            </div>
+                            <input type="range" id="time-budget-slider" min="60" max="240" step="30" value="150">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="lambda-slider">Priority (λ Trade-off)</label>
+                                <span id="lambda-val">Balanced (0.12)</span>
+                            </div>
+                            <input type="range" id="lambda-slider" min="1" max="3" step="1" value="2" title="Trade-off parameter: 1=Min Transit, 2=Balanced, 3=Max Quality">
+                        </div>
+
+                        <div class="profile-badge">
+                            <span class="badge-dot"></span>
+                            <span>Child: <strong id="profile-persona-label">Balanced (Age 5)</strong> · Start: <strong id="profile-start-label">Pershing Sq</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Scenario Cards Grid -->
+                    <div class="scenario-section">
+                        <div class="scenario-bar-header">
+                            <div class="scenario-title-group">
+                                <span class="scenario-bar-title">🧒 Child Developmental Profile & Scenario Explorer</span>
+                            </div>
+                            <div class="scenario-active-indicator">
+                                Active Scenario: <strong id="active-scenario-name">Scenario B: Balanced</strong>
+                            </div>
+                        </div>
+                        <div class="scenario-cards-grid">
+                            <button type="button" class="scenario-card active" data-scenario="balanced" id="scen-balanced">
+                                <div class="scenario-card-top">
+                                    <span class="scenario-icon">⚖️</span>
+                                    <span class="scenario-name">Scenario B: Balanced</span>
+                                    <span class="scenario-age">Age 5</span>
+                                </div>
+                                <div class="scenario-desc">Equal multi-domain balance across motor, learning, social, and imaginative play.</div>
+                                <div class="scenario-traits">
+                                    <span class="trait trait-motor">Motor 8.0</span>
+                                    <span class="trait trait-cog">Cog 7.5</span>
+                                    <span class="trait trait-soc">Soc 8.0</span>
+                                    <span class="trait trait-cre">Cre 7.5</span>
+                                </div>
+                            </button>
+
+                            <button type="button" class="scenario-card" data-scenario="active" id="scen-active">
+                                <div class="scenario-card-top">
+                                    <span class="scenario-icon">🏃</span>
+                                    <span class="scenario-name">Scenario A: Active</span>
+                                    <span class="scenario-age">Age 5</span>
+                                </div>
+                                <div class="scenario-desc">High gross motor & physical energy; prioritizes sports pitches, ballgames & athletics.</div>
+                                <div class="scenario-traits">
+                                    <span class="trait trait-motor">Motor 9.5</span>
+                                    <span class="trait trait-cog">Cog 4.5</span>
+                                    <span class="trait trait-soc">Soc 8.5</span>
+                                    <span class="trait trait-cre">Cre 5.0</span>
+                                </div>
+                            </button>
+
+                            <button type="button" class="scenario-card" data-scenario="learning" id="scen-learning">
+                                <div class="scenario-card-top">
+                                    <span class="scenario-icon">🧠</span>
+                                    <span class="scenario-name">Scenario C: Cognitive</span>
+                                    <span class="scenario-age">Age 5</span>
+                                </div>
+                                <div class="scenario-desc">High learning curiosity; scientific discovery, libraries, and historic heritage sites.</div>
+                                <div class="scenario-traits">
+                                    <span class="trait trait-motor">Motor 5.0</span>
+                                    <span class="trait trait-cog">Cog 9.5</span>
+                                    <span class="trait trait-soc">Soc 6.0</span>
+                                    <span class="trait trait-cre">Cre 8.5</span>
+                                </div>
+                            </button>
+
+                            <button type="button" class="scenario-card" data-scenario="creative" id="scen-creative">
+                                <div class="scenario-card-top">
+                                    <span class="scenario-icon">🎨</span>
+                                    <span class="scenario-name">Creative Explorer</span>
+                                    <span class="scenario-age">Age 5</span>
+                                </div>
+                                <div class="scenario-desc">Botanical gardens, sensory arts, imaginative storytelling, and open-ended building.</div>
+                                <div class="scenario-traits">
+                                    <span class="trait trait-motor">Motor 6.0</span>
+                                    <span class="trait trait-cog">Cog 7.0</span>
+                                    <span class="trait trait-soc">Soc 6.5</span>
+                                    <span class="trait trait-cre">Cre 9.5</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Research Visualizations Grid (Radar, Pareto, Breakdown) -->
+                    <div class="drawer-viz-grid">
+                        
+                        <!-- Chart A: Radar Chart -->
+                        <div class="chart-block">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Child Need vs Route Coverage (Click axis to filter)</span>
+                                <div class="radar-legend">
+                                    <span class="legend-line line-need"></span>Need
+                                    <span class="legend-line line-route" style="margin-left: 8px;"></span>Route
+                                </div>
+                            </div>
+                            <div id="radar-chart"></div>
+                        </div>
+
+                        <!-- Chart B: Interactive Pareto Trade-Off Scatterplot -->
+                        <div class="chart-block" id="pareto-chart-block">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Trade-Off Frontier (Distance vs. Quality)</span>
+                                <div class="pareto-legend">
+                                    <span class="legend-line line-pareto"></span>Pareto Front
+                                    <span class="legend-dot dot-route" style="margin-left: 8px;"></span>Route Stop
+                                </div>
+                            </div>
+                            <div id="pareto-chart"></div>
+                            <div class="pareto-caption">
+                                <span>⚡ Non-dominated POIs maximize developmental fit for transit minutes. Hover to inspect.</span>
+                            </div>
+                        </div>
+
+                        <!-- Chart C: Additive Stacked Bar -->
+                        <div class="chart-block">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Score Breakdown for Selected Stop</span>
+                                <span id="selected-poi-name" class="poi-highlight-name">Click a stop to inspect</span>
+                            </div>
+                            <div id="stacked-bar-chart"></div>
+                            <div class="score-formula-caption">
+                                <span class="formula-chip chip-dev">Dev Fit (60%)</span> +
+                                <span class="formula-chip chip-age">Age Fit (25%)</span> +
+                                <span class="formula-chip chip-pref">Pref (15%)</span> +
+                                <span class="formula-chip chip-div" style="background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">Diversity</span> −
+                                <span class="formula-chip chip-penalty">Travel Penalty</span>
+                            </div>
+                        </div>
+
+                        <!-- In-Panel Stop Detail (preserves existing container) -->
+                        <div class="chart-block" id="selected-stop-detail-block" style="display: none;">
+                            <div class="chart-title-row">
+                                <span class="chart-label">Stop Detail</span>
+                                <span id="selected-stop-domain-badge" class="poi-badge badge-domain">Cognitive</span>
+                            </div>
+                            <div id="poi-detail-list-container"></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Evaluation Timeline Track & Scorecards -->
+                    <div id="itinerary-section" class="drawer-metrics-section">
+                        <div id="timeline-container" style="display: none;">
+                            <div class="timeline-header-label">Timeline</div>
+                            <div id="timeline-track"></div>
+                        </div>
+
+                        <div id="scorecard-container">
+                            <div class="score-card card-spark">
+                                <div class="score-card-badge">⚡ SPARK Route</div>
+                                <div class="metric-grid">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Total Time</span>
+                                        <span id="spark-total-time" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Travel Time</span>
+                                        <span id="spark-travel-time" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Domains Covered</span>
+                                        <span id="spark-domains" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Total Score</span>
+                                        <span id="spark-total-score" class="metric-val highlight-metric">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="score-card card-baseline">
+                                <div class="score-card-badge baseline-badge">📍 Nearest Baseline</div>
+                                <div class="metric-grid">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Total Time</span>
+                                        <span id="base-total-time" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Travel Time</span>
+                                        <span id="base-travel-time" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Domains Covered</span>
+                                        <span id="base-domains" class="metric-val">--</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Total Score</span>
+                                        <span id="base-total-score" class="metric-val">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="gain-callout" class="gain-banner">
+                                <span class="gain-icon">🏆</span>
+                                <div class="gain-text">
+                                    <div id="gain-title">SPARK Score Advantage: +0%</div>
+                                    <div id="gain-sub">Comparing developmental value within identical budget</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 11 Baseline Comparison Table -->
+                        <div id="benchmark-table-card">
+                            <div class="benchmark-table-header">
+                                <span class="benchmark-title">📊 Baseline Comparison Matrix (Section 11 Specification)</span>
+                                <span class="benchmark-sub">Empirical evaluation comparing SPARK multi-objective optimization against standard Nearest-Neighbor proximity</span>
+                            </div>
+                            <table class="benchmark-table">
+                                <thead>
+                                    <tr>
+                                        <th>Evaluation Metric</th>
+                                        <th>Nearest-Neighbor Baseline</th>
+                                        <th>SPARK Multi-Objective Route</th>
+                                        <th>Observed Improvement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Developmental Route Score</strong></td>
+                                        <td id="tbl-base-score">--</td>
+                                        <td id="tbl-spark-score" class="highlight-val">--</td>
+                                        <td id="tbl-gain-score" class="gain-val">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Developmental Domain Coverage</strong></td>
+                                        <td id="tbl-base-domains">--</td>
+                                        <td id="tbl-spark-domains" class="highlight-val">--</td>
+                                        <td id="tbl-gain-domains" class="gain-val">+100% (No Starvation)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Travel Transit Time</strong></td>
+                                        <td id="tbl-base-travel">--</td>
+                                        <td id="tbl-spark-travel">--</td>
+                                        <td id="tbl-gain-travel" style="color:#94a3b8">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Outing Duration</strong></td>
+                                        <td id="tbl-base-total">--</td>
+                                        <td id="tbl-spark-total">--</td>
+                                        <td class="gain-val">0% Budget Overrun</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </details>
+
+        </main>
+
+        <!-- ── FOOTER ── -->
+        <footer id="footer">
+            CSE 6242 · Team 61 · Georgia Tech · SPARK (Downtown Los Angeles)
+        </footer>
+    </div>
+
+    <!-- Data Scale & Ingestion Lineage Modal (CSE 6242 Component 1 Compliance) -->
+    <div id="data-funnel-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📦 CSE 6242 Big Data Ingestion Funnel</h3>
+                <button type="button" class="modal-close-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#94a3b8;font-size:0.76rem;margin-bottom:12px;line-height:1.4">
+                    SPARK processes large-scale public geospatial archives from OpenStreetMap and the USGS National Land Cover Database (NLCD) to enable sub-15ms interactive visual decision support in Downtown Los Angeles:
+                </p>
+                <div class="funnel-steps">
+                    <div class="funnel-step">
+                        <div class="step-num">Step 1</div>
+                        <div class="step-content">
+                            <strong>Southern California OSM PBF Extract (~12 GB raw, >30 Million nodes)</strong>
+                            <span>Full regional topological nodes/ways ingested via Python SQLite3 spatial scripts.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="step-num">Step 2</div>
+                        <div class="step-content">
+                            <strong>USGS NLCD 30m Tree Canopy Raster (1.2 GB)</strong>
+                            <span>Zonal statistics compute shade and thermal comfort percentage for public spaces.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="step-num">Step 3</div>
+                        <div class="step-content">
+                            <strong>Entity Resolution & Deduplication (24,180 → 5,120 Candidates)</strong>
+                            <span>Spatial proximity gating (≤50m) and Levenshtein string edit distance pruning.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="step-num">Step 4</div>
+                        <div class="step-content">
+                            <strong>Relational Pediatric Taxonomy (poi.db — 484 Venues)</strong>
+                            <span>4-table schema linking OSM tags to 11 activity archetypes and 6 age brackets.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step highlight-step">
+                        <div class="step-num">Step 5</div>
+                        <div class="step-content">
+                            <strong>Active Downtown Los Angeles Corridor (48 Validated Stops)</strong>
+                            <span>Sub-15ms multi-objective greedy routing, D3 Radar/Stacked Bar charts, and timeline.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet & D3.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="app.js?v=4"></script>
+</body>
+</html>

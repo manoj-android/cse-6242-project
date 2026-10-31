@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPARK — Personalized Activity Routes for Kids (LA)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>SPARK: Personalized Activity Routes for Kids</h1>
+  <p>484 places from the supplied LA dataset (<code>poi__2.db</code>). Move the sliders and the map, fit panel, and route update together from one plan.</p>
+</header>
+
+<main>
+  <section class="controls" aria-label="Caregiver inputs">
+    <div class="sliders">
+      <label>Cognitive <input id="slider-cog" type="range" min="0" max="1" step="0.1" value="0.5"> <span id="value-cog">0.5</span></label>
+      <label>Physical <input id="slider-phy" type="range" min="0" max="1" step="0.1" value="0.5"> <span id="value-phy">0.5</span></label>
+      <label>Social <input id="slider-soc" type="range" min="0" max="1" step="0.1" value="0.5"> <span id="value-soc">0.5</span></label>
+      <label>Creative / Emotional <input id="slider-emo" type="range" min="0" max="1" step="0.1" value="0.5"> <span id="value-emo">0.5</span></label>
+    </div>
+    <div class="selects">
+      <label>Child age <select id="age"></select></label>
+      <label>Start <select id="start"></select></label>
+      <label>Time budget <select id="budget"><option>60</option><option>90</option><option selected>120</option><option>180</option></select></label>
+      <label>Dominant domain <select id="domain"><option value="all">All</option><option value="cog">Cognitive</option><option value="phy">Physical</option><option value="soc">Social</option><option value="emo">Creative / Emotional</option></select></label>
+      <label>Place type <select id="category"></select></label>
+    </div>
+  </section>
+
+  <p id="count" class="count"></p>
+
+  <div class="grid">
+    <section><h2>1 · Map and optimized route</h2><div id="map"></div>
+      <p class="note">Marker size grows with score; colour is the dominant domain. Click a marker to select it. Travel times are Haversine estimates (22 mph, ×1.35 circuity, +2 min), not live routing.</p>
+    </section>
+    <section><h2>2 · Fit panel</h2>
+      <h3 id="selected-name"></h3>
+      <svg id="radar" width="260" height="220" role="img" aria-label="Radar chart: caregiver profile, selected place, and route coverage"></svg>
+      <p class="legend">Dashed: what the caregiver asked for · Blue: selected place · Green: route coverage</p>
+      <div id="breakdown"></div>
+      <h3>Top ranked</h3><div id="ranked"></div>
+    </section>
+  </div>
+
+  <section><h2>3 · Itinerary and baseline</h2>
+    <p id="totals"></p>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section class="notes"><h2>About this data — read before presenting</h2>
+    <ul>
+      <li><b>Coordinates were corrected.</b> In <code>poi__2.db</code> the latitude column holds longitude and vice versa. Every point was swapped back; corrected latitudes are 34.043–34.093 and longitudes −118.337 to −118.248 (central LA, wider than downtown alone).</li>
+      <li><b>65 of 484 places have a name.</b> The other 419, including all 34 playgrounds and 312 of 314 swimming pools, show a fallback name such as “Swimming Pool #id”. Do not drop them: dropping unnamed rows would delete most of the dataset.</li>
+      <li><b>Scores collapse to 9 distinct vectors.</b> Places are scored by type (activities averaged, then scaled by age band), so park and garden share a vector, as do sports centre and fitness centre. Places of the same type differ only by travel time. Say this in the report; it is the dataset's main limitation.</li>
+      <li><b>Two types had no activities.</b> Dog parks use “free play” and outdoor seating uses “picknick” as documented fallbacks (15 places).</li>
+      <li><b>Dwell time and cost are assumptions by type</b> (for example playground 45 min, swimming pool 60 min; parks free, others unknown). Opening hours in the source are OSM tags, not hours, and are ignored.</li>
+      <li><b>Score formula:</b> 0.70 × cosine(profile, place) + 0.30 × age fit − travel penalty (first 15 min free, then 0.01/min, capped 0.20). Age fit is 1.0 for this dataset because age is carried by the age-scaled vectors; changing the age band changes the vectors.</li>
+    </ul>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="app.js"></script>
+</body>
+</html>
