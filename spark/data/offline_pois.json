@@ -494,28 +494,6 @@
     ]
   },
   {
-    "id": 428021739,
-    "name": "Crypto.com Arena",
-    "type": "stadium",
-    "lat": 34.042998,
-    "lon": -118.267135,
-    "domain": "Motor",
-    "age_range": "3-8",
-    "duration": 45,
-    "cost": "$0",
-    "dev_fit": 8.7,
-    "age_fit": 8.1,
-    "pref_fit": 8.4,
-    "dist_km": 2.39,
-    "is_named": true,
-    "activities": [
-      "ballgames (7.6/10)",
-      "play tag (6.8/10)",
-      "soccer (7.6/10)",
-      "softball (7.6/10)"
-    ]
-  },
-  {
     "id": 145652680,
     "name": "Victory Memorial Grove",
     "type": "park",

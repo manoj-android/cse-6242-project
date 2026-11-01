@@ -1,4 +1,4 @@
-/* ── SPARK Design System — Downtown LA Edition ── */
+/* SPARK Design System — Downtown LA */
 :root {
     --bg-0: #0a0e17;
     --bg-1: #111827;
@@ -40,7 +40,7 @@ html, body {
     min-height: 100vh;
 }
 
-/* ── Topbar ── */
+/* Topbar */
 #topbar {
     display: flex;
     align-items: center;
@@ -408,7 +408,7 @@ html, body {
     background: var(--social);
 }
 
-/* ── Main Layout ── */
+/* Main Layout */
 #main-content {
     flex: 1;
     display: flex;
@@ -446,7 +446,7 @@ html, body {
     color: var(--text-muted);
 }
 
-/* ── Upper Section: Map + Fit Panel ── */
+/* Upper Section: Map and Fit Panel */
 #upper-section {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -654,7 +654,7 @@ html, body {
 .chip-pref { background: rgba(52, 211, 153, 0.2); color: var(--social); }
 .chip-penalty { background: rgba(248, 113, 113, 0.2); color: var(--penalty); }
 
-/* ── Lower Section: Itinerary & Scorecard ── */
+/* Lower Section: Itinerary and Scorecard */
 #itinerary-section {
     min-height: 180px;
 }
@@ -1131,7 +1131,7 @@ html, body {
     background: #0284c7;
 }
 
-/* ── SCENARIO EXPLORER BAR (Section 12 of Tech Spec) ── */
+/* Scenario Explorer Bar */
 #scenario-bar {
     padding: 12px 18px;
     background: var(--bg-1);
@@ -1265,7 +1265,7 @@ html, body {
 .trait-soc { background: rgba(52, 211, 153, 0.15); color: #34d399; }
 .trait-cre { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
 
-/* ── SELECTED STOP DETAIL IN FIT PANEL ── */
+/* Selected Stop Detail */
 #selected-stop-detail-block {
     margin-top: 10px;
     border-top: 1px solid var(--border);
@@ -1291,7 +1291,7 @@ html, body {
     margin-bottom: 4px;
 }
 
-/* ── SECTION 11 BASELINE COMPARISON TABLE ── */
+/* Baseline Comparison Table */
 #benchmark-table-card {
     margin-top: 16px;
     background: var(--bg-2);
@@ -1357,7 +1357,7 @@ html, body {
     font-weight: 700;
 }
 
-/* ── DATA SCALE FUNNEL BADGE & MODAL (CSE 6242 Component 1) ── */
+/* Data Scale Funnel Badge and Modal */
 .data-scale-funnel {
     display: flex;
     align-items: center;
@@ -1536,7 +1536,7 @@ html, body {
     color: var(--text-muted);
 }
 
-/* ── Streamlined Mission Control & Primary Workspace Styles ── */
+/* Workspace and Control Bar */
 .topbar-actions {
     display: flex;
     align-items: center;
@@ -1846,6 +1846,24 @@ html, body {
     font-weight: 600;
 }
 
+.primary-activity-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.primary-activity-pill .pill-star {
+    color: #fbbf24;
+}
+
 .stop-activities-box {
     background: var(--bg-0);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1953,7 +1971,7 @@ html, body {
     min-height: 480px;
 }
 
-/* ── Collapsible Analytics Drawer ── */
+/* Analytics Drawer Styles */
 .analytics-drawer {
     margin: 0 20px 24px;
     background: var(--bg-1);

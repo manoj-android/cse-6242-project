@@ -1,8 +1,7 @@
-// ── SPARK: Smart Personalized Activity Routes for Kids ──
+// SPARK: Smart Personalized Activity Routes for Kids
 // Downtown Los Angeles Interactive Visual Analytics
-// CSE 6242 · Team 61 · Georgia Tech
 
-// ── 1. Configuration & Start Point ──────────────────────────────────────────
+// Configuration and default starting point
 let CAREGIVER_START = {
     name: 'Pershing Square (DTLA)',
     lat: 34.0488,
@@ -45,23 +44,23 @@ const CHILD_PERSONAS = {
 
 // Pediatric Developmental Age Brackets (Derived from SQLite age_points model)
 const AGE_STAGES = {
-    2: { label: "2 years old", stage: "🍼 Toddler (Sensory & Gross Motor)" },
-    3: { label: "3 years old", stage: "🍼 Early Preschool (Playground & Splash)" },
-    4: { label: "4 years old", stage: "🧸 Preschool (Imaginative & Social Play)" },
-    5: { label: "5 years old", stage: "🧸 Kindergarten (Storytelling & Motor Play)" },
-    6: { label: "6 years old", stage: "🎒 Early Elementary (Curiosity & Games)" },
-    7: { label: "7 years old", stage: "🎒 Primary School (Discovery & STEM Puzzles)" },
-    8: { label: "8 years old", stage: "🎒 Elementary (Science, Sports & Museums)" },
-    9: { label: "9 years old", stage: "🔍 Late Elementary (Scavenger Hunts & Arts)" },
-    10: { label: "10 years old", stage: "🔬 Pre-Teen (Autonomous Inquiry & Exhibits)" },
-    11: { label: "11 years old", stage: "🔬 Pre-Teen (Advanced Heritage & Culture)" },
-    12: { label: "12 years old", stage: "🏛️ Middle School (Complex Cultural Discovery)" }
+    2: { label: "2 years old", stage: "Toddler (Sensory & Gross Motor)" },
+    3: { label: "3 years old", stage: "Early Preschool (Playground & Splash)" },
+    4: { label: "4 years old", stage: "Preschool (Imaginative & Social Play)" },
+    5: { label: "5 years old", stage: "Kindergarten (Storytelling & Motor Play)" },
+    6: { label: "6 years old", stage: "Early Elementary (Curiosity & Games)" },
+    7: { label: "7 years old", stage: "Primary School (Discovery & STEM Puzzles)" },
+    8: { label: "8 years old", stage: "Elementary (Science, Sports & Museums)" },
+    9: { label: "9 years old", stage: "Late Elementary (Scavenger Hunts & Arts)" },
+    10: { label: "10 years old", stage: "Pre-Teen (Autonomous Inquiry & Exhibits)" },
+    11: { label: "11 years old", stage: "Pre-Teen (Advanced Heritage & Culture)" },
+    12: { label: "12 years old", stage: "Middle School (Complex Cultural Discovery)" }
 };
 
 let currentPersonaKey = 'balanced';
 let CHILD_TARGET_NEEDS = { ...CHILD_PERSONAS.balanced.needs };
 
-// ── 2. Downtown Los Angeles POI Dataset (35 Real Venues) ────────────────────
+// Fallback POI dataset for offline mode
 let POIS = [
     {
         "id": 206420459,
@@ -1153,7 +1152,7 @@ let POIS = [
     }
 ];
 
-// ── 3. Distance & Scoring Math ──────────────────────────────────────────────
+// Distance calculations and spatial helpers
 // Straight-line Haversine formula in miles
 function haversineMiles(lat1, lon1, lat2, lon2) {
     const R = 3958.8; // Earth radius in miles
@@ -1178,7 +1177,7 @@ function estimateTravelMins(distMiles) {
     return Math.max(3, Math.round(distMiles * 3.5 + 2));
 }
 
-// ── 3.1 SQLite 8D Pediatric Factors & Activity Taxonomy (poi.db) ─────────────
+// Pediatric milestone factors and activity taxonomy
 const PEDIATRIC_FACTORS = [
     "soc_emot", "cog_exec", "lang_comm", "phys_motor",
     "expl_creat", "found_knowl", "ind_lifeskills", "health"
@@ -1311,7 +1310,7 @@ function computePoiScore(poi, curLat, curLon, coveredDomains = null) {
     };
 }
 
-// ── 4. Routing & Optimization Engine (SparkCode.ipynb + 2-Opt TSP) ───────────
+// Client-side fallback optimization and routing helpers
 
 // Extract activity factors or construct reasonable defaults
 function getActivityFactors(actName) {
@@ -1668,7 +1667,7 @@ function generateBaselineRoute(domainFilter, maxBudgetMins) {
     };
 }
 
-// ── 5. App State & Model Evaluation Storage ────────────────────────────────
+// Application state and evaluation storage
 function loadEvaluations() {
     try {
         const stored = localStorage.getItem('spark_model_evaluations');
@@ -1887,7 +1886,7 @@ function getPoiPopupHtml(p) {
     </div>`;
 }
 
-// ── 6. Leaflet Map Setup ────────────────────────────────────────────────────
+// Leaflet map setup and layers
 let map, markersLayer, routeLayer;
 let poiMarkerMap = {};
 let distanceCircleLayer = null;
@@ -2065,7 +2064,7 @@ function initMap() {
     });
 }
 
-// ── Hover Popup Management with Proximity Threshold ────────────────────────
+// Hover popup management with proximity threshold
 let currentHoveredPoi = null;
 let currentHoveredMarker = null;
 let isMouseInsidePopup = false;
@@ -2213,11 +2212,12 @@ function updateMapDisplay() {
     }
 }
 
-// ── 7. Fit Panel: D3 Visualizations ─────────────────────────────────────────
+// Fit Panel D3 visualizations
 
 // Chart A: D3 Radar Chart (Child Needs vs. Route Coverage)
 function renderRadarChart() {
     const container = document.getElementById('radar-chart');
+    if (!container) return;
     container.innerHTML = '';
 
     const width = 240;
@@ -2585,7 +2585,7 @@ function renderParetoChart() {
                 <span>⏱ ${d.travelMins}m transit</span>
                 <span style="color:#fbbf24">★ ${d.score}/10</span>
             </div>
-            ${d.isPareto ? '<div style="color:#fbbf24;font-size:0.62rem;margin-top:2px">⚡ Pareto-optimal trade-off stop</div>' : ''}
+            ${d.isPareto ? '<div style="color:#fbbf24;font-size:0.62rem;margin-top:2px">Pareto-optimal trade-off stop</div>' : ''}
             ${d.inRoute ? '<div style="color:#38bdf8;font-size:0.62rem;margin-top:1px">✓ Active Itinerary Stop</div>' : ''}
         `;
         tooltip.style.display = 'block';
@@ -2614,6 +2614,7 @@ function renderParetoChart() {
 // Chart C: D3 Stacked Bar for Selected POI
 function renderStackedBar() {
     const container = document.getElementById('stacked-bar-chart');
+    if (!container) return;
     container.innerHTML = '';
 
     const poi = POIS.find(p => p.id === state.selectedPoiId) ||
@@ -2621,7 +2622,8 @@ function renderStackedBar() {
 
     if (!poi) return;
 
-    document.getElementById('selected-poi-name').textContent = poi.name;
+    const nameEl = document.getElementById('selected-poi-name');
+    if (nameEl) nameEl.textContent = poi.name;
 
     const score = computePoiScore(poi, CAREGIVER_START.lat, CAREGIVER_START.lon);
 
@@ -2693,115 +2695,121 @@ function renderStackedBar() {
         .text(`= ${score.finalScore}`);
 }
 
-// ── 8. Itinerary Summary & Baseline Evaluation ──────────────────────────────
+// Itinerary summary and scorecard rendering
 function renderItineraryAndScorecard() {
-    const timeline = document.getElementById('timeline-track');
-    timeline.innerHTML = '';
-
-    const spark = state.sparkRoute;
-    const base = state.baseRoute;
-
-    // A. Render Timeline
-    // 1. Home Departure
-    timeline.innerHTML += `
-        <div class="timeline-block block-travel">
-            <span class="block-title">🏠 Depart Home</span>
-            <span class="block-sub">Caregiver Base</span>
-        </div>
-    `;
-
-    spark.stops.forEach((stop, i) => {
-        // Travel leg
-        timeline.innerHTML += `
-            <div class="timeline-block block-travel">
-                <span class="block-title">🚗 ${stop.travelMins}m</span>
-                <span class="block-sub">transit</span>
-            </div>
-        `;
-        // POI stop
-        const isActive = stop.poi.id === state.selectedPoiId ? 'active' : '';
-        timeline.innerHTML += `
-            <div class="timeline-block block-poi ${isActive}" onclick="selectPoi(${stop.poi.id})">
-                <span class="block-title">Stop ${i + 1}: ${stop.poi.name}</span>
-                <span class="block-sub">${stop.poi.domain} · ${stop.poi.duration} mins · Score ${stop.scoreObj.finalScore}</span>
-            </div>
-        `;
-    });
-
-    // Return leg
-    if (spark.stops.length > 0) {
-        timeline.innerHTML += `
-            <div class="timeline-block block-travel">
-                <span class="block-title">🚗 ${spark.returnMins}m</span>
-                <span class="block-sub">return</span>
-            </div>
-            <div class="timeline-block block-travel">
-                <span class="block-title">🏠 Home</span>
-                <span class="block-sub">Total: ${spark.totalTime}m</span>
-            </div>
-        `;
-    }
-
-    // B. Calculate Metrics for SPARK
-    const sparkTravelTime = spark.stops.reduce((acc, s) => acc + s.travelMins, 0) + spark.returnMins;
-    const sparkDomains = new Set(spark.stops.map(s => s.poi.domain)).size;
-    const sparkTotalScore = +spark.stops.reduce((acc, s) => acc + s.scoreObj.finalScore, 0).toFixed(1);
-
-    document.getElementById('spark-total-time').textContent = `${spark.totalTime}m`;
-    document.getElementById('spark-travel-time').textContent = `${sparkTravelTime}m`;
-    document.getElementById('spark-domains').textContent = `${sparkDomains} / 4`;
-    document.getElementById('spark-total-score').textContent = sparkTotalScore;
-
-    // C. Calculate Metrics for Baseline
-    const baseTravelTime = base.stops.reduce((acc, s) => acc + s.travelMins, 0) + base.returnMins;
-    const baseDomains = new Set(base.stops.map(s => s.poi.domain)).size;
-    const baseTotalScore = +base.stops.reduce((acc, s) => acc + s.scoreObj.finalScore, 0).toFixed(1);
-
-    document.getElementById('base-total-time').textContent = `${base.totalTime}m`;
-    document.getElementById('base-travel-time').textContent = `${baseTravelTime}m`;
-    document.getElementById('base-domains').textContent = `${baseDomains} / 4`;
-    document.getElementById('base-total-score').textContent = baseTotalScore;
-
-    // D. Gain Callout
-    const gainPct = baseTotalScore > 0 ? Math.round(((sparkTotalScore - baseTotalScore) / baseTotalScore) * 100) : 0;
-    const gainBanner = document.getElementById('gain-callout');
-    const gainTitle = document.getElementById('gain-title');
-    const gainSub = document.getElementById('gain-sub');
-
-    if (gainPct >= 0) {
-        gainTitle.textContent = `SPARK Score Advantage: +${gainPct}% Higher`;
-        gainSub.textContent = `Delivers ${sparkDomains} domains vs. ${baseDomains} in baseline within identical ${state.maxBudgetMins}m limit.`;
-    } else {
-        gainTitle.textContent = `SPARK Score: ${sparkTotalScore} pts`;
-        gainSub.textContent = `Satisfies ${state.maxBudgetMins}m family budget window.`;
-    }
-
-    // E. Update Section 11 Benchmark Table
-    const tblBaseScore = document.getElementById('tbl-base-score');
-    if (tblBaseScore) {
-        tblBaseScore.textContent = `${baseTotalScore} pts`;
-        document.getElementById('tbl-spark-score').textContent = `${sparkTotalScore} pts`;
-        document.getElementById('tbl-gain-score').textContent = `+${gainPct}% Quality Gain`;
-        
-        document.getElementById('tbl-base-domains').textContent = `${baseDomains} / 4 Domains`;
-        document.getElementById('tbl-spark-domains').textContent = `${sparkDomains} / 4 Domains`;
-        
-        document.getElementById('tbl-base-travel').textContent = `${baseTravelTime} mins`;
-        document.getElementById('tbl-spark-travel').textContent = `${sparkTravelTime} mins`;
-        const travelDiff = sparkTravelTime - baseTravelTime;
-        document.getElementById('tbl-gain-travel').textContent = travelDiff >= 0 ? `+${travelDiff} mins` : `${travelDiff} mins`;
-        
-        document.getElementById('tbl-base-total').textContent = `${base.totalTime} mins`;
-        document.getElementById('tbl-spark-total').textContent = `${spark.totalTime} mins`;
-    }
-
-    // Render the primary user-requested outputs:
+    // 1. Primary itinerary cards & journey ribbon (always rendered)
     renderJourneyRibbon();
     renderItineraryCards();
     fitMapToRenderedRoute();
+
+    const spark = state.sparkRoute;
+    const base = state.baseRoute;
+    if (!spark || !spark.stops) return;
+
+    // 2. Timeline track (if element is present)
+    const timeline = document.getElementById('timeline-track');
+    if (timeline) {
+        timeline.innerHTML = '';
+        timeline.innerHTML += `
+            <div class="timeline-block block-travel">
+                <span class="block-title">Depart</span>
+                <span class="block-sub">Start location</span>
+            </div>
+        `;
+
+        spark.stops.forEach((stop, i) => {
+            const isActive = stop.poi.id === state.selectedPoiId ? 'active' : '';
+            timeline.innerHTML += `
+                <div class="timeline-block block-travel">
+                    <span class="block-title">${stop.travelMins}m</span>
+                    <span class="block-sub">transit</span>
+                </div>
+                <div class="timeline-block block-poi ${isActive}" onclick="selectPoi(${stop.poi.id})">
+                    <span class="block-title">Stop ${i + 1}: ${stop.poi.name}</span>
+                    <span class="block-sub">${stop.poi.domain} · ${stop.poi.duration} mins · Score ${stop.scoreObj.finalScore}</span>
+                </div>
+            `;
+        });
+
+        if (spark.stops.length > 0) {
+            timeline.innerHTML += `
+                <div class="timeline-block block-travel">
+                    <span class="block-title">${spark.returnMins}m</span>
+                    <span class="block-sub">return</span>
+                </div>
+                <div class="timeline-block block-travel">
+                    <span class="block-title">Return</span>
+                    <span class="block-sub">Total: ${spark.totalTime}m</span>
+                </div>
+            `;
+        }
+    }
+
+    // 3. Optional comparison metrics & benchmark scorecard (safely guarded)
+    const sparkTotalTimeEl = document.getElementById('spark-total-time');
+    if (sparkTotalTimeEl && base && base.stops) {
+        const sparkTravelTime = spark.stops.reduce((acc, s) => acc + s.travelMins, 0) + spark.returnMins;
+        const sparkDomains = new Set(spark.stops.map(s => s.poi.domain)).size;
+        const sparkTotalScore = +spark.stops.reduce((acc, s) => acc + s.scoreObj.finalScore, 0).toFixed(1);
+
+        sparkTotalTimeEl.textContent = `${spark.totalTime}m`;
+        const sparkTravelEl = document.getElementById('spark-travel-time');
+        if (sparkTravelEl) sparkTravelEl.textContent = `${sparkTravelTime}m`;
+        const sparkDomEl = document.getElementById('spark-domains');
+        if (sparkDomEl) sparkDomEl.textContent = `${sparkDomains} / 4`;
+        const sparkScoreEl = document.getElementById('spark-total-score');
+        if (sparkScoreEl) sparkScoreEl.textContent = sparkTotalScore;
+
+        const baseTravelTime = base.stops.reduce((acc, s) => acc + s.travelMins, 0) + base.returnMins;
+        const baseDomains = new Set(base.stops.map(s => s.poi.domain)).size;
+        const baseTotalScore = +base.stops.reduce((acc, s) => acc + s.scoreObj.finalScore, 0).toFixed(1);
+
+        const baseTotalTimeEl = document.getElementById('base-total-time');
+        if (baseTotalTimeEl) baseTotalTimeEl.textContent = `${base.totalTime}m`;
+        const baseTravelEl = document.getElementById('base-travel-time');
+        if (baseTravelEl) baseTravelEl.textContent = `${baseTravelTime}m`;
+        const baseDomEl = document.getElementById('base-domains');
+        if (baseDomEl) baseDomEl.textContent = `${baseDomains} / 4`;
+        const baseScoreEl = document.getElementById('base-total-score');
+        if (baseScoreEl) baseScoreEl.textContent = baseTotalScore;
+
+        const gainPct = baseTotalScore > 0 ? Math.round(((sparkTotalScore - baseTotalScore) / baseTotalScore) * 100) : 0;
+        const gainTitle = document.getElementById('gain-title');
+        const gainSub = document.getElementById('gain-sub');
+        if (gainTitle) gainTitle.textContent = `SPARK Score Advantage: +${gainPct}% Higher`;
+        if (gainSub) gainSub.textContent = `Delivers ${sparkDomains} domains vs. ${baseDomains} in baseline within identical ${state.maxBudgetMins}m limit.`;
+
+        const tblBaseScore = document.getElementById('tbl-base-score');
+        if (tblBaseScore) {
+            tblBaseScore.textContent = `${baseTotalScore} pts`;
+            const tblSparkScore = document.getElementById('tbl-spark-score');
+            if (tblSparkScore) tblSparkScore.textContent = `${sparkTotalScore} pts`;
+            const tblGainScore = document.getElementById('tbl-gain-score');
+            if (tblGainScore) tblGainScore.textContent = `+${gainPct}% Quality Gain`;
+
+            const tblBaseDom = document.getElementById('tbl-base-domains');
+            if (tblBaseDom) tblBaseDom.textContent = `${baseDomains} / 4 Domains`;
+            const tblSparkDom = document.getElementById('tbl-spark-domains');
+            if (tblSparkDom) tblSparkDom.textContent = `${sparkDomains} / 4 Domains`;
+
+            const tblBaseTravel = document.getElementById('tbl-base-travel');
+            if (tblBaseTravel) tblBaseTravel.textContent = `${baseTravelTime} mins`;
+            const tblSparkTravel = document.getElementById('tbl-spark-travel');
+            if (tblSparkTravel) tblSparkTravel.textContent = `${sparkTravelTime} mins`;
+
+            const travelDiff = sparkTravelTime - baseTravelTime;
+            const tblGainTravel = document.getElementById('tbl-gain-travel');
+            if (tblGainTravel) tblGainTravel.textContent = travelDiff >= 0 ? `+${travelDiff} mins` : `${travelDiff} mins`;
+
+            const tblBaseTotal = document.getElementById('tbl-base-total');
+            if (tblBaseTotal) tblBaseTotal.textContent = `${base.totalTime} mins`;
+            const tblSparkTotal = document.getElementById('tbl-spark-total');
+            if (tblSparkTotal) tblSparkTotal.textContent = `${spark.totalTime} mins`;
+        }
+    }
 }
 
-// ── D3 Outing Journey Ribbon (Temporal Journey Flow Strip) ───────────────────
+// D3 outing journey flow strip
 function renderJourneyRibbon() {
     const container = document.getElementById('journey-ribbon-viz');
     if (!container) return;
@@ -2848,7 +2856,7 @@ function renderJourneyRibbon() {
             .attr('fill', '#94a3b8')
             .attr('font-size', '10px')
             .attr('font-weight', '600')
-            .text(`🚗 ${stop.travelMins}m`);
+            .text(`${stop.travelMins}m transit`);
 
         curX += travelW + 3;
 
@@ -2915,11 +2923,11 @@ function renderJourneyRibbon() {
             .attr('fill', '#94a3b8')
             .attr('font-size', '10px')
             .attr('font-weight', '600')
-            .text(`🚗 ${spark.returnMins}m`);
+            .text(`${spark.returnMins}m return`);
     }
 }
 
-// ── Render Card-Based Activity & Itinerary List ──────────────────────────────
+// Itinerary card rendering
 function renderItineraryCards() {
     const container = document.getElementById('rendered-activities-list');
     const summaryPill = document.getElementById('itinerary-summary-pill');
@@ -2944,7 +2952,6 @@ function renderItineraryCards() {
     // Departure Card
     container.innerHTML += `
         <div class="itin-leg-card">
-            <span style="font-size:1.1rem">🏠</span>
             <span><strong>Start:</strong> Depart from ${CAREGIVER_START.name}</span>
         </div>
     `;
@@ -2959,7 +2966,6 @@ function renderItineraryCards() {
         // Driving leg
         container.innerHTML += `
             <div class="itin-leg-card">
-                <span>🚗</span>
                 <span>Drive <strong>${stop.travelMins} mins</strong> (${stop.distMiles} mi) to Stop ${idx + 1}</span>
             </div>
         `;
@@ -2999,14 +3005,20 @@ function renderItineraryCards() {
                         <h4 class="stop-name">${poi.name}</h4>
                         <div class="stop-meta-chips">
                             <span class="poi-badge badge-domain ${poi.domain}">${poi.domain}</span>
-                            <span style="color:#94a3b8">⏱ ${poi.duration}m dwell</span>
-                            <span class="stop-age-match-chip">⭐ ${stop.scoreObj.dynamicAgeFit}/10 Match for Age ${state.childAge}</span>
+                            <span style="color:#94a3b8">${poi.duration}m stay</span>
+                            <span class="stop-age-match-chip">Match: ${stop.scoreObj.dynamicAgeFit}/10 (Age ${state.childAge})</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="stop-activities-box">
-                    <div class="stop-activities-heading">🎯 Recommended Activities for Your Child:</div>
+                    ${stop.activity ? `
+                        <div class="primary-activity-pill">
+                            <span class="pill-star">★</span>
+                            <span>Recommended Activity: <strong>${stop.activity}</strong></span>
+                        </div>
+                    ` : ''}
+                    <div class="stop-activities-heading">Available Venue Activities:</div>
                     <ul class="activities-list">
                         ${activitiesHtml}
                     </ul>
@@ -3033,18 +3045,16 @@ function renderItineraryCards() {
     if (spark.stops.length > 0) {
         container.innerHTML += `
             <div class="itin-leg-card">
-                <span>🚗</span>
-                <span>Drive <strong>${spark.returnMins} mins</strong> return to Home (${CAREGIVER_START.name})</span>
+                <span>Drive <strong>${spark.returnMins} mins</strong> return to start (${CAREGIVER_START.name})</span>
             </div>
             <div class="itin-leg-card" style="border-left-style: solid; border-left-color: #10b981;">
-                <span>🏠</span>
-                <span><strong>Completed Outing:</strong> Back home in <strong>~${spark.totalTime} mins</strong> total</span>
+                <span><strong>Completed Outing:</strong> Back to start in <strong>~${spark.totalTime} mins</strong> total</span>
             </div>
         `;
     }
 }
 
-// ── Auto-Resize Leaflet Map to Match Rendered Activities List Height ──────────
+// Synchronize map bounds with itinerary stops
 function fitMapToRenderedRoute() {
     if (!map) return;
     setTimeout(() => {
@@ -3137,7 +3147,7 @@ function renderSelectedPoiDetail() {
     `;
 }
 
-// ── 9. Selection & Re-compute Orchestration ─────────────────────────────────
+// Selection and interaction handlers
 function selectPoi(poiId) {
     state.selectedPoiId = poiId;
     renderParetoChart();
@@ -3155,47 +3165,142 @@ function selectPoi(poiId) {
     }
 }
 
-function recomputeAndRender() {
-    // 1. Compute routes client-side for instantaneous UI feedback
-    state.sparkRoute = generateSparkRoute(state.domainFilter, state.maxBudgetMins);
-    state.baseRoute = generateBaselineRoute(state.domainFilter, state.maxBudgetMins);
+// Rendering and pipeline orchestration
+let serverApiAvailable = true;
+let apiDebounceTimeout = null;
 
-    // Set default selected POI if none selected
-    if (state.sparkRoute.stops.length > 0) {
-        state.selectedPoiId = state.sparkRoute.stops[0].poi.id;
-    } else {
-        state.selectedPoiId = POIS[0].id;
-    }
-
-    // 2. Render all views immediately
+function renderAllViews() {
     updateMapDisplay();
     renderRadarChart();
     renderParetoChart();
     renderStackedBar();
     renderSelectedPoiDetail();
     renderItineraryAndScorecard();
-
-    // 3. Asynchronously query SPARK Python server API if hosted
-    triggerServerApiOptimization();
 }
 
-// ── 9.1 Async SPARK Server API Integration ────────────────────────────────
-let serverApiAvailable = true;
-let apiAbortController = null;
-let apiDebounceTimeout = null;
-
-function triggerServerApiOptimization() {
-    if (!serverApiAvailable || typeof window === 'undefined' || typeof fetch === 'undefined') return;
-    if (typeof clearTimeout !== 'undefined' && apiDebounceTimeout) {
-        clearTimeout(apiDebounceTimeout);
-    }
-    if (typeof setTimeout === 'undefined') return;
-
-    apiDebounceTimeout = setTimeout(async () => {
-        if (apiAbortController) {
-            apiAbortController.abort();
+function mapFactorsToDomain(factorScores) {
+    if (!factorScores) return 'Motor';
+    const factorToDomain = {
+        phys_motor: 'Motor',
+        health: 'Motor',
+        cog_exec: 'Cognitive',
+        found_knowl: 'Cognitive',
+        soc_emot: 'Social',
+        lang_comm: 'Social',
+        expl_creat: 'Creative',
+        ind_lifeskills: 'Creative'
+    };
+    let topFactor = 'phys_motor';
+    let topScore = -1;
+    for (const [f, s] of Object.entries(factorScores)) {
+        if (s > topScore) {
+            topScore = s;
+            topFactor = f;
         }
-        apiAbortController = new AbortController();
+    }
+    return factorToDomain[topFactor] || 'Motor';
+}
+
+function convertServerResponseToSparkRoute(data) {
+    if (!data || !data.agenda) return null;
+    let curLat = CAREGIVER_START.lat;
+    let curLon = CAREGIVER_START.lon;
+    let totalTime = 0;
+
+    const stops = data.agenda.map((item) => {
+        let poi = POIS.find(p => p.id === item.id);
+        if (!poi) {
+            poi = {
+                id: item.id,
+                name: item.name,
+                type: item.type,
+                lat: item.latitude,
+                lon: item.longitude,
+                domain: mapFactorsToDomain(item.factor_scores),
+                age_range: "2-12",
+                duration: 50,
+                cost: "$0",
+                dev_fit: 8.0,
+                age_fit: 8.0,
+                pref_fit: 8.0,
+                is_named: true,
+                activities: [item.activity],
+                factor_scores: item.factor_scores
+            };
+        }
+
+        const legDist = haversineMiles(curLat, curLon, item.latitude, item.longitude);
+        const travelMins = estimateTravelMins(legDist);
+        curLat = item.latitude;
+        curLon = item.longitude;
+        totalTime += travelMins + (poi.duration || 50);
+
+        const scoreObj = computePoiScore(poi, curLat, curLon);
+        return {
+            poi: poi,
+            activity: item.activity,
+            travelMins: travelMins,
+            distMiles: +legDist.toFixed(2),
+            scoreObj: scoreObj
+        };
+    });
+
+    let returnMins = 0;
+    if (stops.length > 0) {
+        const last = stops[stops.length - 1];
+        const returnDist = haversineMiles(last.poi.lat, last.poi.lon, CAREGIVER_START.lat, CAREGIVER_START.lon);
+        returnMins = estimateTravelMins(returnDist);
+        totalTime += returnMins;
+    }
+
+    const cov = data.developmental_coverage || {};
+    const motorCov = ((cov.phys_motor?.coverage || 0) + (cov.health?.coverage || 0)) / 2 * 10;
+    const cogCov = ((cov.cog_exec?.coverage || 0) + (cov.found_knowl?.coverage || 0)) / 2 * 10;
+    const socCov = ((cov.soc_emot?.coverage || 0) + (cov.lang_comm?.coverage || 0)) / 2 * 10;
+    const creCov = ((cov.expl_creat?.coverage || 0) + (cov.ind_lifeskills?.coverage || 0)) / 2 * 10;
+
+    return {
+        stops: stops,
+        returnMins: returnMins,
+        totalTime: totalTime,
+        domainCoverage: {
+            Motor: +Math.min(10, Math.max(1, motorCov || 5)).toFixed(1),
+            Cognitive: +Math.min(10, Math.max(1, cogCov || 5)).toFixed(1),
+            Social: +Math.min(10, Math.max(1, socCov || 5)).toFixed(1),
+            Creative: +Math.min(10, Math.max(1, creCov || 5)).toFixed(1)
+        },
+        objectiveMetrics: {
+            developmentValue: data.summary?.development_value ?? 0,
+            redundancyScore: data.summary?.redundancy_score ?? 0,
+            objectiveValue: data.summary?.objective_value ?? 0
+        },
+        telemetry: data.metadata?.optimizer_telemetry ?? null
+    };
+}
+
+function recomputeAndRender(immediate = false) {
+    // 1. Instant local optimistic render for real-time responsiveness while sliding controls
+    state.sparkRoute = generateSparkRoute(state.domainFilter, state.maxBudgetMins);
+    state.baseRoute = generateBaselineRoute(state.domainFilter, state.maxBudgetMins);
+
+    if (state.sparkRoute.stops.length > 0) {
+        state.selectedPoiId = state.sparkRoute.stops[0].poi.id;
+    } else if (POIS.length > 0) {
+        state.selectedPoiId = POIS[0].id;
+    }
+
+    renderAllViews();
+
+    // 2. Authoritative Server-Side Multi-Objective Optimization from SQLite
+    if (!serverApiAvailable || !window.sparkApi) return;
+
+    if (apiDebounceTimeout) clearTimeout(apiDebounceTimeout);
+
+    const executeServerOptimization = async () => {
+        const evalLabel = document.getElementById('eval-stats-label');
+        if (evalLabel) {
+            evalLabel.innerHTML = `Model Eval: <em>Querying API...</em>`;
+        }
 
         const payload = {
             latitude: CAREGIVER_START.lat,
@@ -3204,43 +3309,57 @@ function triggerServerApiOptimization() {
             child_age: (state && state.childAge) ? state.childAge : 5.0,
             radius_miles: (state && state.maxRadiusMiles !== undefined) ? state.maxRadiusMiles : 3.0,
             n_activities: (state && state.maxStops) ? state.maxStops : 2,
-            distance_penalty: (state && state.tradeoffPriority !== undefined) ? state.tradeoffPriority : 0.12,
+            distance_penalty: (state && state.lambda !== undefined) ? state.lambda : ((state && state.tradeoffPriority !== undefined) ? state.tradeoffPriority : 0.12),
             redundancy_penalty: 0.10,
             enforce_unique_pois: true
         };
 
         try {
-            const res = await fetch('/api/optimize_agenda', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                signal: apiAbortController.signal
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                if (data && data.metadata && data.metadata.optimizer_telemetry) {
-                    const telem = data.metadata.optimizer_telemetry;
-                    const evalLabel = document.getElementById('eval-stats-label');
-                    if (evalLabel) {
-                        evalLabel.innerHTML = `Model Eval: <strong>Server (${telem.execution_time_ms}ms)</strong>`;
-                        evalLabel.title = `Algorithm: ${telem.algorithm} | Objective: ${telem.objective_value}`;
+            const data = await window.sparkApi.optimizeAgenda(payload);
+            if (data && data.status === 'success' && data.agenda) {
+                // Directly consume server JSON payload!
+                const serverRoute = convertServerResponseToSparkRoute(data);
+                if (serverRoute && serverRoute.stops.length > 0) {
+                    state.sparkRoute = serverRoute;
+                    state.baseRoute = generateBaselineRoute(state.domainFilter, state.maxBudgetMins);
+                    if (state.sparkRoute.stops.length > 0) {
+                        state.selectedPoiId = state.sparkRoute.stops[0].poi.id;
                     }
+                    renderAllViews();
+                }
+
+                if (evalLabel && data.metadata?.optimizer_telemetry) {
+                    const telem = data.metadata.optimizer_telemetry;
+                    evalLabel.innerHTML = `Model Eval: <strong>Server (${telem.execution_time_ms}ms)</strong>`;
+                    evalLabel.title = `Algorithm: ${telem.algorithm} | Objective: ${telem.objective_value} | Iterations: ${telem.iterations}`;
+                }
+            }
+        } catch (err) {
+            if (err && err.name === 'SparkApiError') {
+                console.warn(`[SPARK API ${err.code}]: ${err.message}`);
+                const statusMsg = document.getElementById('home-status-msg');
+                if (statusMsg && err.code === 'INSUFFICIENT_ACTIVITIES') {
+                    statusMsg.textContent = `⚠️ ${err.message}`;
+                    statusMsg.className = 'home-status-msg active-mode';
                 }
             } else {
-                // Endpoint not implemented on static file server (e.g., http.server 501); use client-side solver
+                console.warn('[SPARK] Backend server offline, maintaining local fallback');
                 serverApiAvailable = false;
-            }
-        } catch (e) {
-            if (e.name !== 'AbortError') {
-                // Silently fallback to embedded client-side optimizer
-                serverApiAvailable = false;
+                if (evalLabel) {
+                    evalLabel.innerHTML = `Model Eval: <strong>Client Fallback (0ms)</strong>`;
+                }
             }
         }
-    }, 300);
+    };
+
+    if (immediate) {
+        executeServerOptimization();
+    } else {
+        apiDebounceTimeout = setTimeout(executeServerOptimization, 120);
+    }
 }
 
-// ── 10. Geocoding & Start Address Management ───────────────────────────────
+// Geocoding and start address management
 const PRESET_GEOCODES = {
     "pershing square": { name: "Pershing Square (DTLA)", lat: 34.0488, lon: -118.2518 },
     "grand park": { name: "Grand Park / City Hall", lat: 34.0537, lon: -118.2458 },
@@ -3263,14 +3382,14 @@ function togglePickOnMap(forceState) {
         if (btn) btn.classList.add('active');
         if (mapEl) mapEl.style.cursor = 'crosshair';
         if (statusMsg) {
-            statusMsg.textContent = '📍 Click anywhere on the map to set start location';
+            statusMsg.textContent = 'Click anywhere on the map to set start location';
             statusMsg.className = 'home-status-msg active-mode';
         }
     } else {
         if (btn) btn.classList.remove('active');
         if (mapEl) mapEl.style.cursor = '';
         if (statusMsg && !statusMsg.className.includes('success')) {
-            statusMsg.textContent = '💡 Drag 🏠 pin on map or click chips to change start';
+            statusMsg.textContent = 'Drag start pin on map or select a preset';
             statusMsg.className = 'home-status-msg';
         }
     }
@@ -3290,11 +3409,11 @@ function setHomeByCoordinates(lat, lon, label) {
     applyNewHome(label, lat, lon);
 
     if (statusMsg) {
-        statusMsg.textContent = `✓ Start set to: ${label}`;
+        statusMsg.textContent = `Start set to: ${label}`;
         statusMsg.className = 'home-status-msg success';
         setTimeout(() => {
             if (statusMsg.className.includes('success')) {
-                statusMsg.textContent = '💡 Drag 🏠 pin on map or click chips to change start';
+                statusMsg.textContent = 'Drag start pin on map or select a preset';
                 statusMsg.className = 'home-status-msg';
             }
         }, 4000);
@@ -3307,25 +3426,25 @@ function useMyLocation() {
 
     if (!navigator.geolocation) {
         if (statusMsg) {
-            statusMsg.textContent = '⚠️ Geolocation not supported by this browser';
+            statusMsg.textContent = 'Geolocation not supported by this browser';
             statusMsg.className = 'home-status-msg';
         }
         return;
     }
 
     if (btn) {
-        btn.textContent = '⏳ Locating...';
+        btn.textContent = 'Locating...';
         btn.disabled = true;
     }
     if (statusMsg) {
-        statusMsg.textContent = '🔍 Fetching current GPS location...';
+        statusMsg.textContent = 'Fetching current location...';
         statusMsg.className = 'home-status-msg active-mode';
     }
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
             if (btn) {
-                btn.textContent = '🎯 Locate Me';
+                btn.textContent = 'Locate Me';
                 btn.disabled = false;
             }
             const lat = position.coords.latitude;
@@ -3334,11 +3453,11 @@ function useMyLocation() {
         },
         (error) => {
             if (btn) {
-                btn.textContent = '🎯 Locate Me';
+                btn.textContent = 'Locate Me';
                 btn.disabled = false;
             }
             if (statusMsg) {
-                statusMsg.textContent = '⚠️ GPS permission denied. Click a DTLA preset below.';
+                statusMsg.textContent = 'Location permission denied. Click a preset below.';
                 statusMsg.className = 'home-status-msg';
             }
         },
@@ -3378,7 +3497,7 @@ async function setHomeAddress(query) {
         btn.disabled = true;
     }
     if (statusMsg) {
-        statusMsg.textContent = `🔍 Searching OpenStreetMap for "${query}"...`;
+        statusMsg.textContent = `Searching OpenStreetMap for "${query}"...`;
         statusMsg.className = 'home-status-msg active-mode';
     }
 
@@ -3398,7 +3517,7 @@ async function setHomeAddress(query) {
             setHomeByCoordinates(lat, lon, shortName || query);
         } else {
             if (statusMsg) {
-                statusMsg.textContent = `⚠️ Could not find "${query}". Try a DTLA preset below.`;
+                statusMsg.textContent = `Could not find "${query}". Try a preset below.`;
                 statusMsg.className = 'home-status-msg';
             }
         }
@@ -3456,7 +3575,7 @@ function updateAgeLabelsAcrossUI() {
     });
 }
 
-// ── 11. Event Listeners & Boot ──────────────────────────────────────────────
+// Event listeners and application bootstrap
 function setupEvents() {
     const homeInput = document.getElementById('home-address-input');
     const setHomeBtn = document.getElementById('set-home-btn');
@@ -3573,20 +3692,24 @@ function setupEvents() {
     }
 
     const domainSelect = document.getElementById('domain-select');
-    domainSelect.addEventListener('change', (e) => {
-        state.domainFilter = e.target.value;
-        recomputeAndRender();
-    });
+    if (domainSelect) {
+        domainSelect.addEventListener('change', (e) => {
+            state.domainFilter = e.target.value;
+            recomputeAndRender();
+        });
+    }
 
     const timeSlider = document.getElementById('time-budget-slider');
     const timeVal = document.getElementById('time-budget-val');
-    timeSlider.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        state.maxBudgetMins = val;
-        const hrs = (val / 60).toFixed(1);
-        timeVal.textContent = `${val} mins (${hrs} hrs)`;
-        recomputeAndRender();
-    });
+    if (timeSlider && timeVal) {
+        timeSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            state.maxBudgetMins = val;
+            const hrs = (val / 60).toFixed(1);
+            timeVal.textContent = `${val} mins (${hrs} hrs)`;
+            recomputeAndRender();
+        });
+    }
 
     // Priority / Trade-off Lambda Slider (Proposal Eq. 2.4)
     const lambdaSlider = document.getElementById('lambda-slider');
@@ -3602,7 +3725,7 @@ function setupEvents() {
         });
     }
 
-    // Data Ingestion Funnel Modal (CSE 6242 Component 1 Compliance)
+    // Data ingestion pipeline modal
     const funnelBtn = document.getElementById('data-funnel-trigger');
     const modal = document.getElementById('data-funnel-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -3739,25 +3862,33 @@ function setupEvents() {
 }
 
 // Window load init
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     initMap();
     setupEvents();
     updateEvaluationUI();
     updateAgeLabelsAcrossUI();
 
-    // Dynamically fetch latest data/dtla_pois.json if hosted on server, otherwise use embedded poi.db records
-    fetch('data/dtla_pois.json')
-        .then(res => res.json())
-        .then(data => {
-            if (Array.isArray(data) && data.length > 0) {
-                POIS = data;
-                console.log(`Loaded ${POIS.length} POIs dynamically from data/dtla_pois.json`);
+    // Dynamically fetch latest POIs from SQLite API (or fallback to static json / embedded records)
+    if (window.sparkApi) {
+        try {
+            const res = await window.sparkApi.fetchPois();
+            if (res && res.data && res.data.length > 0) {
+                POIS = res.data;
+                console.log(`[SPARK] Loaded ${POIS.length} POIs dynamically from ${res.source}`);
             }
-        })
-        .catch(err => {
-            console.log('Serving embedded poi.db records directly');
-        })
-        .finally(() => {
-            recomputeAndRender();
-        });
+        } catch (err) {
+            console.log('[SPARK] Serving embedded fallback records');
+        }
+    } else {
+        try {
+            const res = await fetch('data/offline_pois.json');
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) POIS = data;
+            }
+        } catch (e) {}
+    }
+
+    // Trigger immediate authoritative server optimization
+    recomputeAndRender(true);
 });

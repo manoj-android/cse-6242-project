@@ -35,9 +35,10 @@ if str(SPARK_DIR) not in sys.path:
     sys.path.insert(0, str(SPARK_DIR))
 
 try:
-    from optimizer import optimize_spark_outing, load_data_from_sqlite, FACTORS
+    from optimizer import optimize_spark_outing, load_data_from_sqlite, FACTORS, SparkAPIError
 except ImportError:
     optimize_spark_outing = None
+    SparkAPIError = ValueError
 
 
 def get_age_profiles_data(db_path=POI_DB_PATH):
@@ -134,17 +135,26 @@ def create_flask_app():
         try:
             result = run_optimize_agenda(body)
             return jsonify(result)
+        except SparkAPIError as sae:
+            return jsonify({
+                "error": {
+                    "code": sae.code,
+                    "message": sae.message
+                }
+            }), sae.status_code
         except ValueError as ve:
             return jsonify({
-                "status": "error",
-                "error_code": "INSUFFICIENT_ACTIVITIES",
-                "message": str(ve)
+                "error": {
+                    "code": "INSUFFICIENT_ACTIVITIES",
+                    "message": str(ve)
+                }
             }), 422
         except Exception as exc:
             return jsonify({
-                "status": "error",
-                "error_code": "INTERNAL_ERROR",
-                "message": str(exc)
+                "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": str(exc)
+                }
             }), 500
 
     return app
@@ -218,17 +228,23 @@ def run_http_server(port=5000):
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
                     self.wfile.write(json.dumps(result).encode("utf-8"))
+                except SparkAPIError as sae:
+                    self.send_response(sae.status_code)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    err = {"error": {"code": sae.code, "message": sae.message}}
+                    self.wfile.write(json.dumps(err).encode("utf-8"))
                 except ValueError as ve:
                     self.send_response(422)
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
-                    err = {"status": "error", "error_code": "INSUFFICIENT_ACTIVITIES", "message": str(ve)}
+                    err = {"error": {"code": "INSUFFICIENT_ACTIVITIES", "message": str(ve)}}
                     self.wfile.write(json.dumps(err).encode("utf-8"))
                 except Exception as exc:
                     self.send_response(500)
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
-                    err = {"status": "error", "error_code": "INTERNAL_ERROR", "message": str(exc)}
+                    err = {"error": {"code": "INTERNAL_ERROR", "message": str(exc)}}
                     self.wfile.write(json.dumps(err).encode("utf-8"))
                 return
             self.send_response(404)

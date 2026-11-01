@@ -62,20 +62,29 @@ def load_data_from_sqlite(db_path=DB_PATH):
 
     return pois, category_activities, activity_scores, age_weights
 
+class SparkAPIError(ValueError):
+    """Domain exception carrying an API error code and HTTP status code."""
+    def __init__(self, message, code="ERROR", status_code=400):
+        super().__init__(message)
+        self.message = message
+        self.code = code
+        self.status_code = status_code
+
 def get_age_weights(age_weights_df, child_age):
     """Extracts and normalizes the 8D developmental factor weights for child's age."""
+    if child_age < 0 or child_age > 18:
+        raise SparkAPIError("No age band matches child_age.", code="NO_AGE_BAND", status_code=400)
+
     profile = age_weights_df.loc[
         (age_weights_df["min_age"] <= child_age) & 
         (age_weights_df["max_age"] > child_age)
     ]
     if len(profile) == 0:
-        # Fallback to closest bracket
-        if child_age <= 2:
-            profile = age_weights_df.head(1)
-        else:
-            profile = age_weights_df.tail(1)
+        raise SparkAPIError("No age band matches child_age.", code="NO_AGE_BAND", status_code=400)
 
     weights = profile.iloc[0][FACTORS].astype(float).to_numpy()
+    if (weights < 0).any() or weights.sum() <= 0:
+        raise SparkAPIError("Age weights must be non-negative with a positive sum.", code="INVALID_AGE_WEIGHTS", status_code=500)
     weights = weights / weights.sum()
     return weights
 

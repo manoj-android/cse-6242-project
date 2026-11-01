@@ -80,7 +80,7 @@ flowchart TD
 • poi_activities: 29 activity mappings
 • activity_points: 11 archetypes × 8 skills
 • age_points: 6 age-bracket weights")]
-        SQL --> JSON["Enriched Static Dataset (spark/data/dtla_pois.json)"]
+        SQL --> JSON["Enriched Static Dataset (spark/data/offline_pois.json)"]
     end
 
     subgraph ComputationEngine["2. Responsive Computational Solver (<15ms)"]
@@ -126,7 +126,7 @@ The SPARK interface is designed as an interactive, realistic, and easy-to-use **
 ### 4.2 Data Processing & Spatial Engineering Pipeline
 
 * **Data Ingestion Scale & Entity Resolution:** Ingestion extracts verified child infrastructure candidates across the Downtown Los Angeles corridor from Southern California OpenStreetMap archives and the USGS National Land Cover Database (NLCD) 30m Tree Canopy raster.
-* **The OSM Coordinate Fix:** Bulk OpenStreetMap imports often swap latitude and longitude. Our ETL pipeline (`export_poidb.py`) automatically transposes these fields during ingestion, joins relational activity scores and age milestones, and generates the clean production dataset at `spark/data/dtla_pois.json`.
+* **The OSM Coordinate Fix:** Bulk OpenStreetMap imports often swap latitude and longitude. Our ETL pipeline (`export_poidb.py`) automatically transposes these fields during ingestion, joins relational activity scores and age milestones, and generates the clean production dataset at `spark/data/offline_pois.json`.
 * **Relational Storage in SQLite 3 (`poi.db`):** 
   - `pois`: Master table of verified venues in Downtown Los Angeles.
   - `poi_activities`: Relational mapping of 29 venue categories to activities.
@@ -149,7 +149,7 @@ The SPARK interface is designed as an interactive, realistic, and easy-to-use **
 | Metric | Measured Value | Significance |
 | :--- | :--- | :--- |
 | **Ingested Venue Corpus (`poi.db`)** | 484 venues (DTLA corridor) | Complete relational mapping of parks, playgrounds, libraries, and museums |
-| **Verified Production Venues** | 48 high-quality stops | Verified and exported to `spark/data/dtla_pois.json` with full 8D skill vectors |
+| **Verified Production Venues** | 48 high-quality stops | Verified and exported to `spark/data/offline_pois.json` with full 8D skill vectors |
 | **Pediatric Taxonomic Coverage** | 100% classification rate | Complete 4-domain mapping across Motor, Cognitive, Social, and Creative |
 | **Relational SQLite Join Latency** | **<10 milliseconds** | In-process relational queries with zero external database daemons |
 | **Multi-Objective Solver Latency** | **<15 milliseconds** | Sub-second client execution enabling live parameter steering |
@@ -187,7 +187,7 @@ Evaluated across family outing scenarios in Downtown Los Angeles ($T_{\text{budg
 ## 7. Conclusion & Deliverables Assessment
 
 At this checkpoint, Team 61 has successfully realized the core infrastructure, algorithmic optimizer, and visual analytics interface:
-1. **Operational Data Tier:** Built a high-performance relational **SQLite 3 database (`poi.db`)** and ETL ingestion pipeline (`export_poidb.py`) that fixes coordinate inversions and exports verified DTLA POIs in sub-10ms query times.
+1. **Operational Data & API Tier:** Built a high-performance relational **SQLite 3 database (`spark/data/poi.db`)**, dynamic Python REST backend service (`spark/api/`), and ETL ingestion pipeline (`export_poidb.py`) that fixes coordinate inversions and serves verified DTLA POIs and Simulated Annealing optimization payloads in sub-second query times.
 2. **Validated Algorithmic Backend:** Established an explainable multi-objective scoring model and 2-Opt route sequencer yielding **+37.5% higher developmental variety** and **100% domain coverage** without budget overruns.
 3. **Interactive Visual Dashboard (`spark/`):** Delivered a complete Coordinated Multiple Views interface featuring Leaflet OpenStreetMap cartography, dynamic Nominatim home geocoding, D3.js Radar and Stacked Bar charts, an activity timeline, and an empirical baseline scorecard.
 4. **Evaluation & Verification Tools:** Deployed in-situ feedback tracking (`👍` / `👎`), JSON evaluation export, and the `eval_summary.py` statistical analyzer.
@@ -218,7 +218,7 @@ gantt
 | Milestone | Technical & Visual Focus | Status | Deliverable |
 | :--- | :--- | :---: | :--- |
 | **M1: Data & SQLite** | Bulk OSM extraction, `poi.db` schema design, relational joins | ✅ **Complete** | Operational `poi.db` (<10ms query) |
-| **M2: ETL & Coordinates** | `export_poidb.py` pipeline, coordinate inversion fix, JSON export | ✅ **Complete** | Verified `dtla_pois.json` dataset |
+| **M2: ETL & Coordinates** | `export_poidb.py` pipeline, coordinate inversion fix, JSON export | ✅ **Complete** | Verified `offline_pois.json` dataset |
 | **M3: Scoring & Solver** | Pediatric scoring function, diminishing returns, 2-Opt sequencer | ✅ **Complete** | Sub-15ms multi-objective optimizer |
 | **M4: Leaflet Cartography** | OpenStreetMap street tiles, dynamic home geocoding & presets | ✅ **Complete** | Interactive map with route polyline |
 | **M5: D3.js Coordinated Views**| 4-Axis Radar Chart, Stacked Bar Chart, and Timeline Scorecard | ✅ **Complete** | Coordinated visual analytics webapp (`spark/`) |

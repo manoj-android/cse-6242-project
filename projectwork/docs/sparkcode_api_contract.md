@@ -1,22 +1,24 @@
-# SPARK Optimizer: API Contract
+# SPARK Optimizer: API Contract & Architecture Specification
 
 ---
 
 ## Summary
 
-The contract connects two halves of our project:
-- **Input (from the parent):** Starting address or coordinates, child's age, how far they are willing to travel, and how many stops they want.
-- **Output (to the UI):** An ordered list of age-appropriate venues and activities, their map pins, and developmental scores for our D3 radar chart.
+The SPARK Client-Server Architecture connects two halves of our visual analytics platform:
+- **Input (from the Caregiver / Frontend):** Starting address or map coordinates, child's developmental age, search radius, target stop count, and continuous $\lambda$ trade-off penalty.
+- **Backend Service (`spark/`):** Python standard library server querying SQLite ([`spark/data/poi.db`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/data/poi.db)), executing Simulated Annealing multi-objective optimization and 2-Opt TSP closed-loop sequencing.
+- **Output (to the UI):** Dynamic JSON payload containing ordered itinerary stops, exact venue activities, and multi-dimensional developmental coverage directly driving our Leaflet map and D3 coordinated views.
 
 ---
 
-## 1. What the Optimizer Does
+## 1. REST Endpoints Overview
 
-When a parent asks for an outing, the algorithm balances three goals:
-
-1. **Child Milestones (Quality):** Looks up what skills matter most for the child's age (social-emotional, motor skills, creativity, cognitive learning) from `age_points`. It uses diminishing returns so it doesn't give a child three identical physical activities in a row.
-2. **Travel Convenience (Proximity):** Penalizes venues that are too far from home so parents don't spend the whole day in traffic.
-3. **Variety (No Redundancy):** Uses profile similarity to ensure activities complement each other (e.g. a high-energy park paired with a creative library visit).
+| Method | Endpoint | Description | Backing Data Source |
+| :---: | :--- | :--- | :--- |
+| `POST` | `/api/optimize_agenda` | Runs Simulated Annealing + 2-Opt TSP outing optimization | SQLite `pois`, `poi_activities`, `activity_points`, `age_points` |
+| `GET`  | `/api/pois` | Dynamic candidate POIs with activities and 8D factor scores | SQLite `pois` joined with activities and CDC weights |
+| `GET`  | `/api/age_profiles` | CDC milestone factor weights across pediatric age bands | SQLite `age_points` table |
+| `GET`  | `/api/health` | Service health telemetry and database connection status | In-memory health check & SQLite connection test |
 
 ---
 
@@ -31,11 +33,13 @@ Content-Type: application/json
 {
   "latitude": 34.0488,         // Caregiver starting latitude (e.g. Pershing Square, DTLA)
   "longitude": -118.2518,      // Caregiver starting longitude
+  "origin_name": "Pershing Square (DTLA)", // Human-readable start label
   "child_age": 5.0,            // Child's age in years (used for pediatric milestone weights)
   "radius_miles": 3.0,         // Search radius from starting point (default: 3.0)
   "n_activities": 2,           // Number of stops wanted (default: 2)
-  "distance_penalty": 0.10,    // Higher value keeps stops closer to home
-  "redundancy_penalty": 0.10   // Higher value forces more diverse activity types
+  "distance_penalty": 0.12,    // Higher value keeps stops closer to home (lambda)
+  "redundancy_penalty": 0.10,  // Higher value penalizes similar activity types
+  "enforce_unique_pois": true  // Disallows visiting the same physical venue twice
 }
 ```
 
@@ -43,48 +47,59 @@ Content-Type: application/json
 
 ## 3. API Response: What the UI Renders
 
-The backend returns a clean JSON package with three sections:
+The backend returns a clean JSON package with structured sections:
 
 ```json
 {
   "status": "success",
-
-  // 1. High-level summary for badges and scorecard comparisons
+  "metadata": {
+    "child_age": 5.0,
+    "search_radius_miles": 3.0,
+    "target_stops": 2,
+    "effective_stops": 2,
+    "origin": {
+      "name": "Pershing Square (DTLA)",
+      "latitude": 34.0488,
+      "longitude": -118.2518
+    },
+    "optimizer_telemetry": {
+      "algorithm": "Simulated Annealing + 2-Opt TSP",
+      "iterations": 2500,
+      "objective_value": 0.5162,
+      "execution_time_ms": 331.1
+    }
+  },
   "summary": {
-    "objective_value": 0.517,
-    "development_value": 0.542,
-    "distance_cost": 0.038,
-    "redundancy_score": 0.0,
+    "objective_value": 0.516,
+    "development_value": 0.520,
+    "distance_cost": 0.030,
+    "redundancy_score": 0.000,
     "unique_activities": 2,
     "unique_pois": 2
   },
-
-  // 2. Developmental scores for the D3 Radar Chart
   "developmental_coverage": {
-    "soc_emot":       { "name": "Social-Emotional",           "age_weight": 0.14, "coverage": 0.61 },
-    "cog_exec":       { "name": "Cognitive & Executive",      "age_weight": 0.13, "coverage": 0.54 },
-    "lang_comm":      { "name": "Language & Communication",   "age_weight": 0.14, "coverage": 0.54 },
-    "phys_motor":     { "name": "Physical & Motor",           "age_weight": 0.13, "coverage": 0.36 },
-    "expl_creat":     { "name": "Exploration & Creativity",   "age_weight": 0.14, "coverage": 0.54 },
-    "found_knowl":    { "name": "Foundational Knowledge",     "age_weight": 0.11, "coverage": 0.57 },
-    "ind_lifeskills": { "name": "Independence & Life Skills", "age_weight": 0.11, "coverage": 0.49 },
-    "health":         { "name": "Health & Wellness",          "age_weight": 0.11, "coverage": 0.51 }
+    "soc_emot": { "name": "Social-Emotional", "age_weight": 0.141, "coverage": 0.589 },
+    "cog_exec": { "name": "Cognitive & Executive", "age_weight": 0.125, "coverage": 0.565 },
+    "lang_comm": { "name": "Language & Communication", "age_weight": 0.141, "coverage": 0.510 },
+    "phys_motor": { "name": "Physical & Gross Motor", "age_weight": 0.125, "coverage": 0.500 },
+    "expl_creat": { "name": "Exploration & Creativity", "age_weight": 0.125, "coverage": 0.500 },
+    "found_knowl": { "name": "Foundational Knowledge", "age_weight": 0.109, "coverage": 0.500 },
+    "ind_lifeskills": { "name": "Independence & Life Skills", "age_weight": 0.109, "coverage": 0.500 },
+    "health": { "name": "Health & Safety Habits", "age_weight": 0.125, "coverage": 0.500 }
   },
-
-  // 3. Sequenced itinerary for the Leaflet Map and Activity Cards
   "agenda": [
     {
       "selection_order": 1,
-      "id": 468790197,
-      "name": "Spring Street Community Garden",
-      "type": "garden",
-      "activity": "build sand castle",
-      "distance_miles": 0.11,
-      "latitude": 34.048295,
-      "longitude": -118.253532,
+      "id": 80579943,
+      "name": "Pershing Square",
+      "type": "park",
+      "activity": "hide-and-seek",
+      "distance_miles": 0.08,
+      "latitude": 34.048396,
+      "longitude": -118.253022,
       "factor_scores": {
-        "soc_emot": 9, "cog_exec": 7, "lang_comm": 7, "phys_motor": 8,
-        "expl_creat": 9, "found_knowl": 8, "ind_lifeskills": 7, "health": 7
+        "soc_emot": 8, "cog_exec": 8, "lang_comm": 6, "phys_motor": 9,
+        "expl_creat": 9, "found_knowl": 6, "ind_lifeskills": 8, "health": 7
       }
     },
     {
@@ -105,22 +120,55 @@ The backend returns a clean JSON package with three sections:
 }
 ```
 
+### 3.1 Error Response Contract
+
+When a request cannot be processed, the service returns a structured error object with an appropriate HTTP error status:
+
+```json
+{
+  "error": {
+    "code": "NO_AGE_BAND",
+    "message": "No age band matches child_age."
+  }
+}
+```
+
+#### Standard Error Code Reference:
+
+| HTTP Status | Error Code | Description / Trigger Condition |
+| :---: | :--- | :--- |
+| **400 Bad Request** | `NO_AGE_BAND` | The input `child_age` falls outside calibrated intervals `(min_age <= child_age < max_age)` in the `age_points` database table. |
+| **400 Bad Request** | `INVALID_JSON` | Malformed or non-parseable JSON payload in the request body. |
+| **400 Bad Request** | `OUT_OF_BOUNDS_LOCATION` | The origin coordinates fall outside the valid geographic bounds. |
+| **422 Unprocessable**| `INSUFFICIENT_ACTIVITIES` | Fewer distinct activities exist within `radius_miles` than requested `n_activities` (prompts caregiver in UI to widen radius or reduce stops). |
+| **422 Unprocessable**| `INFEASIBLE_AGENDA` | The combinatorial solver was unable to construct an agenda satisfying all constraints within the iteration budget. |
+| **500 Server Error**  | `INVALID_AGE_WEIGHTS` | Database integrity error: age milestone weights contain negative values or sum to $\le 0$. |
+| **500 Server Error**  | `INTERNAL_ERROR` | An unhandled exception occurred during optimizer or database execution. |
+
 ---
 
-## 4.  Notes
+## 4. Implementation Details & Architecture
 
-1. **The Inverted Coordinates Quirk in `poi.db`:**
-   In the raw SQLite `pois` table, the column named `latitude` contains negative longitude numbers (like `-118.25`), and `longitude` contains positive latitude numbers (like `34.04`). The data loader swaps these back so coordinates plot in Los Angeles rather than Antarctica.
-2. **The "Whichever Is Least" Rule:**
-   If a parent asks for 4 stops but only 2 venues exist within their chosen 0.5-mile circle, the app caps the itinerary at 2 stops instead of throwing an error or crashing.
-3. **Offline / Standalone Fallback:**
-   The frontend in `spark/app.js` has its own built-in heuristic evaluator. If no Python API server is running, the webapp continues working 100% offline.
+1. **Database Path Resolution:**
+   The SQLite database is located at [`spark/data/poi.db`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/data/poi.db). The data access layer in [`spark/data/db.py`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/data/db.py) automatically resolves this file.
+2. **Canonical WGS84 Coordinates:**
+   The SQLite database [`spark/data/poi.db`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/data/poi.db) stores verified canonical WGS84 coordinates directly (`latitude` $\in [34.04, 34.09]$, `longitude` $\in [-118.34, -118.25]$). The DAL in [`spark/data/db.py`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/data/db.py) provides backward-compatible `real_lat` and `real_lon` aliases so markers and polylines plot accurately across all visual views.
+3. **The "Whichever Is Least" Rule:**
+   If a parent asks for 4 stops but only 2 venues exist within their chosen radius, the app caps the itinerary at 2 stops gracefully rather than failing.
+4. **Direct Server JSON Consumption:**
+   The frontend in [`spark/presentation/app.js`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/presentation/app.js) directly consumes the live JSON response from `POST /api/optimize_agenda`:
+   - Route polyline is rendered from `agenda` lat/lons.
+   - D3 Radar Chart domain coverage is updated from `developmental_coverage`.
+   - Itinerary cards feature the specific `activity` recommended by the optimizer.
+5. **Offline / Standalone Fallback:**
+   If the Python server is offline, [`spark/presentation/api_client.js`](file:///Users/tejashriachari/Documents/Gatech/CSE_6242/cse-6242-project/spark/presentation/api_client.js) gracefully degrades to embedded client-side heuristics so the application continues functioning.
 
 ---
 
-## 5. UI Ideas
+## 5. How to Run the Server
 
-- **Target vs. Actual Radar:** Show a dashed target polygon (what a 5-year-old needs today) compared to the solid polygon (what this outing provides), making it immediately obvious where the gaps are.
-- **Reroll / Swap Stop Button:** If a parent likes Stop 1 and Stop 2 but their child hates sandcastles at Stop 3, a single "Swap" button lets them reroll only that stop without throwing away the whole route.
-- **Pacing Curve (Energy Flow):** Put high-energy playground games first in the morning when the kids have energy, and quiet picnic or library storytelling in the afternoon when they're winding down.
-- **Rainy / Hot Day Toggle:** A one-click toggle to restrict suggestions to air-conditioned, indoor spots like museums and libraries during extreme heat or rain.
+```bash
+# From repository root:
+python3 spark/run.py 8000
+```
+Then visit: `http://localhost:8000/`

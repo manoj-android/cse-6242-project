@@ -3,7 +3,7 @@
 export_poidb.py
 Consumes poi.db, resolves coordinate axis swap, computes 8D developmental
 milestone match against Age 5 weights, maps to the 4 UI domains, and exports
-spark/data/dtla_pois.json.
+spark/data/offline_pois.json.
 """
 
 import sqlite3
@@ -14,9 +14,13 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR) if os.path.basename(SCRIPT_DIR) == 'scripts' else SCRIPT_DIR
 
-DB_CANDIDATE = os.path.join(PROJECT_ROOT, 'data', 'poi.db')
-DB_PATH = DB_CANDIDATE if os.path.exists(DB_CANDIDATE) else os.path.join(PROJECT_ROOT, 'poi.db')
-OUTPUT_JSON = os.path.join(PROJECT_ROOT, 'spark', 'data', 'dtla_pois.json')
+DB_CANDIDATES = [
+    os.path.join(PROJECT_ROOT, 'spark', 'data', 'poi.db'),
+    os.path.join(PROJECT_ROOT, 'spark', 'poi.db'),
+    os.path.join(PROJECT_ROOT, 'poi.db')
+]
+DB_PATH = next((p for p in DB_CANDIDATES if os.path.exists(p)), DB_CANDIDATES[0])
+OUTPUT_JSON = os.path.join(PROJECT_ROOT, 'spark', 'data', 'offline_pois.json')
 
 CATEGORIES = [
     'soc_emot', 'cog_exec', 'lang_comm', 'phys_motor', 
@@ -67,11 +71,9 @@ def main():
     for r in rows:
         poi_id, name, ptype, col_lat, col_lon, activity = r[:6]
         
-        # NOTE: Crucial database fix - in pois table:
-        # 'latitude' contains longitude (-118.x)
-        # 'longitude' contains latitude (34.x)
-        real_lat = float(col_lon)
-        real_lon = float(col_lat)
+        # Standard WGS84 coordinates from clean poi.db
+        real_lat = float(col_lat)
+        real_lon = float(col_lon)
 
         dist_km = haversine_km(START_LAT, START_LON, real_lat, real_lon)
         if dist_km > 5.5:
@@ -210,7 +212,7 @@ def main():
     # Sort final list by distance from DTLA center
     final_pois.sort(key=lambda x: x['dist_km'])
 
-    # Write to spark/data/dtla_pois.json
+    # Write to spark/data/offline_pois.json
     os.makedirs(os.path.dirname(OUTPUT_JSON), exist_ok=True)
     with open(OUTPUT_JSON, 'w', encoding='utf-8') as f:
         json.dump(final_pois, f, indent=2)

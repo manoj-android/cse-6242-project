@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARK — Smart Personalized Activity Routes for Kids</title>
+    <meta name="description"
+        content="SPARK optimizes child development activity routes in Downtown Los Angeles using interactive visual analytics.">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+
+<body>
+    <div id="app-shell">
+
+        <header id="topbar">
+            <div id="brand">
+                <span id="brand-name">SPARK</span>
+                <span id="brand-sub">Activity & Route Planner · Downtown Los Angeles</span>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="data-scale-funnel" id="data-funnel-trigger" title="Data pipeline details">
+                    <div class="funnel-badge-text">
+                        <span class="funnel-badge-title">Data Pipeline</span>
+                        <span class="funnel-badge-stats">OSM → 484 POIs → Active Agenda</span>
+                    </div>
+                </div>
+
+                <div class="eval-tracker" id="eval-tracker">
+                    <span class="badge-dot" style="background:#10b981"></span>
+                    <span id="eval-stats-label">Feedback: <strong>0 votes</strong></span>
+                    <button type="button" id="export-eval-btn" class="eval-export-btn" title="Export feedback log">Export</button>
+                </div>
+            </div>
+        </header>
+
+        <section id="mission-control" class="card mission-card">
+            <div class="mission-grid">
+                
+                <div class="mission-col col-address">
+                    <div class="address-header-row">
+                        <label for="home-address-input">
+                            Start Address
+                        </label>
+                        <div class="address-actions-inline">
+                            <button type="button" id="btn-my-location" class="addr-action-btn" title="Use current location">Locate Me</button>
+                            <button type="button" id="btn-pick-map" class="addr-action-btn" title="Select location on map">Pick on Map</button>
+                        </div>
+                    </div>
+                    <div class="input-with-btn">
+                        <input type="text" id="home-address-input" list="home-presets" placeholder="Address, landmark, or DTLA hub..." value="Pershing Square, Los Angeles, CA" autocomplete="off">
+                        <button type="button" id="clear-home-btn" class="input-clear-btn" title="Clear address" style="display:none;">✕</button>
+                        <button type="button" id="set-home-btn" title="Update start location">Update</button>
+                    </div>
+                    <div class="address-quick-chips" id="address-quick-chips">
+                        <button type="button" class="addr-chip active" data-addr="Pershing Square, Los Angeles, CA">Pershing Sq</button>
+                        <button type="button" class="addr-chip" data-addr="Grand Park, Los Angeles, CA">Grand Park</button>
+                        <button type="button" class="addr-chip" data-addr="Union Station, Los Angeles, CA">Union Station</button>
+                        <button type="button" class="addr-chip" data-addr="Crypto.com Arena, Los Angeles, CA">Crypto Arena</button>
+                        <button type="button" class="addr-chip" data-addr="Echo Park Lake, Los Angeles, CA">Echo Park</button>
+                        <button type="button" class="addr-chip" data-addr="Arts District, Los Angeles, CA">Arts District</button>
+                    </div>
+                    <div id="home-status-msg" class="home-status-msg">Drag start pin on map or choose a preset</div>
+                    <datalist id="home-presets">
+                        <option value="Pershing Square, Los Angeles, CA">
+                        <option value="Union Station, Los Angeles, CA">
+                        <option value="Grand Park, Los Angeles, CA">
+                        <option value="Crypto.com Arena, Los Angeles, CA">
+                        <option value="Echo Park Lake, Los Angeles, CA">
+                        <option value="Arts District, Los Angeles, CA">
+                    </datalist>
+                </div>
+
+                <div class="mission-col col-age">
+                    <div class="m-label-row">
+                        <label for="child-age-slider">
+                            Child's Age
+                        </label>
+                        <strong id="child-age-val">5 years old</strong>
+                    </div>
+                    <input type="range" id="child-age-slider" min="2" max="12" step="1" value="5" title="Select child's age (2 to 12 years)">
+                    <div class="age-stage-chip" id="age-stage-chip">Early Childhood (Ages 4–6)</div>
+                </div>
+
+                <div class="mission-col col-distance">
+                    <div class="m-label-row">
+                        <label for="distance-radius-select">
+                            Search Radius
+                        </label>
+                    </div>
+                    <select id="distance-radius-select" class="mission-select" title="Filter activities within radius">
+                        <option value="1">Within 1 mile</option>
+                        <option value="2">Within 2 miles</option>
+                        <option value="3" selected>Within 3 miles (DTLA)</option>
+                        <option value="5">Within 5 miles</option>
+                        <option value="10">Within 10 miles</option>
+                        <option value="999">Any distance</option>
+                    </select>
+                    <div class="field-sub-hint" id="distance-hint">Restricts venues to 3-mile radius</div>
+                </div>
+
+                <div class="mission-col col-stops">
+                    <div class="m-label-row">
+                        <label for="max-stops-input">
+                            Number of Stops
+                        </label>
+                        <span class="stops-hint" id="stops-hint">2 stops</span>
+                    </div>
+                    <div class="stops-edit-group">
+                        <button type="button" class="stop-step-btn" id="stop-dec-btn" title="Decrease stops">−</button>
+                        <input type="number" id="max-stops-input" min="1" max="10" step="1" value="2" class="stops-edit-input" title="Target number of activity stops">
+                        <button type="button" class="stop-step-btn" id="stop-inc-btn" title="Increase stops">+</button>
+                    </div>
+                    <div class="field-sub-hint">Set planned stops (1–10)</div>
+                </div>
+
+            </div>
+        </section>
+
+        <main id="main-content">
+            <section id="primary-workspace">
+
+                <div id="itinerary-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>Recommended Activities & Itinerary</span>
+                        </div>
+                        <span id="itinerary-summary-pill" class="summary-pill">2 Stops · ~1h 35m total</span>
+                    </div>
+
+                    <div id="journey-ribbon-block">
+                        <div class="journey-header">
+                            <span class="journey-title">Outing Journey Timeline</span>
+                            <div class="journey-legend">
+                                <span class="j-dot dot-motor"></span>Motor
+                                <span class="j-dot dot-cognitive"></span>Cognitive
+                                <span class="j-dot dot-social"></span>Social
+                                <span class="j-dot dot-creative"></span>Creative
+                            </div>
+                        </div>
+                        <div id="journey-ribbon-viz"></div>
+                    </div>
+
+                    <div id="rendered-activities-list"></div>
+                </div>
+
+                <div id="map-panel" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>Activity Locations & Route</span>
+                        </div>
+                        <div class="map-legend">
+                            <span class="legend-item"><span class="dot dot-motor"></span>Motor</span>
+                            <span class="legend-item"><span class="dot dot-cognitive"></span>Cognitive</span>
+                            <span class="legend-item"><span class="dot dot-social"></span>Social</span>
+                            <span class="legend-item"><span class="dot dot-creative"></span>Creative</span>
+                            <span class="legend-item"><span class="start-icon">●</span>Start</span>
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer id="footer">
+            CSE 6242 · Team 61 · Georgia Tech · SPARK (Downtown Los Angeles)
+        </footer>
+    </div>
+
+    <!-- Data Ingestion Pipeline Modal -->
+    <div id="data-funnel-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Data Ingestion Pipeline</h3>
+                <button type="button" class="modal-close-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#94a3b8;font-size:0.76rem;margin-bottom:12px;line-height:1.4">
+                    SPARK processes public geospatial data from OpenStreetMap and pediatric milestone profiles to generate outing recommendations in Downtown Los Angeles:
+                </p>
+                <div class="funnel-steps">
+                    <div class="funnel-step">
+                        <div class="step-num">Step 1</div>
+                        <div class="step-content">
+                            <strong>Southern California OSM Extract</strong>
+                            <span>Ingested and stored locally in SQLite (`spark/data/poi.db`).</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="step-num">Step 2</div>
+                        <div class="step-content">
+                            <strong>Entity Validation & Coordinate Cleaning</strong>
+                            <span>Canonical WGS84 coordinates verified and indexed.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="step-num">Step 3</div>
+                        <div class="step-content">
+                            <strong>Pediatric Milestone Schema (484 Venues)</strong>
+                            <span>Relational tables mapping venues to activities and 8 clinical skill dimensions.</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step highlight-step">
+                        <div class="step-num">Step 4</div>
+                        <div class="step-content">
+                            <strong>Interactive Recommendation & Routing</strong>
+                            <span>Simulated Annealing optimizer and 2-Opt route sequencing.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="api_client.js?v=2"></script>
+    <script src="app.js?v=7"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 ### Team 61: Jay Mangrulkar, Max Jarosch, Katherine Liang, Manoj Achari, Shanmugam Murugappan
 
 > **Document Type:** Unified Master Project Proposal  
-> **Status:** Final Merged Specification (Addressing Grader Feedback & Ensuring 100/100 Rubric Compliance)  
+> **Status:** Final Project Specification & Technical Report  
 > **Target Geographic Corridor:** Downtown Los Angeles (DTLA) & Surrounding Urban Corridors  
 
 ---
@@ -271,7 +271,7 @@ To eliminate operational fragility during grading, SPARK avoids Docker daemons, 
 ```mermaid
 flowchart TD
     subgraph DataLayer["1. Data Layer (Zero-Config)"]
-        DB["SQLite 3 (poi.db)<br>• Single portable file (no server daemon)<br>• 4-table relational schema: pois, poi_activities, activity_points, age_points<br>• Enriched 48 DTLA venues exported to dtla_pois.json"]
+        DB["SQLite 3 (poi.db)<br>• Single portable file (no server daemon)<br>• 4-table relational schema: pois, poi_activities, activity_points, age_points<br>• Enriched 48 DTLA venues exported to offline_pois.json"]
     end
 
     subgraph Analytics["2. In-Process Analytics & Routing"]
