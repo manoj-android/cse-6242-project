@@ -2172,12 +2172,20 @@ function updateMapDisplay() {
             [CAREGIVER_START.lat, CAREGIVER_START.lon]
         ];
 
-        // Route Polyline
+        // Route Polyline casing (for high-contrast visibility against map tiles)
+        const routeCasing = L.polyline(latlngs, {
+            color: '#ffffff',
+            weight: 7,
+            opacity: 0.95
+        });
+        routeLayer.addLayer(routeCasing);
+
+        // High-contrast vibrant route line
         const routeLine = L.polyline(latlngs, {
-            color: '#0284c7',
+            color: '#2563eb',
             weight: 4,
-            opacity: 0.9,
-            dashArray: '7, 5'
+            opacity: 0.95,
+            dashArray: '8, 6'
         });
         routeLayer.addLayer(routeLine);
 
@@ -3064,7 +3072,7 @@ function fitMapToRenderedRoute() {
             state.sparkRoute.stops.forEach(s => {
                 bounds.extend([s.poi.lat, s.poi.lon]);
             });
-            map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
         } else if (distanceCircleLayer) {
             map.fitBounds(distanceCircleLayer.getBounds(), { padding: [30, 30] });
         } else {
@@ -3162,6 +3170,9 @@ function selectPoi(poiId) {
 
     if (poiMarkerMap && poiMarkerMap[poiId]) {
         poiMarkerMap[poiId].openPopup();
+        if (map) {
+            map.panTo(poiMarkerMap[poiId].getLatLng(), { animate: true });
+        }
     }
 }
 
