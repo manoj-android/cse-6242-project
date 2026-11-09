@@ -28,16 +28,16 @@ Parents face relentless cognitive fatigue when attempting to balance early child
 * **Mathematical Objective Function:** Maximizes developmental milestone exposure with diminishing returns while penalizing travel burden and pairwise activity redundancy:
   $$\max_{\mathcal{S} \subseteq \mathcal{C}, |\mathcal{S}|=n} J(\mathcal{S}) = \sum_{k=1}^8 w_k \left(1 - e^{-T_k / \tau}\right) - \alpha \cdot \bar{D}(\mathcal{S}) - \beta \cdot \bar{R}(\mathcal{S})$$
   * **Diminishing Returns:** Concave saturation factor $\tau = 2.0$, mathematically modeling that repeated identical tasks yield diminishing cognitive benefits.
-  * **Travel Burden ($\bar{D}$):** Normalized radial distance from caregiver origin ($\alpha = 0.10$).
+  * **Travel Burden ($\bar{D}$):** Blends radial distance from caregiver origin ($35\%$) with pairwise inter-stop spatial spread ($65\%$) to eliminate star/spoke dispersion across town and cluster stops into a cohesive driving circuit ($\alpha = 0.12$).
   * **Variety Regularization ($\bar{R}$):** Mean pairwise centered cosine similarity across selected 8D skill vectors ($\beta = 0.10$).
   * **Theoretical Grounding:** Developmental taxonomy grounded in the landmark **NICHD SECCYD longitudinal study** (Vandell & Gülseven, 2023, *Annual Review of Developmental Psychology*).
-* **Optimization & Route Sequencer:** Simulated Annealing metaheuristic ($20,000$ iterations or $2,500$ in web mode) paired with a 2-Opt TSP closed-loop sequencer enforcing an urban circuity factor ($\tau = 1.35$) and realistic drive-time estimates.
+* **Optimization & Route Sequencer:** Simulated Annealing metaheuristic ($20,000$ iterations or $2,500$ in web mode) paired with an exact permutation ($K \le 7$) and 2-Opt TSP ($K > 7$) closed-loop sequencer, rendered with turn-by-turn road network geometry via OpenStreetMap OSRM.
 
 ### 3. Coordinated Visual Analytics Interface
 * **View 1: Leaflet OpenStreetMap Canvas:**
   * Rendered on official **OpenStreetMap Standard Street Tiles** with zero API token dependencies.
   * Interactive **Caregiver Start Address Input** with Nominatim geocoding and instant DTLA presets (Pershing Square, Union Station, Grand Park, Crypto.com Arena, Echo Park, Arts District).
-  * Domain-colored, score-scaled markers with a numbered route polyline from the dynamic origin pin.
+  * Domain-colored, score-scaled markers with a numbered road-network polyline following real street curves from the dynamic origin pin.
 * **View 2: Child Fit Panel (D3.js):**
   * **D3 Radar Chart:** Visualizes multi-domain coverage across Motor, Cognitive, Social, and Creative dimensions against the child’s age-specific milestone target.
   * **D3 Stacked Bar Chart:** Transparently visualizes positive linear score components alongside travel penalty deductions.

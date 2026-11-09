@@ -9,7 +9,7 @@
 
 Rather than treating urban venues as generic geographic points of interest (POIs), SPARK models children's community outings as multi-attribute developmental interventions. It balances three competing objectives:
 1. **Developmental Milestone Fit:** Maximizing age-calibrated developmental exposure across 8 clinical domains with concave diminishing marginal returns ($1 - e^{-T/\tau}$).
-2. **Caregiver Travel Burden:** Minimizing radial travel distance and urban transit circuity from the family's origin.
+2. **Caregiver Travel Burden:** Minimizing radial travel distance and pairwise inter-venue spatial dispersion ($0.35 \times \text{radial} + 0.65 \times \text{pairwise}$), clustering selected venues into a compact, cohesive driving circuit.
 3. **Activity Variety Regularization:** Penalizing pairwise cognitive and physical redundancy using centered cosine similarity regularizers.
 
 ### Theoretical & Pediatric Grounding
@@ -161,13 +161,13 @@ flowchart TD
 * **Role:** Manages the user interface, Leaflet cartography, and DOM interactions.
 * **Key Components:**
   * `index.html`: Outing configuration panel (Start Address, Age Slider, Radius, Number of Stops), Leaflet OpenStreetMap canvas, and Planned Itinerary Timeline.
-  * `app.js`: State manager handling address geocoding, preset chips, dynamic map marker updates, and user feedback recording.
+  * `app.js`: State manager handling address geocoding, preset chips, dynamic map marker updates, client-side 2-Opt TSP sequencing, turn-by-turn road network curves (via OpenStreetMap OSRM Route API), and in-app thumbs up/down user feedback logging into SQLite.
   * `style.css`: Clean, accessible responsive styling with domain-colored badges.
 
 ### 2. API & Delivery Layer (`spark/api/`)
 * **Role:** Handles incoming HTTP communication, routes requests, and serializes JSON payloads.
 * **Key Components:**
-  * `server.py`: Threading HTTP server that serves static frontend assets at `/spark/` and forwards `/api/*` requests to handlers. Implements CORS headers for local development.
+  * `server.py`: Threading HTTP server that serves static frontend assets at `/spark/` and forwards `/api/*` requests to handlers. Implements CORS headers and strict cache-control (`no-cache, no-store, must-revalidate`) for rapid local development.
   * `handlers.py`: REST endpoint controllers:
     * `GET /api/health`: Service telemetry and database connectivity status.
     * `GET /api/pois`: Returns candidate venues enriched with 8D developmental scores.
@@ -180,11 +180,11 @@ flowchart TD
 * **Key Components:**
   * `models.py`: Strongly typed dataclasses (`OriginLocation`, `MilestoneVector`, `ItineraryStop`, `OutingOptimizationPlan`).
   * `optimizer.py`:
-    * *Spatial Bounding:* Vectorized Haversine distance calculations ($\mathcal{O}(N)$).
+    * *Spatial Bounding & Clustering:* Vectorized Haversine distance calculations and candidate pairwise distance matrix ($D_{ij}$) blending radial distance ($35\%$) and inter-stop spatial spread ($65\%$) to eliminate star/spoke criss-crossing.
     * *Redundancy Regularization:* Centered cosine similarity matrix computation ($\mathcal{O}(M^2)$).
     * *Simulated Annealing:* Non-linear utility maximization over $I = 2,500$ to $20,000$ iterations with geometric cooling schedule ($T_0 = 0.05 \to T_{\min} = 0.001$).
     * *Stop Aggregator:* Consolidates $n$ distinct activities into $k \le n$ unique physical waypoints with pooled dwell times.
-    * *2-Opt TSP:* Closed-loop route sequencing with an urban circuity factor ($\tau = 1.35$) and DTLA transit speeds.
+    * *Exact Permutation & 2-Opt TSP:* Closed-loop route sequencing using exact permutation search for small tours ($K \le 7$) and 2-Opt local search ($K > 7$) guaranteeing zero self-intersections.
 
 ### 4. Data Access Layer (`spark/data/`)
 * **Role:** Encapsulates data persistence, database connections, and schema queries.

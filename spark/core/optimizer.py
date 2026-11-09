@@ -69,7 +69,9 @@ def build_candidates(
         pois["longitude"].to_numpy()
     )
 
-    eligible_pois = pois[pois["distance_miles"] <= radius_miles].copy()
+    # Filter by radius; exclude degenerate zero-distance stops (< 0.15 miles) right at origin
+    filtered = pois[(pois["distance_miles"] <= radius_miles) & (pois["distance_miles"] >= 0.15)].copy()
+    eligible_pois = filtered if len(filtered) >= 3 else pois[pois["distance_miles"] <= radius_miles].copy()
 
     candidates = (
         eligible_pois
@@ -127,6 +129,17 @@ def optimize_agenda(
     poi_ids = df["id"].to_numpy()
     rng = random.Random(seed)
 
+    # Precompute candidate pairwise distance matrix to penalize tour spread / criss-crossing
+    c_lats = df["latitude"].to_numpy(dtype=float)
+    c_lons = df["longitude"].to_numpy(dtype=float)
+    rad_lat = np.radians(c_lats)
+    rad_lon = np.radians(c_lons)
+    dlat = rad_lat[:, None] - rad_lat[None, :]
+    dlon = rad_lon[:, None] - rad_lon[None, :]
+    a = np.sin(dlat / 2.0)**2 + np.cos(rad_lat[:, None]) * np.cos(rad_lat[None, :]) * np.sin(dlon / 2.0)**2
+    c = 2.0 * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0)))
+    cand_dist_matrix = 3958.8 * c
+
     # Centered cosine similarity to penalize activity redundancy
     centered = scores - scores.mean(axis=1, keepdims=True)
     norms = np.linalg.norm(centered, axis=1)
@@ -144,7 +157,14 @@ def optimize_agenda(
         coverage = 1.0 - np.exp(-factor_totals / coverage_scale)
         development_value = float(np.dot(w, coverage))
 
-        distance_cost = float(distances[idx].mean())
+        radial_cost = float(distances[idx].mean())
+        if len(idx) > 1:
+            sub_dist = cand_dist_matrix[np.ix_(idx, idx)]
+            inter_cost = float(sub_dist[np.triu_indices(len(idx), k=1)].mean()) / rad_norm
+        else:
+            inter_cost = 0.0
+        # Blend radial distance with inter-stop compactness to eliminate dispersed star/spoke routes
+        distance_cost = 0.35 * radial_cost + 0.65 * inter_cost
 
         if len(idx) > 1:
             pairwise = similarity[np.ix_(idx, idx)]
@@ -225,7 +245,7 @@ def optimize_agenda(
 
 
 def sequence_2opt(origin_lat: float, origin_lon: float, stops_df: pd.DataFrame) -> pd.DataFrame:
-    """Applies 2-Opt TSP heuristic to arrange chosen stops into the shortest round-trip loop."""
+    """Arranges chosen stops into the guaranteed shortest round-trip loop using exact permutation search for K<=7 or 2-Opt TSP."""
     if len(stops_df) <= 1:
         out = stops_df.copy()
         out["selection_order"] = [1] if len(stops_df) == 1 else []
@@ -233,31 +253,51 @@ def sequence_2opt(origin_lat: float, origin_lon: float, stops_df: pd.DataFrame) 
 
     pts = [{"lat": origin_lat, "lon": origin_lon, "idx": -1}]
     for idx, row in stops_df.iterrows():
-        pts.append({"lat": row["latitude"], "lon": row["longitude"], "idx": idx})
+        pts.append({"lat": float(row["latitude"]), "lon": float(row["longitude"]), "idx": idx})
 
     n = len(pts)
-    route = list(range(n))  # 0 is home
 
-    def calc_length(r):
+    def calc_length(order_indices):
         tot = 0.0
-        for i in range(len(r)):
-            p1 = pts[r[i]]
-            p2 = pts[r[(i + 1) % len(r)]]
-            tot += haversine_miles(p1["lat"], p1["lon"], np.array([p2["lat"]]), np.array([p2["lon"]]))[0]
+        cur_lat, cur_lon = origin_lat, origin_lon
+        for i in order_indices:
+            p = pts[i]
+            tot += haversine_miles(cur_lat, cur_lon, np.array([p["lat"]]), np.array([p["lon"]]))[0]
+            cur_lat, cur_lon = p["lat"], p["lon"]
+        tot += haversine_miles(cur_lat, cur_lon, np.array([origin_lat]), np.array([origin_lon]))[0]
         return tot
 
+    stop_indices = list(range(1, n))
+
+    # Exact permutation search for small tours (n <= 8 stops, < 5,040 evaluations, takes < 1 ms)
+    if len(stop_indices) <= 7:
+        import itertools
+        best_perm = stop_indices
+        best_dist = float("inf")
+        for perm in itertools.permutations(stop_indices):
+            d = calc_length(perm)
+            if d < best_dist:
+                best_dist = d
+                best_perm = perm
+        ordered_indices = [pts[i]["idx"] for i in best_perm]
+        ordered_df = stops_df.loc[ordered_indices].copy()
+        ordered_df["selection_order"] = range(1, len(ordered_df) + 1)
+        return ordered_df
+
+    # 2-Opt local search heuristic for larger tours
+    route = [0] + stop_indices + [0]
     best_route = list(route)
-    best_dist = calc_length(best_route)
+    best_dist = calc_length(route[1:-1])
 
     improved = True
     iterations = 0
     while improved and iterations < 100:
         improved = False
         iterations += 1
-        for i in range(1, n - 1):
-            for k in range(i + 1, n):
+        for i in range(1, len(route) - 2):
+            for k in range(i + 1, len(route) - 1):
                 new_route = best_route[:i] + best_route[i:k + 1][::-1] + best_route[k + 1:]
-                d = calc_length(new_route)
+                d = calc_length(new_route[1:-1])
                 if d < best_dist - 1e-4:
                     best_route = new_route
                     best_dist = d
@@ -266,7 +306,7 @@ def sequence_2opt(origin_lat: float, origin_lon: float, stops_df: pd.DataFrame) 
             if improved:
                 break
 
-    ordered_indices = [pts[i]["idx"] for i in best_route if pts[i]["idx"] != -1]
+    ordered_indices = [pts[i]["idx"] for i in best_route[1:-1]]
     ordered_df = stops_df.loc[ordered_indices].copy()
     ordered_df["selection_order"] = range(1, len(ordered_df) + 1)
     return ordered_df

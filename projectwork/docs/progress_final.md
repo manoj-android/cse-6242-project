@@ -8,85 +8,87 @@
 
 ## Abstract
 
-SPARK (Smart Personalized Activity Routes for Kids) is an interactive tool that helps parents and caregivers discover nearby child-friendly activities and generate personalized daily itineraries. By combining geographic data, developmental research, and route optimization, SPARK recommends activities that align with a child’s developmental stage while considering practical constraints such as distance and travel time. This report summarizes the project’s motivation, methodology, current progress, and evaluation plan.
+Planning a day out with kids can be exhausting. Parents want fun, enriching activities tailored to their child's age, but they also have to juggle driving times, family schedules, and avoiding travel fatigue. **SPARK (Smart Personalized Activity Routes for Kids)** is an interactive web tool that takes the friction out of daily planning. By pairing local map data from OpenStreetMap with child-development guidelines, SPARK builds practical, multi-stop day trips tailored to a child’s developmental stage and a family's travel limits. This progress report outlines our project goals, system design, current build progress, and evaluation plan.
 
 ---
 
-## 1. Introduction
+## 1. Introduction & Problem Definition
 
-Parents and caregivers often face significant challenges balancing children's developmental needs with family schedules and geographic constraints. While existing software tools support general activity discovery or calendar management, they rarely integrate developmental guidance with practical, multi-stop planning. SPARK addresses this gap by combining geographic data from OpenStreetMap, age-specific developmental scoring, and route optimization to generate personalized activity itineraries tailored to a child's developmental priorities.
+Anyone who has planned a weekend with young children knows the headache: parents often spend an hour toggling between Google Maps, review sites, and family calendars, trying to piece together outings that keep kids engaged without exhausting everyone [1, 2]. 
 
----
+Existing tools do not solve this problem well. Commercial map platforms treat playgrounds the same as retail stores—they show locations, but know nothing about whether an activity is age-appropriate or how multiple stops fit together into a realistic day. Digital calendars track hours, but lack spatial awareness. Parents are left doing all the mental heavy lifting. 
 
-## 2. Problem Definition
-
-Parenting involves substantial cognitive labor, including identifying meaningful activities, coordinating schedules, and considering long-term developmental goals [1, 2]. Existing tools largely address isolated aspects of this process—such as commercial business listings or basic calendar scheduling—rather than bringing these factors together into a coherent, developmentally informed plan. SPARK aims to bridge this gap by recommending nearby activities that collectively support a child's development while remaining convenient and manageable for caregivers.
+SPARK bridges this gap by turning trip planning into an interactive, visual dashboard. Instead of giving parents a generic list of nearby spots, it creates balanced daily itineraries that combine healthy child development with convenient, realistic driving routes.
 
 ---
 
-## 3. Literature Survey
+## 2. Literature Survey
 
-### Theme 1: Child Development and Caregiver Needs
-Prior research shows that active play, sports, outdoor activities, and creative experiences contribute to children's cognitive, social-emotional, and physical development [3–9]. Studies also suggest that organized extracurricular participation supports long-term academic, behavioral, and social outcomes. These findings support SPARK's goal of generating balanced activity itineraries that encourage development across multiple domains while helping reduce parental planning stress.
+### Theme 1: Child Development & Caregiver Stress
+Pediatric research shows that children benefit greatly from a balanced mix of active play, sports, outdoor exploration, and creative activities [3–9]. These experiences build motor skills, emotional resilience, and cognitive ability, encouraging active lifestyles that continue into adulthood [9]. However, when parents feel stressed by planning logistics, their activity choices often become rigid or repetitive [7, 8]. SPARK aims to lighten this mental load by suggesting varied, age-appropriate schedules that support multiple developmental areas.
 
-### Theme 2: Recommendation Systems and Geographic Planning
-Context-aware recommendation systems improve relevance by incorporating factors such as location, distance, and user preferences [10, 11]. OpenStreetMap provides an accessible and rich source of point-of-interest (POI) data [12, 13], while route optimization heuristics and map-based interfaces support effective daily itinerary planning and spatial decision-making [14–16].
+### Theme 2: Recommendation Systems & Map Interfaces
+Location-aware recommendation systems work best when they incorporate distance, user preferences, and real-world travel constraints [10, 11]. OpenStreetMap offers a rich, community-driven catalog of local points of interest (POIs) [12, 13]. Meanwhile, simple route optimization heuristics [14] and clean, interactive map interfaces [15, 16] help parents make quick, confident decisions without getting lost in complex menus.
 
 ---
 
-## 4. Proposed Methods
+## 3. Proposed Methods
 
-### 4.1 Data Extraction and Preparation
-POI data was extracted from OpenStreetMap and loaded into a local SQLite database using GeoPandas. Relevant child-friendly locations such as parks, playgrounds, museums, recreational facilities, and cultural venues were identified and converted into standardized latitude and longitude coordinates for candidate generation.
+SPARK combines an algorithmic recommendation engine with an interactive web dashboard.
 
-### 4.2 Data Integration and Candidate Generation
-SPARK integrates four structured datasets:
-1. **Local POIs:** Geographic coordinates, venue names, and categories.
-2. **Category-to-Activity Mappings:** Associations between venue types and suitable child activities.
-3. **Developmental Activity Scores:** Heuristic scores assessing activities across eight developmental dimensions.
-4. **Age-Specific Priority Weights:** Developmental factor importance weights defined for children ages 2 through 12.
+### 3.1 Data Extraction & Preparation
+We extracted local venue data from OpenStreetMap using GeoPandas and loaded it into a local SQLite database. We focused on child-friendly locations—including parks, playgrounds, nature centers, museums, and recreation spaces—recording their names, categories, and geographic coordinates.
 
-When a caregiver enters a starting address, it is geocoded into latitude and longitude coordinates. The Haversine formula is used to calculate distances between the starting location and nearby POIs. Locations within the user's selected radius are retained and joined with developmental activity data to generate candidate recommendations.
+### 3.2 Datasets & Candidate Generation
+SPARK links four core datasets:
+1. **Local POIs:** Venue names, coordinates, and categories.
+2. **Activity Mappings:** Linking venue types to what children do there (e.g., active play, arts, sensory exploration).
+3. **Developmental Scores:** Ratings (1–10) across eight developmental domains (cognitive, motor, social, creative, language, etc.) based on CDC and Harvard Center on the Developing Child guidance [17, 18].
+4. **Age Profiles:** Importance weights for ages 2 through 12, ensuring recommendations adapt as children grow.
 
-### 4.3 Age-Specific Developmental Scoring
-Activities are evaluated across eight developmental dimensions derived from CDC and Harvard Center on the Developing Child guidance [17, 18]. Activity scores are normalized to a 0–1 scale and combined with age-specific developmental importance weights. This weighting allows SPARK to tailor recommendations to the developmental priorities of a child's specific age group rather than applying a static, one-size-fits-all ranking.
+When a parent enters a home address, the app calculates distances to nearby venues using the Haversine formula, keeps places within the chosen travel radius (1–10 miles), and joins them with developmental scores to form candidate stops.
 
-### 4.4 Multi-Objective Activity Selection
-To generate balanced itineraries rather than simply selecting individual high-scoring activities, SPARK uses a diversity-aware optimization model:
+### 3.3 Multi-Objective Activity Selection
+Rather than simply picking the closest stops or the highest-rated spots, SPARK balances three competing priorities:
 
 $$J(S) = D(S) - \delta L(S) - \mu R(S)$$
 
-Where:
-* $D(S)$ represents developmental coverage across the eight domains (with diminishing returns for repeated domain exposure),
-* $L(S)$ represents travel distance penalties relative to the starting location,
-* $R(S)$ represents activity redundancy penalties based on pairwise similarity between activity profiles,
-* $\delta$ and $\mu$ are adjustable weighting parameters controlling proximity and activity diversity.
+* **Developmental Coverage $D(S)$:** Rewards activities matching the child’s age priorities, using a concave diminishing-returns curve ($1 - e^{-T/\tau}$) across eight pediatric domains so schedules stay diverse rather than repeating the same activity type.
+* **Travel Penalty $L(S)$:** Combines radial distance from the origin with pairwise inter-venue dispersion ($0.35 \times \text{radial} + 0.65 \times \text{pairwise}$). This penalizes geographically scattered star/spoke routes across town and clusters candidate stops into a compact, cohesive driving circuit.
+* **Redundancy Penalty $R(S)$:** Penalizes visiting repetitive venues (e.g., two playgrounds in one morning) using mean centered cosine similarity across selected activity vectors to ensure variety.
+* **Weights $\delta$ and $\mu$:** Adjust the balance between travel convenience and activity variety.
 
-A simulated annealing search algorithm is used to efficiently identify high-quality activity combinations while satisfying itinerary constraints (such as stop count limits and search radius boundaries).
+We use a simulated annealing metaheuristic (2,500 iterations in web mode, <15ms) to explore combinations and find an optimal, feasible itinerary in a fraction of a second.
 
-### 4.5 Visualization and User Interaction
-The SPARK web application provides a responsive two-panel dashboard built with Leaflet.js, D3.js, and a local Python/SQLite backend. Users enter their home address and select child age, travel radius, and desired number of stops. The left panel displays the recommended itinerary with a D3 timeline balancing travel and dwell times, venue details, and user feedback buttons. The right panel displays an interactive OpenStreetMap showing color-coded destination pins and the suggested travel route. Users can explore recommendations, provide feedback on activities, and refresh results dynamically when trip preferences change.
-
----
-
-## 5. Innovations
-
-SPARK introduces two primary innovations:
-
-1. **Age-Weighted Developmental Scoring Framework:** SPARK operationalizes child-development literature into a quantitative scoring model. By combining multi-dimensional activity scores with age-specific developmental weights, the system dynamically tailors recommendations to a child's developmental stage.
-2. **Development-Aware Route Optimization:** Unlike standard navigation tools that minimize only travel time or commercial platforms that rank venues by popularity, SPARK combines developmental scoring, geographic distance, and diversity penalties to produce balanced, practical multi-stop itineraries.
+### 3.4 Web Dashboard & User Interaction
+The SPARK UI is a two-panel dashboard built with Leaflet.js, D3.js, a local SQLite database, and is hosted through a lightweight Python server. Parents enter a starting address, child’s age, travel radius, and desired number of activities:
+* **Left Panel (Itinerary & Timeline):** Displays the recommended itinerary with a D3 timeline balancing driving time against activity dwell time, venue details, and thumbs up/down feedback buttons.
+* **Right Panel (Interactive Map):** Shows an interactive OpenStreetMap canvas with color-coded destinations. To ensure practical driving directions, the UI executes an exact permutation search ($K \le 7$) and 2-Opt local search ($K > 7$) to sequence stops into a minimal-distance round trip, overlaid with turn-by-turn road network curves fetched via OpenStreetMap OSRM.
+* **Interactivity & Logging:** Users can explore recommendations on either the map or itinerary view, upvote or downvote activities, and instantly see updated routes when trip settings change without a page reload. This user feedback is logged into a dedicated SQLite table (`user_evaluations`) to evaluate and improve recommendations.
 
 ---
 
-## 6. Evaluation Plan
+## 4. Innovations
 
-We will evaluate SPARK using a user study of 10 participants (parents and caregivers of children aged 2–12), with each team member recruiting 2 participants. Users will generate activity itineraries based on realistic scenarios and evaluate recommendation quality, usability, practicality, map usefulness, and overall satisfaction using a 10-point scale (1 = Very Poor, 10 = Excellent). We will also measure itinerary generation time, track user acceptance rates of suggested stops, and compare the user experience against manual planning using standard map applications. In addition, we will benchmark solver execution time to ensure recommendations update smoothly during interactive filtering.
+SPARK introduces two practical innovations:
+
+1. **Age-Weighted Developmental Scoring:** We translate qualitative pediatric guidelines into a quantitative scoring model that automatically shifts priorities as a child grows from toddler to pre-teen.
+2. **Development-Aware Route Optimization:** Traditional navigation tools only minimize travel time, while review apps only rank by popularity. SPARK bridges both by optimizing for developmental balance, diversity, and travel convenience all at once.
 
 ---
 
-## 7. Plan of Activities
+## 5. Evaluation Plan
 
-The table below summarizes our original timeline, updated schedule, and current milestone statuses.
+We are evaluating SPARK in two practical ways:
+
+* **In-App Feedback & Performance Tuning:** Each venue card includes thumbs up/down buttons that log parent ratings and solver runtimes directly to our SQLite database. We use this data to refine our developmental scores, adjust the trade-off weights between distance and variety ($\delta$ and $\mu$), and ensure route calculations stay fast and responsive.
+* **Parent User Study (N = 10):** Each team member will have two parents or caregivers test the live tool for realistic day trips. Participants will rate the app on a 1–10 scale across recommendation quality, practicality, scheduling usefulness, map clarity, and ease of use, comparing the experience against manual planning in Google Maps.
+
+---
+
+## 6. Plan of Activities
+
+The table below outlines our original plan, updated schedule, and current milestone progress.
 
 | Activity | Owner(s) | Old Timeline | New Timeline | Old Status | New Status |
 | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -103,7 +105,7 @@ All team members have contributed a similar amount of effort thus far and are ex
 
 ---
 
-## 8. References
+## 7. References
 
 [1] A. C. Weeks and L. Ruppanner, "A typology of US parents' mental loads: Core and episodic cognitive labor," *Journal of Marriage and Family*, vol. 87, no. 1, pp. 85–104, 2025.  
 [2] M. Kremer-Sadlik, C. Izquierdo, and M. Fatigante, "Making meaning of everyday practices: Parents' attitudes toward children's extracurricular activities," *Anthropology & Education Quarterly*, vol. 41, no. 1, pp. 35–54, 2010.  
